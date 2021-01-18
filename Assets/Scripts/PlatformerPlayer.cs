@@ -9,10 +9,16 @@ public class PlatformerPlayer : MonoBehaviour
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
     public int maxJumpCount = 1;
+    public float raycastDistance; //This is to check for ladders
+    
+    public LayerMask ladderLayerMask;
+    public Transform ladderRaycastTarget;
+
 
     private Rigidbody2D rb;
-
     private float horizontalValue;
+    private float verticalValue;
+    private bool isClimbing;
 
 
     //Multipliers just to make the initial values more reasonable
@@ -29,16 +35,46 @@ public class PlatformerPlayer : MonoBehaviour
     void Update()
     {
         ReadInput();
+        CheckForLadderAndInput();
     }
 
     void FixedUpdate()
     {
-        Move(horizontalValue);
+        //Vertical Movement (Walking)
+        Move(MovementOrientation.Horizontal, horizontalValue);
+        
+        //Horizontal Movement (Climbing)
+        if (isClimbing)
+        {
+            currentJumpCount = 0;
+            Move(MovementOrientation.Vertical, verticalValue);
+            rb.gravityScale = 0;
+        }
+        else 
+        {
+            rb.gravityScale = 1;
+        }
+    }
+
+    void CheckForLadderAndInput() 
+    {
+        RaycastHit2D hitInfo = Physics2D.Raycast(ladderRaycastTarget.position, Vector2.up, raycastDistance, ladderLayerMask);
+
+        if (hitInfo.collider != null)
+        {
+            if (verticalValue > 0) isClimbing = true;
+        }
+        else
+        {
+            isClimbing = false;
+        }
     }
 
     void ReadInput() 
     {
         horizontalValue = Input.GetAxisRaw("Horizontal");
+        verticalValue = Input.GetAxisRaw("Vertical");
+        
         //Jump
         JumpScript();
     }
@@ -48,10 +84,14 @@ public class PlatformerPlayer : MonoBehaviour
     {
 
         //trigger jumping but only when the player can jump I.e. has not reached the max jumps
-        if (Input.GetButtonDown("Jump") && currentJumpCount < maxJumpCount)
+        if (Input.GetButtonDown("Jump") && currentJumpCount < maxJumpCount && !isClimbing)
         {
             rb.velocity = new Vector2(0, jumpVelocity * jumpVelocityMultiplier);
             currentJumpCount++;
+        }
+        else if (isClimbing) 
+        {
+            currentJumpCount = 0;
         }
 
         //Artificially increase the velocity on downward arch of jump, also changes jump height based on length of jump button held
@@ -71,7 +111,7 @@ public class PlatformerPlayer : MonoBehaviour
         }
     }
 
-    void Move(float dir)
+    void Walk(float dir)
     {
         //Ensure movement is consistent regardless of framerate by tying to Time.deltaTime
         float xVal = dir * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
@@ -79,4 +119,30 @@ public class PlatformerPlayer : MonoBehaviour
         Vector2 targetVelocity = new Vector2(xVal, rb.velocity.y);
         rb.velocity = targetVelocity;
     }
+
+    void Climb(float dir) 
+    {
+        float yVal = dir * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
+        Vector2 targetVelocity = new Vector2(rb.velocity.x, yVal);
+        rb.velocity = targetVelocity;
+    }
+
+    void Move(MovementOrientation movementOrientation, float direction) 
+    {
+        //Ensure movement is consistent regardless of framerate by tying to Time.deltaTime
+        float movementValue = direction * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
+
+        //Set horizontal or vertical velocity based on the set orientation
+        Vector2 targetVelocity = movementOrientation == MovementOrientation.Horizontal 
+            ? new Vector2(movementValue, rb.velocity.y) : new Vector2(rb.velocity.x, movementValue);
+
+        //Set the final velocity
+        rb.velocity = targetVelocity;
+    }
+}
+
+public enum MovementOrientation 
+{
+    Horizontal,
+    Vertical
 }

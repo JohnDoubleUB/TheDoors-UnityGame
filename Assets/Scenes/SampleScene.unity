@@ -6786,7 +6786,7 @@ GameObject:
   - component: {fileID: 1849538653}
   - component: {fileID: 1849538652}
   - component: {fileID: 1849538654}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ladders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7096,6 +7096,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 21.96
       objectReference: {fileID: 0}
@@ -7111,6 +7116,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -7123,16 +7133,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7365843638876633323, guid: 124773ff410494d4d9e57c7e1ccf9400,
         type: 3}
