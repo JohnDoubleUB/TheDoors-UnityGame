@@ -5,7 +5,7 @@ using UnityEngine;
 public class LadderScript : MonoBehaviour
 {
     // Start is called before the first frame update
-    //Added a comment to test
+    //Added a comment to tests
     void Start()
     {
         
