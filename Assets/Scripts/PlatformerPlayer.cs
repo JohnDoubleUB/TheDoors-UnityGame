@@ -19,6 +19,7 @@ public class PlatformerPlayer : MonoBehaviour
     private float horizontalValue;
     private float verticalValue;
     private bool isClimbing;
+    private SpriteRenderer sr;
 
 
     //Multipliers just to make the initial values more reasonable
@@ -30,6 +31,7 @@ public class PlatformerPlayer : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -135,6 +137,14 @@ public class PlatformerPlayer : MonoBehaviour
         //Set horizontal or vertical velocity based on the set orientation
         Vector2 targetVelocity = movementOrientation == MovementOrientation.Horizontal 
             ? new Vector2(movementValue, rb.velocity.y) : new Vector2(rb.velocity.x, movementValue);
+
+        //Set sprite direction if horizontal movement occurs
+        if (movementOrientation == MovementOrientation.Horizontal && direction != 0) 
+        {
+            bool directionIsNegative = direction < 0f;
+            sr.flipX = directionIsNegative;
+        }
+
 
         //Set the final velocity
         rb.velocity = targetVelocity;
