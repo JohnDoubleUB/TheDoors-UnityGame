@@ -19,18 +19,24 @@ public class Door : MonoBehaviour
 
     private float defaultLightIntensity;
     private float targetLightIntensity;
+    private float maxSpeed = 300f;
+    private float currentSpeed;
+    private float targetSpeed;
 
     private void Awake()
     {
         primarySpriteRenderer = GetComponent<SpriteRenderer>();
         if (light2D != null) defaultLightIntensity = light2D.intensity;
         targetLightIntensity = defaultLightIntensity;
+        currentSpeed = maxSpeed;
+        targetSpeed = currentSpeed;
     }
 
     private void Update()
     {
         targetAlpha = isLit ? 1f : 0f;
         targetLightIntensity = isLit ? defaultLightIntensity : 0.03f;
+        targetSpeed = isLit ? maxSpeed : 0f;
 
         if (primarySpriteRenderer.color.a != targetAlpha) 
         {
@@ -44,8 +50,13 @@ public class Door : MonoBehaviour
 
         if (light2D != null && light2D.intensity != targetLightIntensity) 
             light2D.intensity = Mathf.Lerp(light2D.intensity, targetLightIntensity, 1f * Time.deltaTime);
-        
 
+        //Make light go spin(?)
+        if (currentSpeed != targetSpeed) 
+            currentSpeed = Mathf.Lerp(currentSpeed, targetSpeed, 1f * Time.deltaTime);
+
+        if(currentSpeed != 0f)
+            light2D.gameObject.transform.Rotate(new Vector3(0f, 0f, 1f) * currentSpeed * Time.deltaTime);
     }
 
 
