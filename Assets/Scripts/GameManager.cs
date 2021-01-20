@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
         //Set UI and stuff
         if (Input.GetButtonDown("Cancel") && UIManager.current != null)
         {
+            print("Thing");
             UIManager.current.ToggleContexts(UIContextType.PauseMenu);
             UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
             UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu);
