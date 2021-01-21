@@ -38,6 +38,15 @@ public class MainMenu : MonoBehaviour
         {
             UIManager.current.SetContextsActive(false, UIContextType.PauseMain, UIContextType.SaveMenu);
             UIManager.current.SetContextsActive(true, UIContextType.LoadMenu);
+
+            string stringSaves = "";
+
+            foreach (string saveFileName in SaveSystem.GetSaves()) 
+            {
+                stringSaves += saveFileName + ", ";
+            }
+
+            Debug.Log("Getting save names: " + stringSaves);
         }
     }
 
