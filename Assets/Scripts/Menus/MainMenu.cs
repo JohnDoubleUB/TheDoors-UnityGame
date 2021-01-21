@@ -43,12 +43,12 @@ public class MainMenu : MonoBehaviour
 
     public void SaveGame() 
     {
-        Debug.Log("Save Game!");
+        if (GameManager.current != null) GameManager.current.InitiateSave();
     }
 
     public void LoadGame() 
     {
-        Debug.Log("Load Game!");
+        if (GameManager.current != null) GameManager.current.InitiateLoad();
     }
 
     public void MainPauseMenu() 

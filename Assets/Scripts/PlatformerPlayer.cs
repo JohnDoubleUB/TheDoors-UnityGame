@@ -34,6 +34,16 @@ public class PlatformerPlayer : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
     }
 
+    private void Start()
+    {
+        if (GameManager.current != null)
+        {
+            GameManager.current.player = this;
+            Debug.Log("This happened");
+        }
+        else Debug.Log("Nahhh");
+    }
+
     void Update()
     {
         ReadInput();
