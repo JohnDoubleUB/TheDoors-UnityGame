@@ -8,6 +8,23 @@ public static class SaveSystem
 {
     private static string saveExtension = ".doorsave";
 
+
+    /* 
+    ------ SAVE SYSTEM NOTES (TODO?) ------
+    Save System:
+        3 save slots? or just one?
+
+    Save contents:
+
+        Level:
+        Player position:
+        Checkpoint? (For door levels only)
+        Completed doors
+        OptionsFlags (This will be things that define a playthrough)
+
+    */
+
+
     public static void SaveGame(SaveData saveData) 
     {
         BinaryFormatter formatter = new BinaryFormatter();

@@ -18,9 +18,14 @@ public class PlatformerPlayer : MonoBehaviour
     private Rigidbody2D rb;
     private float horizontalValue;
     private float verticalValue;
-    private bool isClimbing;
     private SpriteRenderer sr;
-
+    private Animator animator;
+    
+    private bool isClimbing;
+    private bool isMoving;
+    private bool isJumping;
+    private bool isWalking;
+    private bool isFalling;
 
     //Multipliers just to make the initial values more reasonable
     private float movementSpeedMultiplier = 300f;
@@ -32,6 +37,7 @@ public class PlatformerPlayer : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -39,9 +45,7 @@ public class PlatformerPlayer : MonoBehaviour
         if (GameManager.current != null)
         {
             GameManager.current.player = this;
-            Debug.Log("This happened");
         }
-        else Debug.Log("Nahhh");
     }
 
     void Update()
@@ -66,6 +70,23 @@ public class PlatformerPlayer : MonoBehaviour
         {
             rb.gravityScale = 1;
         }
+
+
+        //AnimationStuff 
+        //TODO: THis isn't very snappy, update the animator movement
+        isWalking = Input.GetKey("a") || Input.GetKey("d");
+        isMoving = isWalking || Input.GetKey("w") || Input.GetKey("s");
+        isFalling = rb.velocity.y != 0;
+
+        if (animator != null) 
+        {
+            animator.SetBool("IsMoving", isMoving);
+            animator.SetBool("IsClimbing", isClimbing);
+            animator.SetBool("IsJumping", isJumping);
+            animator.SetBool("IsWalking", isWalking);
+            animator.SetBool("IsFalling", isFalling);
+        }
+
     }
 
     void CheckForLadderAndInput() 
@@ -86,7 +107,6 @@ public class PlatformerPlayer : MonoBehaviour
     {
         horizontalValue = Input.GetAxisRaw("Horizontal");
         verticalValue = Input.GetAxisRaw("Vertical");
-        
         //Jump
         JumpScript();
     }
@@ -100,10 +120,12 @@ public class PlatformerPlayer : MonoBehaviour
         {
             rb.velocity = new Vector2(0, jumpVelocity * jumpVelocityMultiplier);
             currentJumpCount++;
+            isJumping = true;
         }
         else if (isClimbing) 
         {
             currentJumpCount = 0;
+            isJumping = false;
         }
 
         //Artificially increase the velocity on downward arch of jump, also changes jump height based on length of jump button held
@@ -120,6 +142,7 @@ public class PlatformerPlayer : MonoBehaviour
         if (rb.velocity.y == 0f) 
         {
             currentJumpCount = 0;
+            isJumping = false;
         }
     }
 
