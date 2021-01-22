@@ -15,6 +15,7 @@ public class VerticalPlatform : MonoBehaviour
 
     private void Update()
     {
+        //TODO: I don't like that this delay happens, this needs a bit of work
         //When user presses down platform collision allows them to fall back through
         if (Input.GetAxis("Vertical") < 0f)
         {

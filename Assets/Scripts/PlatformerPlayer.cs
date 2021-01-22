@@ -3,29 +3,32 @@
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlatformerPlayer : MonoBehaviour
 {
+    [Header("Movement")]
     public float movementSpeed = 1;
-    public float jumpVelocity = 2;
 
+    [Header("Jumping")]
+    public float jumpVelocity = 2;
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
     public int maxJumpCount = 1;
-    public float raycastDistance; //This is to check for ladders
-    
+
+    [Header("Climbing")]
     public LayerMask ladderLayerMask;
     public Transform ladderRaycastTarget;
-
+    public float raycastDistance; //This is to check for ladders
 
     private Rigidbody2D rb;
-    private float horizontalValue;
-    private float verticalValue;
     private SpriteRenderer sr;
     private Animator animator;
-    
+
+    private float horizontalValue;
+    private float verticalValue;
+
+    //State variables
     private bool isClimbing;
     private bool isMoving;
     private bool isJumping;
     private bool isWalking;
-    private bool isFalling;
 
     //Multipliers just to make the initial values more reasonable
     private float movementSpeedMultiplier = 300f;
@@ -71,22 +74,23 @@ public class PlatformerPlayer : MonoBehaviour
             rb.gravityScale = 1;
         }
 
+        //isFalling = rb.velocity.y != 0;
 
-        //AnimationStuff 
-        //TODO: THis isn't very snappy, update the animator movement
-        isWalking = Input.GetKey("a") || Input.GetKey("d");
-        isMoving = isWalking || Input.GetKey("w") || Input.GetKey("s");
-        isFalling = rb.velocity.y != 0;
 
-        if (animator != null) 
+        UpdateAnimator();
+    }
+
+    private void UpdateAnimator() 
+    {
+
+        if (animator != null)
         {
             animator.SetBool("IsMoving", isMoving);
             animator.SetBool("IsClimbing", isClimbing);
             animator.SetBool("IsJumping", isJumping);
             animator.SetBool("IsWalking", isWalking);
-            animator.SetBool("IsFalling", isFalling);
+            //animator.SetBool("IsFalling", isFalling);
         }
-
     }
 
     void CheckForLadderAndInput() 
@@ -107,6 +111,18 @@ public class PlatformerPlayer : MonoBehaviour
     {
         horizontalValue = Input.GetAxisRaw("Horizontal");
         verticalValue = Input.GetAxisRaw("Vertical");
+        isWalking = Input.GetKey("a") || Input.GetKey("d");
+        isMoving = isWalking || Input.GetKey("w") || Input.GetKey("s");
+
+        if (Input.GetKey("s")) 
+        { 
+            isJumping = true; 
+        }
+        else if (rb.velocity.y == 0f)
+        {
+            isJumping = false;
+        }
+
         //Jump
         JumpScript();
     }
@@ -137,29 +153,15 @@ public class PlatformerPlayer : MonoBehaviour
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
-
-        //Reset jump count if y velocity hits 0, i.e. player is no longer falling or jumping
-        if (rb.velocity.y == 0f) 
-        {
-            currentJumpCount = 0;
-            isJumping = false;
-        }
     }
 
-    void Walk(float dir)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Ensure movement is consistent regardless of framerate by tying to Time.deltaTime
-        float xVal = dir * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
-
-        Vector2 targetVelocity = new Vector2(xVal, rb.velocity.y);
-        rb.velocity = targetVelocity;
-    }
-
-    void Climb(float dir) 
-    {
-        float yVal = dir * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
-        Vector2 targetVelocity = new Vector2(rb.velocity.x, yVal);
-        rb.velocity = targetVelocity;
+        Debug.Log("Player Collided with : " + collision.gameObject.name);
+        //https://docs.unity3d.com/ScriptReference/Physics2D.OverlapCapsule.html ?
+        //For resetting jump
+        currentJumpCount = 0;
+        isJumping = false;
     }
 
     void Move(MovementOrientation movementOrientation, float direction) 
