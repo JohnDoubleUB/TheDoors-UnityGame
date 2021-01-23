@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +8,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager current;
     public PlatformerPlayer player;
+    public List<Door> doors;
+    //private List<DoorName> doorNames = new List<DoorName>() { DoorName.Tent };
+
+    private bool firstUpdate = true;
+
+    private List<DoorName> CurrentlyDisabledDoors { 
+        get 
+        {
+            return doors.Where(d => !d.isLit).Select(d => d.doorName).ToList();
+        } 
+    }
 
     private void Awake()
     {
@@ -16,6 +28,12 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        if (firstUpdate) 
+        {
+            if (SaveSystem.CurrentSaveData != null) LoadGameData(SaveSystem.CurrentSaveData); //Ensures save data is loaded if it needs to be
+
+            firstUpdate = false;
+        }
         DetectPauseGame();      
     }
 
@@ -30,13 +48,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void AddDoor(Door door) 
+    {
+        doors.Add(door);
+    }
+
     public void InitiateSave() 
     {
         if (player != null) 
         {
             Debug.Log("Initiating Save");
-            SaveData newSave = new SaveData(SceneManager.GetActiveScene().buildIndex, "TestSave1", player.transform.position);
-            SaveSystem.SaveGame(newSave);
+            SaveData newSaveData = new SaveData("TestSave1", SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors);
+            SaveSystem.SaveGame(newSaveData);
         }
     }
 
@@ -46,9 +69,28 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Initiating Load");
             SaveData savedData = SaveSystem.LoadGame();
-            Vector3 playerPosition = new Vector3(savedData.Position[0], savedData.Position[1], savedData.Position[2]);
 
-            player.transform.position = playerPosition;
+
+            LoadGameData(savedData);
+            //player.transform.position = savedData.PlayerPosition;
+
         }
+    }
+
+    private void UpdateDoors(bool enabled, List<DoorName> doorsToUpdate) 
+    {
+        foreach (Door door in doors) 
+        {
+            door.isLit = doorsToUpdate.Contains(door.doorName) ? enabled : true;
+        }
+    }
+
+    private void LoadGameData(SaveData savedData)
+    {
+        //Player position
+        player.transform.position = savedData.PlayerPosition;
+
+        //Door states
+        UpdateDoors(false, savedData.CompletedDoors);
     }
 }

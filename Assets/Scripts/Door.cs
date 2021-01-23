@@ -11,6 +11,7 @@ public class Door : MonoBehaviour
     public bool includePointLightSource = true;
     public SpriteRenderer backgroundSpriteRender;
     public Light2D light2D;
+    public DoorName doorName;
 
 
     private SpriteRenderer primarySpriteRenderer;
@@ -30,6 +31,11 @@ public class Door : MonoBehaviour
         targetLightIntensity = defaultLightIntensity;
         currentSpeed = maxSpeed;
         targetSpeed = currentSpeed;
+    }
+
+    private void Start()
+    {
+        if (GameManager.current != null) GameManager.current.AddDoor(this);
     }
 
     private void Update()
@@ -61,4 +67,19 @@ public class Door : MonoBehaviour
 
 
 
+}
+
+public enum DoorName 
+{
+    Circus,
+    Large,
+    Sub,
+    Portal,
+    Arch,
+    Curtain,
+    Gate,
+    Tent,
+    Saloon,
+    Trap,
+    Garage
 }

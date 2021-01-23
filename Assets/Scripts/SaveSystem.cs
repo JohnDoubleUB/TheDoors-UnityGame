@@ -7,7 +7,8 @@ using System.Linq;
 public static class SaveSystem
 {
     private static string saveExtension = ".doorsave";
-
+    public static SaveDataSerialized CurrentSaveData; // Current save data
+    public static string currentTextTest;
 
     /* 
     ------ SAVE SYSTEM NOTES (TODO?) ------
@@ -24,7 +25,6 @@ public static class SaveSystem
 
     */
 
-
     public static void SaveGame(SaveData saveData) 
     {
         BinaryFormatter formatter = new BinaryFormatter();
@@ -34,7 +34,7 @@ public static class SaveSystem
         FileStream stream = new FileStream(path, File.Exists(path) ? FileMode.Create : FileMode.CreateNew);
 
 
-        formatter.Serialize(stream, saveData);
+        formatter.Serialize(stream, (SaveDataSerialized)saveData);
         stream.Close();
 
         Debug.Log("File saved: " + path);
@@ -48,10 +48,10 @@ public static class SaveSystem
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
 
-            SaveData savedData = (SaveData)formatter.Deserialize(stream);
+            SaveDataSerialized savedData = (SaveDataSerialized)formatter.Deserialize(stream);
             stream.Close();
 
-            return savedData;
+            return (SaveData)savedData;
         }
         else 
         {
