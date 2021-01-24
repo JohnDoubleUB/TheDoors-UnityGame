@@ -8,8 +8,14 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager current;
     public PlatformerPlayer player;
-    public List<Door> doors;
+    public List<Door> doors; //make private?
+    public List<SaveOptionObject> saveOptionObjects;
+    private string saveName = "SaveSlot";
     //private List<DoorName> doorNames = new List<DoorName>() { DoorName.Tent }; sdasd
+
+    private int selectedSavefile = 0;
+
+
 
     private bool firstUpdate = true;
 
@@ -31,7 +37,6 @@ public class GameManager : MonoBehaviour
         if (firstUpdate) 
         {
             if (SaveSystem.CurrentSaveData != null) LoadGameData(SaveSystem.CurrentSaveData); //Ensures save data is loaded if it needs to be
-
             firstUpdate = false;
         }
         DetectPauseGame();      
@@ -42,9 +47,10 @@ public class GameManager : MonoBehaviour
         //Set UI and stuff
         if (Input.GetButtonDown("Cancel") && UIManager.current != null)
         {
+            SetSelectedSaveOption(0);
             UIManager.current.ToggleContexts(UIContextType.PauseMenu);
             UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
-            UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu);
+            UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu, UIContextType.SaveSelection);
         }
     }
 
@@ -53,25 +59,43 @@ public class GameManager : MonoBehaviour
         doors.Add(door);
     }
 
+    public void AddSaveOptionObject(SaveOptionObject saveOptionObject) 
+    {
+        saveOptionObjects.Add(saveOptionObject);
+    }
+
+    public void SetSelectedSaveOption(int optionNo)
+    {
+        selectedSavefile = optionNo;
+
+        if (saveOptionObjects.Count > 0) 
+        {
+            foreach (SaveOptionObject so in saveOptionObjects) 
+            {
+                so.IsSelected = so.saveNumber == optionNo;
+            }
+        }
+    }
+
     public void InitiateSave() 
     {
-        if (player != null) 
+        if (player != null && selectedSavefile != 0) 
         {
             Debug.Log("Initiating Save");
-            SaveData newSaveData = new SaveData("TestSave1", SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors);
+            SaveData newSaveData = new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors);
             SaveSystem.SaveGame(newSaveData);
+            RefreshSaveSlotData();
         }
     }
 
     public void InitiateLoad()
     {
-        if (player != null)
+        if (player != null && selectedSavefile != 0)
         {
             Debug.Log("Initiating Load");
-            SaveData savedData = SaveSystem.LoadGame();
+            SaveData savedData = SaveSystem.LoadGame(saveName + selectedSavefile);
 
-
-            LoadGameData(savedData);
+            if(savedData != null) LoadGameData(savedData);
             //player.transform.position = savedData.PlayerPosition;
 
         }
@@ -92,5 +116,17 @@ public class GameManager : MonoBehaviour
 
         //Door states
         UpdateDoors(false, savedData.CompletedDoors);
+    }
+
+    public void RefreshSaveSlotData()
+    {
+        Debug.Log("Update Saveslots!" + saveOptionObjects.Count);
+        if (saveOptionObjects.Count > 0)
+        {
+            foreach (SaveOptionObject so in saveOptionObjects)
+            {
+                so.SetContent(SaveSystem.GetSaveLastModifiedDate(saveName + so.saveNumber));
+            }
+        }
     }
 }

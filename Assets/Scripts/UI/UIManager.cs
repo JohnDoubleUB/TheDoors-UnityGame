@@ -67,5 +67,6 @@ public enum UIContextType
     PauseMenu,
     PauseMain,
     SaveMenu,
-    LoadMenu
+    LoadMenu,
+    SaveSelection
 }

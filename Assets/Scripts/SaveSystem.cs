@@ -28,7 +28,7 @@ public static class SaveSystem
     public static void SaveGame(SaveData saveData) 
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        string path = Application.persistentDataPath + "/savedatatest" + saveExtension;
+        string path = Application.persistentDataPath + "/" + saveData.SaveName + saveExtension;
 
         //File.Exists ensures that we replace the file if it already exists and don't encounter errors
         FileStream stream = new FileStream(path, File.Exists(path) ? FileMode.Create : FileMode.CreateNew);
@@ -40,9 +40,9 @@ public static class SaveSystem
         Debug.Log("File saved: " + path);
     }
 
-    public static SaveData LoadGame() 
+    public static SaveData LoadGame(string saveName)
     {
-        string path = Application.persistentDataPath + "/savedatatest" + saveExtension;
+        string path = Application.persistentDataPath + "/" + saveName + saveExtension;
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -53,16 +53,17 @@ public static class SaveSystem
 
             return (SaveData)savedData;
         }
-        else 
+        else
         {
             Debug.LogError("Save file not found in " + path);
             return null;
         }
     }
 
-    public static string[] GetSaves() 
+    public static string GetSaveLastModifiedDate(string saveName) 
     {
-        return Directory.GetFiles(Application.persistentDataPath).Where(s => s.EndsWith(saveExtension)).ToArray();
+        string path = Application.persistentDataPath + "/" + saveName + saveExtension;
+        return File.Exists(path) ? File.GetLastAccessTime(path).ToString() : "";
     }
 
 

@@ -19,6 +19,7 @@ public class MainMenu : MonoBehaviour
     public void ReturnToGame()
     {
         if (UIManager.current != null) UIManager.current.SetContextsActive(false, UIContextType.PauseMenu);
+        if (GameManager.current != null) GameManager.current.SetSelectedSaveOption(0);
     }
 
     public void SaveGameMenu() 
@@ -27,7 +28,8 @@ public class MainMenu : MonoBehaviour
         if (UIManager.current != null)
         {
             UIManager.current.SetContextsActive(false, UIContextType.PauseMain, UIContextType.LoadMenu);
-            UIManager.current.SetContextsActive(true, UIContextType.SaveMenu);
+            UIManager.current.SetContextsActive(true, UIContextType.SaveMenu, UIContextType.SaveSelection);
+            if (GameManager.current != null) GameManager.current.RefreshSaveSlotData();
         }
     }
 
@@ -37,16 +39,8 @@ public class MainMenu : MonoBehaviour
         if (UIManager.current != null)
         {
             UIManager.current.SetContextsActive(false, UIContextType.PauseMain, UIContextType.SaveMenu);
-            UIManager.current.SetContextsActive(true, UIContextType.LoadMenu);
-
-            string stringSaves = "";
-
-            foreach (string saveFileName in SaveSystem.GetSaves()) 
-            {
-                stringSaves += saveFileName + ", ";
-            }
-
-            Debug.Log("Getting save names: " + stringSaves);
+            UIManager.current.SetContextsActive(true, UIContextType.LoadMenu, UIContextType.SaveSelection);
+            if (GameManager.current != null) GameManager.current.RefreshSaveSlotData();
         }
     }
 
@@ -64,7 +58,7 @@ public class MainMenu : MonoBehaviour
     {
         if (UIManager.current != null)
         {
-            UIManager.current.SetContextsActive(false, UIContextType.SaveMenu, UIContextType.LoadMenu);
+            UIManager.current.SetContextsActive(false, UIContextType.SaveMenu, UIContextType.LoadMenu, UIContextType.SaveSelection);
             UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
         }
     }
