@@ -11,11 +11,18 @@ public class UIManager : MonoBehaviour
     private List<KeyValuePair<UIContextType, UIContextObject>> uiContextObjects = new List<KeyValuePair<UIContextType, UIContextObject>>();
     private Dictionary<UIContextType, bool> activeContextElements = new Dictionary<UIContextType, bool>();
 
+    private bool activeContextsInitiated;
+
     private void Awake()
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
         InitiateActiveElementStatuses();
+    }
+
+    private void Start()
+    {
+        UpdateActiveContexts(); //Doing this ensures all the things in the ui can do first time loading properly
     }
 
     private void InitiateActiveElementStatuses()
@@ -30,7 +37,7 @@ public class UIManager : MonoBehaviour
     public void AssignObjectContext(UIContextObject uiContextObject) 
     {
         uiContextObjects.Add(new KeyValuePair<UIContextType, UIContextObject>(uiContextObject.type, uiContextObject));
-        uiContextObject.gameObject.SetActive(activeContextElements[uiContextObject.type]);
+        if (activeContextsInitiated) uiContextObject.gameObject.SetActive(activeContextElements[uiContextObject.type]);
     }
 
     public void SetContextsActive(bool active, params UIContextType[] uiContexts) 
@@ -59,6 +66,17 @@ public class UIManager : MonoBehaviour
         {
             contextObj.gameObject.SetActive(activeContextElements[contextObj.type]);
         }
+    }
+
+
+    private void UpdateActiveContexts() 
+    {
+        foreach (KeyValuePair<UIContextType, UIContextObject> uiContextObj in uiContextObjects) 
+        {
+            uiContextObj.Value.gameObject.SetActive(activeContextElements[uiContextObj.Value.type]);
+        }
+
+        activeContextsInitiated = true;
     }
 }
 

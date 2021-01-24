@@ -157,7 +157,7 @@ public class PlatformerPlayer : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Player Collided with : " + collision.gameObject.name);
+        //Debug.Log("Player Collided with : " + collision.gameObject.name);
         //https://docs.unity3d.com/ScriptReference/Physics2D.OverlapCapsule.html ?
         //For resetting jump
         currentJumpCount = 0;

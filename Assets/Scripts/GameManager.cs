@@ -95,9 +95,12 @@ public class GameManager : MonoBehaviour
             Debug.Log("Initiating Load");
             SaveData savedData = SaveSystem.LoadGame(saveName + selectedSavefile);
 
-            if(savedData != null) LoadGameData(savedData);
-            //player.transform.position = savedData.PlayerPosition;
 
+            if(savedData != null) 
+            {
+                SaveSystem.CurrentSaveData = savedData;
+                SceneManager.LoadScene(savedData.Level);
+            }
         }
     }
 
@@ -114,13 +117,15 @@ public class GameManager : MonoBehaviour
         //Player position
         player.transform.position = savedData.PlayerPosition;
 
+        //Move camera
+        if (Camera.main) Camera.main.transform.position = new Vector3(savedData.PlayerPosition.x, savedData.PlayerPosition.y, Camera.main.transform.position.z);
+
         //Door states
         UpdateDoors(false, savedData.CompletedDoors);
     }
 
     public void RefreshSaveSlotData()
     {
-        Debug.Log("Update Saveslots!" + saveOptionObjects.Count);
         if (saveOptionObjects.Count > 0)
         {
             foreach (SaveOptionObject so in saveOptionObjects)

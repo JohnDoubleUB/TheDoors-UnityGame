@@ -35,8 +35,7 @@ public class SaveOptionObject : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.current != null) GameManager.current.AddSaveOptionObject(this); //TODO: This only happens when first enabled :( doensn't work first time fix
-        Debug.Log("Start!");
+        if (GameManager.current != null) GameManager.current.AddSaveOptionObject(this); //Works now :)
     }
 
     public void SetContent(string content = null) 
