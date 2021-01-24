@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager current;
     public PlatformerPlayer player;
     public List<Door> doors;
-    //private List<DoorName> doorNames = new List<DoorName>() { DoorName.Tent };
+    //private List<DoorName> doorNames = new List<DoorName>() { DoorName.Tent }; sdasd
 
     private bool firstUpdate = true;
 
