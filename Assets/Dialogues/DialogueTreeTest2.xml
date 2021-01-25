@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialoguetree id:1 dialogue-name:test1>
+
+	<dialogue id:1>
+		<speaker>Why hello there</speaker>
+		<option>yo</option dialogueId:2>
+		<option>Goodbye</option endConversation>
+	</dialogue>
+
+	<dialogue id:2>
+		<speaker>Yo</speaker>
+		<option>yo</option>
+		<option>Hello there</option>
+	</dialogue>
+
+</dialoguetree>

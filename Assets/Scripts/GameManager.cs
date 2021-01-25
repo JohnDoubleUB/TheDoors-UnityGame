@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
     {
         if (player != null && selectedSavefile != 0) 
         {
-            Debug.Log("Initiating Save");
+            //Debug.Log("Initiating Save");
             SaveData newSaveData = new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors);
             SaveSystem.SaveGame(newSaveData);
             RefreshSaveSlotData();
@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
     {
         if (player != null && selectedSavefile != 0)
         {
-            Debug.Log("Initiating Load");
+            //Debug.Log("Initiating Load");
             SaveData savedData = SaveSystem.LoadGame(saveName + selectedSavefile);
 
 
