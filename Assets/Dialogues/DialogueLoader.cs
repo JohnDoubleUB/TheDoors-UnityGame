@@ -76,6 +76,8 @@ public static class DialogueLoader
                 .Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Attributes["dialogue-id"].InnerText))
                 .ToArray();
 
+            //TODO: There are circumstances where the speaker may not have accompannying dialogue options, in these cases we should return to the last dialogue options!
+
             dList.Add(new Dialogue(id, speaker, endsConversation, dialogueOptions));
         }
 
