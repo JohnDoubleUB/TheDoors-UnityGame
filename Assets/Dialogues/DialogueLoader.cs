@@ -184,6 +184,9 @@ public class DialogueManager
 
     private DialogueTree currentDialogueTree;
     private Dialogue currentDialogue;
+    private Dialogue lastDialogue;
+
+    private string lastSpeakerDialogue = "";
 
     public DialogueTree CurrentDialogueTree
     {
@@ -197,6 +200,8 @@ public class DialogueManager
             {
                 currentDialogueTree = value;
                 currentDialogue = value.Dialogues["1"];
+                lastDialogue = null;
+                lastSpeakerDialogue = "";
             }
         }
     }
@@ -217,23 +222,28 @@ public class DialogueManager
         string dialogueString = "";
         if (currentDialogue != null)
         {
-            
+
             //Add speaker dialogue
-            if (currentDialogue.Speaker.Length > 0) 
+            if (currentDialogue.Speaker.Length > 0)
             {
-                foreach (string s in currentDialogue.Speaker) 
+                foreach (string s in currentDialogue.Speaker)
                 {
                     dialogueString += s + "\n";
+                    lastSpeakerDialogue = s;
                 }
                 dialogueString += "\n";
             }
+            else 
+            {
+                dialogueString += lastSpeakerDialogue + "\n";
+            }
 
             //Add option dialogue
-            if (currentDialogue.DialogueOptions.Length > 0) 
+            if (currentDialogue.DialogueOptions != null && currentDialogue.DialogueOptions.Length > 0) 
             {
                 for (int i = 0; i < currentDialogue.DialogueOptions.Length; i++) 
                 {
-                    dialogueString += "(" + i +"). " + currentDialogue.DialogueOptions[i].OptionText + "\n";
+                    dialogueString += "(" + (i+1) +"). " + currentDialogue.DialogueOptions[i].OptionText + "\n";
                 }
             }
 
@@ -243,8 +253,50 @@ public class DialogueManager
         return dialogueString;
     }
 
-    public string SelectDialogueOption() 
+    public string SelectDialogueOption(int option) 
     {
+        if (!currentDialogue.EndsConversation && currentDialogue.DialogueOptions != null && (option < currentDialogue.DialogueOptions.Length || option >= 0))
+        {
+            //If current conversation dialogue is then an end then end the conversation
+            if (currentDialogue.EndsConversation) return "conversation has ended";
+            
+            //Get the selected dialogue option
+            DialogueOption selectedDialogueOption = currentDialogue.DialogueOptions[option];
+
+
+            if (selectedDialogueOption.EndsConversation)
+            {
+                
+                return "ends"; //Conversation ends
+            }
+            else
+            {
+                //Get the intended new dialogue
+                Dialogue newDialogue = currentDialogueTree.Dialogues[selectedDialogueOption.DialogueID];
+
+                //If this ends the conversation then set it to current
+                if (newDialogue.EndsConversation) 
+                {
+                    currentDialogue = newDialogue;
+                }
+                else if (newDialogue.DialogueOptions == null || newDialogue.DialogueOptions.Length <= 0) //If this dialogue has no options then use the previous options
+                {
+                    currentDialogue = new Dialogue(newDialogue.Id, newDialogue.Speaker, newDialogue.EndsConversation, currentDialogue.DialogueOptions);
+                }
+                else 
+                {
+                    currentDialogue = newDialogue;
+                }
+
+                //currentDialogue = currentDialogueTree.Dialogues[selectedDialogueOption.DialogueID];
+                return GetDialogue();
+            }
+
+
+
+            //currentDialogue = currentDialogueTree.Dialogues[c]
+        }
+
         return ""; //Im gonna do this tomorrow cba
     }
 

@@ -33,7 +33,7 @@ public class PlatformerPlayer : MonoBehaviour
     //Multipliers just to make the initial values more reasonable
     private float movementSpeedMultiplier = 300f;
     private float jumpVelocityMultiplier = 5f;
-    
+
     private int currentJumpCount; //To keep track of the amount of jumps since last standing on the ground
 
     void Awake()
@@ -61,7 +61,7 @@ public class PlatformerPlayer : MonoBehaviour
     {
         //Vertical Movement (Walking)
         Move(MovementOrientation.Horizontal, horizontalValue);
-        
+
         //Horizontal Movement (Climbing)
         if (isClimbing)
         {
@@ -69,18 +69,17 @@ public class PlatformerPlayer : MonoBehaviour
             Move(MovementOrientation.Vertical, verticalValue);
             rb.gravityScale = 0;
         }
-        else 
+        else
         {
             rb.gravityScale = 1;
         }
 
         //isFalling = rb.velocity.y != 0;
 
-
         UpdateAnimator();
     }
 
-    private void UpdateAnimator() 
+    private void UpdateAnimator()
     {
 
         if (animator != null)
@@ -93,7 +92,7 @@ public class PlatformerPlayer : MonoBehaviour
         }
     }
 
-    void CheckForLadderAndInput() 
+    void CheckForLadderAndInput()
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(ladderRaycastTarget.position, Vector2.up, raycastDistance, ladderLayerMask);
 
@@ -107,41 +106,55 @@ public class PlatformerPlayer : MonoBehaviour
         }
     }
 
-    void ReadInput() 
+    void ReadInput()
     {
-        horizontalValue = Input.GetAxisRaw("Horizontal");
-        verticalValue = Input.GetAxisRaw("Vertical");
-        isWalking = Input.GetKey("a") || Input.GetKey("d");
-        isMoving = isWalking || Input.GetKey("w") || Input.GetKey("s");
-
-        if (Input.GetKey("s")) 
-        { 
-            isJumping = true; 
-        }
-        else if (rb.velocity.y == 0f)
+        if (UIManager.current.UIState == UIState.None)
         {
-            isJumping = false;
-        }
 
+            horizontalValue = Input.GetAxisRaw("Horizontal");
+            verticalValue = Input.GetAxisRaw("Vertical");
+            isWalking = Input.GetKey("a") || Input.GetKey("d");
+            isMoving = isWalking || Input.GetKey("w") || Input.GetKey("s");
+
+            if (Input.GetKey("s"))
+            {
+                isJumping = true;
+            }
+            else if (rb.velocity.y == 0f)
+            {
+                isJumping = false;
+            }
+        }
+        else 
+        {
+            horizontalValue = 0;
+            verticalValue = 0;
+            isWalking = false;
+            isMoving = false;
+        }
+        
         //Jump
         JumpScript();
     }
 
 
-    void JumpScript() 
+    void JumpScript()
     {
 
-        //trigger jumping but only when the player can jump I.e. has not reached the max jumps
-        if (Input.GetButtonDown("Jump") && currentJumpCount < maxJumpCount && !isClimbing)
+        if (UIManager.current.UIState == UIState.None)
         {
-            rb.velocity = new Vector2(0, jumpVelocity * jumpVelocityMultiplier);
-            currentJumpCount++;
-            isJumping = true;
-        }
-        else if (isClimbing) 
-        {
-            currentJumpCount = 0;
-            isJumping = false;
+            //trigger jumping but only when the player can jump I.e. has not reached the max jumps
+            if (Input.GetButtonDown("Jump") && currentJumpCount < maxJumpCount && !isClimbing)
+            {
+                rb.velocity = new Vector2(0, jumpVelocity * jumpVelocityMultiplier);
+                currentJumpCount++;
+                isJumping = true;
+            }
+            else if (isClimbing)
+            {
+                currentJumpCount = 0;
+                isJumping = false;
+            }
         }
 
         //Artificially increase the velocity on downward arch of jump, also changes jump height based on length of jump button held
@@ -157,24 +170,21 @@ public class PlatformerPlayer : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.Log("Player Collided with : " + collision.gameObject.name);
-        //https://docs.unity3d.com/ScriptReference/Physics2D.OverlapCapsule.html ?
-        //For resetting jump
         currentJumpCount = 0;
         isJumping = false;
     }
 
-    void Move(MovementOrientation movementOrientation, float direction) 
+    void Move(MovementOrientation movementOrientation, float direction)
     {
         //Ensure movement is consistent regardless of framerate by tying to Time.deltaTime
         float movementValue = direction * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
 
         //Set horizontal or vertical velocity based on the set orientation
-        Vector2 targetVelocity = movementOrientation == MovementOrientation.Horizontal 
+        Vector2 targetVelocity = movementOrientation == MovementOrientation.Horizontal
             ? new Vector2(movementValue, rb.velocity.y) : new Vector2(rb.velocity.x, movementValue);
 
         //Set sprite direction if horizontal movement occurs
-        if (movementOrientation == MovementOrientation.Horizontal && direction != 0) 
+        if (movementOrientation == MovementOrientation.Horizontal && direction != 0)
         {
             bool directionIsNegative = direction < 0f;
             sr.flipX = directionIsNegative;
@@ -186,7 +196,7 @@ public class PlatformerPlayer : MonoBehaviour
     }
 }
 
-public enum MovementOrientation 
+public enum MovementOrientation
 {
     Horizontal,
     Vertical

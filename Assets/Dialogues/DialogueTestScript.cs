@@ -8,6 +8,7 @@ public class DialogueTestScript : MonoBehaviour
 {
     public Text testText;
     private string testFile;
+    private DialogueManager dManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,13 +36,13 @@ public class DialogueTestScript : MonoBehaviour
         //}
 
 
-        DialogueManager dManager = DialogueManager.GetManager();
+        dManager = DialogueManager.GetManager();
 
         dManager.CurrentDialogueTree = introDialogue;
 
         //dManager.CurrentDialogueTree.Dialogues;
 
-        Debug.Log(dManager.GetDialogue());
+        //Debug.Log(dManager.GetDialogue());
 
         SetTestText(dManager.GetDialogue());
     }
@@ -54,6 +55,9 @@ public class DialogueTestScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown("1")) SetTestText(dManager.SelectDialogueOption(0));
+        if (Input.GetKeyDown("2")) SetTestText(dManager.SelectDialogueOption(1));
+        if (Input.GetKeyDown("3")) SetTestText(dManager.SelectDialogueOption(2));
+        if (Input.GetKeyDown("4")) SetTestText(dManager.SelectDialogueOption(3));
     }
 }

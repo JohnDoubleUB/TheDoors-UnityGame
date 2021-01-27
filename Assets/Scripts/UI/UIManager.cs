@@ -13,6 +13,16 @@ public class UIManager : MonoBehaviour
 
     private bool activeContextsInitiated;
 
+    private UIState uiState = UIState.None;
+    public UIState UIState 
+    {
+        get 
+        {
+            return uiState;
+        }
+    }
+
+
     private void Awake()
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
@@ -52,6 +62,8 @@ public class UIManager : MonoBehaviour
         {
             gObj.SetActive(active);
         }
+
+        UpdateUIState();
     }
 
     public void ToggleContexts(params UIContextType[] uiContexts) 
@@ -66,6 +78,8 @@ public class UIManager : MonoBehaviour
         {
             contextObj.gameObject.SetActive(activeContextElements[contextObj.type]);
         }
+
+        UpdateUIState();
     }
 
 
@@ -77,6 +91,25 @@ public class UIManager : MonoBehaviour
         }
 
         activeContextsInitiated = true;
+
+        UpdateUIState();
+    }
+
+    private void UpdateUIState() 
+    {
+        //Debug.Log("state change");
+        if (activeContextElements[UIContextType.PauseMenu]) 
+        {
+            uiState = UIState.Pause;
+        }
+        else if (activeContextElements[UIContextType.Dialogue]) 
+        {
+            uiState = UIState.Dialogue;
+        }
+        else
+        {
+            uiState = UIState.None;
+        }
     }
 }
 
@@ -86,5 +119,13 @@ public enum UIContextType
     PauseMain,
     SaveMenu,
     LoadMenu,
-    SaveSelection
+    SaveSelection,
+    Dialogue
+}
+
+public enum UIState 
+{
+    None,
+    Pause,
+    Dialogue
 }
