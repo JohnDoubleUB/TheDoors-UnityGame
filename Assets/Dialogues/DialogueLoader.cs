@@ -21,7 +21,7 @@ public static class DialogueLoader
     //Attributes: id, tree-name, dialogue-id
 
 
-    public static void LoadDialogueFile(string path) //TODO: This should return something!
+    public static DialogueObject LoadDialogueFile(string path) //TODO: This should return something!
     {
 
         if (File.Exists(path))
@@ -36,16 +36,25 @@ public static class DialogueLoader
 
             Debug.Log("Node count" + xmlNodes.Count);
 
-            foreach (XmlNode xmln in xmlNodes) 
-            {
-                Debug.Log("Node name?: " + xmln.Name);
-            }
+            //foreach (XmlNode xmln in xmlNodes) 
+            //{
+            //    Debug.Log("Node name?: " + xmln.Name);
+            //}
 
-            Debug.Log("Successfully opened");
+            //Debug.Log("Successfully opened");
+
+            //DialogueTree dTree = BuildDialogueTree(xmlNodes[0]);
+
+            DialogueTree[] dialogueTrees = new List<XmlNode>(xmlNodes.Cast<XmlNode>()).Select(x => BuildDialogueTree(x)).ToArray();
+
+
+            return new DialogueObject(topLevelNode.Attributes["speaker"].InnerText, dialogueTrees);
         }
         else 
         {
             Debug.Log("failed to open");
+
+            return null;
         }
   
     }
@@ -56,7 +65,7 @@ public static class DialogueLoader
         List<Dialogue> dList = new List<Dialogue>();
         //First loop
 
-        XmlNodeList xmlDialogues = dialogueTree.SelectNodes("Dialogue");
+        XmlNodeList xmlDialogues = dialogueTree.SelectNodes("dialogue");
 
         foreach (XmlNode xmlDialogue in xmlDialogues) 
         {
@@ -71,17 +80,48 @@ public static class DialogueLoader
                 .Select(x => x.InnerText)
                 .ToArray();
 
-            DialogueOption[] dialogueOptions = xmlDialogueList
+            List<XmlNode> options = xmlDialogueList
                 .Where(x => x.Name == "option" || x.Name == "option-end")
-                .Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Attributes["dialogue-id"].InnerText))
-                .ToArray();
+                .ToList();
 
+            //Debug.Log("Count" + options.Count);
+
+            DialogueOption[] dialogueOptions =
+                options
+                .Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Name == "option-end" ? null : x.Attributes["dialogue-id"].InnerText))
+                .ToArray();
             //TODO: There are circumstances where the speaker may not have accompannying dialogue options, in these cases we should return to the last dialogue options!
 
-            dList.Add(new Dialogue(id, speaker, endsConversation, dialogueOptions));
+
+            dList.Add(options != null && options.Count > 0 ?
+                new Dialogue(
+                    id, 
+                    speaker, 
+                    endsConversation,
+                    dialogueOptions //options.Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Attributes["dialogue-id"].InnerText)).ToArray()
+                    )
+                :
+                new Dialogue(
+                    id, 
+                    speaker, 
+                    endsConversation
+                    )
+                );
         }
 
         return new DialogueTree(dialogueTree.Attributes["id"].InnerText, dialogueTree.Attributes["name"].InnerText, dList.ToArray());
+    }
+}
+
+public class DialogueObject 
+{
+    public string Speaker;
+    public DialogueTree[] DialogueTrees;
+
+    public DialogueObject(string speaker, DialogueTree[] dialogueTrees) 
+    {
+        Speaker = speaker;
+        DialogueTrees = dialogueTrees;
     }
 }
 
@@ -89,7 +129,7 @@ public class DialogueTree
 {
     public string Id;
     public string Name;
-    Dictionary<string, Dialogue> Dialogues;
+    public Dictionary<string, Dialogue> Dialogues;
 
     public DialogueTree(string id, string name, Dialogue[] dialogues) 
     {
@@ -113,6 +153,13 @@ public class Dialogue
         EndsConversation = endsConversation;
         DialogueOptions = dialogueOptions;
     }
+
+    public Dialogue(string id, string[] speaker, bool endsConversation)
+    {
+        Id = id;
+        Speaker = speaker;
+        EndsConversation = endsConversation;
+    }
 }
 
 public class DialogueOption 
@@ -126,5 +173,83 @@ public class DialogueOption
         OptionText = optionText;
         EndsConversation = endsConversation;
         DialogueID = dialogueId;
+    }
+}
+
+//I don't know if this should be an instantiable class?
+
+public class DialogueManager
+{
+    private static DialogueManager dialogueManager;
+
+    private DialogueTree currentDialogueTree;
+    private Dialogue currentDialogue;
+
+    public DialogueTree CurrentDialogueTree
+    {
+        get
+        {
+            return currentDialogueTree;
+        }
+        set
+        {
+            if (value != currentDialogueTree)
+            {
+                currentDialogueTree = value;
+                currentDialogue = value.Dialogues["1"];
+            }
+        }
+    }
+
+    public Dialogue CurrentDialogue 
+    {
+        get { return currentDialogue; }
+    }
+
+    public static DialogueManager GetManager() 
+    {
+        if (dialogueManager == null) dialogueManager = new DialogueManager();
+        return dialogueManager;
+    }
+
+    public string GetDialogue() 
+    {
+        string dialogueString = "";
+        if (currentDialogue != null)
+        {
+            
+            //Add speaker dialogue
+            if (currentDialogue.Speaker.Length > 0) 
+            {
+                foreach (string s in currentDialogue.Speaker) 
+                {
+                    dialogueString += s + "\n";
+                }
+                dialogueString += "\n";
+            }
+
+            //Add option dialogue
+            if (currentDialogue.DialogueOptions.Length > 0) 
+            {
+                for (int i = 0; i < currentDialogue.DialogueOptions.Length; i++) 
+                {
+                    dialogueString += "(" + i +"). " + currentDialogue.DialogueOptions[i].OptionText + "\n";
+                }
+            }
+
+
+        }
+
+        return dialogueString;
+    }
+
+    public string SelectDialogueOption() 
+    {
+        return ""; //Im gonna do this tomorrow cba
+    }
+
+    private DialogueManager() 
+    {
+
     }
 }
