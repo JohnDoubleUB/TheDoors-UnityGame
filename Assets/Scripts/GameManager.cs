@@ -7,7 +7,11 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager current;
+    
+    //Platformer related
     public PlatformerPlayer player;
+    public VerticalPlatform verticalPlatform;
+
     public List<Door> doors; //make private?
     public List<SaveOptionObject> saveOptionObjects;
     private string saveName = "SaveSlot";
@@ -38,20 +42,7 @@ public class GameManager : MonoBehaviour
         {
             if (SaveSystem.CurrentSaveData != null) LoadGameData(SaveSystem.CurrentSaveData); //Ensures save data is loaded if it needs to be
             firstUpdate = false;
-        }
-        DetectPauseGame();      
-    }
-
-    private void DetectPauseGame() 
-    {
-        //Set UI and stuff
-        if (Input.GetButtonDown("Cancel") && UIManager.current != null)
-        {
-            SetSelectedSaveOption(0);
-            UIManager.current.ToggleContexts(UIContextType.PauseMenu);
-            UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
-            UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu, UIContextType.SaveSelection);
-        }
+        }   
     }
 
     public void AddDoor(Door door) 

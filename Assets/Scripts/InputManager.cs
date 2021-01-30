@@ -12,8 +12,6 @@ public class InputManager : MonoBehaviour
     
     public bool useAxisValues = true;
 
-    public PlatformerPlayer platformerPlayer;
-
     public float HorizontalValue 
     {
         get { return horizontalValue; }
@@ -23,8 +21,6 @@ public class InputManager : MonoBehaviour
     {
         get { return verticalValue; }
     }
-
-    private bool PlayerNotNull { get { return platformerPlayer != null; } }
 
     private Dictionary<InputMapping, List<KeyCode>> controlMappings = new Dictionary<InputMapping, List<KeyCode>>();
 
@@ -65,6 +61,8 @@ public class InputManager : MonoBehaviour
         bool keyDownRegistered;
         bool keyRegistered;
 
+        //Dictionary<InputMapping, List<KeyCode>>
+
         foreach (KeyValuePair<InputMapping, List<KeyCode>> control in controlMappings) 
         {
             keyDownRegistered = false;
@@ -93,27 +91,43 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PlayerNotNull) 
+        if (GameManager.current != null && GameManager.current.player != null) 
         {
-            //Move values
-            float currentHorizontalValue = controlKey[InputMapping.Left] && controlKey[InputMapping.Right]
-                ? 0f 
-                : controlKey[InputMapping.Left] 
-                ? -horizontalValue 
-                : controlKey[InputMapping.Right] 
-                ? horizontalValue 
-                : 0f;
+            PlatformerPlayer platformerPlayer = GameManager.current.player;
+            VerticalPlatform verticalPlatform = GameManager.current.verticalPlatform;
 
-            float currentVerticalValue = controlKey[InputMapping.Up] && controlKey[InputMapping.Down]
-                ? 0f
-                : controlKey[InputMapping.Up]
-                ? verticalValue
-                : controlKey[InputMapping.Down]
-                ? -verticalValue
-                : 0f;
+            if (UIManager.current.UIState == UIState.None)
+            {
+                //Move values
+                float currentHorizontalValue = controlKey[InputMapping.Left] && controlKey[InputMapping.Right]
+                    ? 0f
+                    : controlKey[InputMapping.Left]
+                    ? -horizontalValue
+                    : controlKey[InputMapping.Right]
+                    ? horizontalValue
+                    : 0f;
 
-            //Move Input
-            platformerPlayer.Move(new Vector2(currentHorizontalValue, currentVerticalValue));
+                float currentVerticalValue = controlKey[InputMapping.Up] && controlKey[InputMapping.Down]
+                    ? 0f
+                    : controlKey[InputMapping.Up]
+                    ? verticalValue
+                    : controlKey[InputMapping.Down]
+                    ? -verticalValue
+                    : 0f;
+
+                //Move Input
+                platformerPlayer.Move(new Vector2(currentHorizontalValue, currentVerticalValue));
+                if (platformerPlayer.Crouch != controlKey[InputMapping.Down]) platformerPlayer.Crouch = controlKey[InputMapping.Down];
+                if (platformerPlayer.JumpHold != controlKey[InputMapping.Jump]) platformerPlayer.JumpHold = controlKey[InputMapping.Jump];
+
+                //Drop through platform input
+                if (verticalPlatform != null && verticalPlatform.DropThroughPlatform != controlKey[InputMapping.Down]) verticalPlatform.DropThroughPlatform = controlKey[InputMapping.Down];
+
+            }
+            else 
+            {
+                platformerPlayer.Move(Vector2.zero);
+            }
         }
     }
 
@@ -139,10 +153,30 @@ public class InputManager : MonoBehaviour
                 break;
 
             case InputMapping.Jump:
-                platformerPlayer.Jump();
+                if(UIManager.current.UIState == UIState.None 
+                    && GameManager.current != null 
+                    && GameManager.current.player != null) GameManager.current.player.Jump();
+
+                break;
+
+            case InputMapping.Cancel:
+                PauseGame();
                 break;
         }
     }
+
+    private void PauseGame()
+    {
+        //Set UI and stuff
+        if (UIManager.current != null && GameManager.current != null)
+        {
+            GameManager.current.SetSelectedSaveOption(0);
+            UIManager.current.ToggleContexts(UIContextType.PauseMenu);
+            UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
+            UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu, UIContextType.SaveSelection);
+        }
+    }
+
 }
 
 public enum InputMapping 
@@ -153,4 +187,10 @@ public enum InputMapping
     Down,
     Jump,
     Cancel
+}
+
+public enum GameLevelType 
+{
+    None,
+    Platformer
 }

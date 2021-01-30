@@ -21,6 +21,11 @@ public class PlatformerPlayer : MonoBehaviour
     private SpriteRenderer sr;
     private Animator animator;
 
+    [HideInInspector]
+    public bool Crouch;
+    [HideInInspector]
+    public bool JumpHold;
+
     //State variables
     private bool isClimbing;
     private bool isMoving;
@@ -72,7 +77,8 @@ public class PlatformerPlayer : MonoBehaviour
     {
         JumpGravityScript();
         CheckForLadder();
-        if (InputManager.current.GetInputMapping(InputMapping.Down) && !IsClimbing)
+        
+        if (Crouch && !IsClimbing)
         {
             isCrouching = true;
         }
@@ -113,7 +119,7 @@ public class PlatformerPlayer : MonoBehaviour
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (rb.velocity.y > 0 && !InputManager.current.GetInputMapping(InputMapping.Jump))
+        else if (rb.velocity.y > 0 && !JumpHold)
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }

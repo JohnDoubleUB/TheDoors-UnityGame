@@ -7,17 +7,25 @@ public class VerticalPlatform : MonoBehaviour
     public float waitTime = 0.5f;
     private float currentWaitTime;
 
+    [HideInInspector]
+    public bool DropThroughPlatform;
+
 
     private void Start()
     {
         effector = GetComponent<PlatformEffector2D>();
+
+        if (GameManager.current != null)
+        {
+            GameManager.current.verticalPlatform = this;
+        }
     }
 
     private void Update()
     {
         //TODO: I don't like that this delay happens, this needs a bit of work
         //When user presses down platform collision allows them to fall back through
-        if (InputManager.current.GetInputMapping(InputMapping.Down))
+        if (DropThroughPlatform)
         {
             if (currentWaitTime <= 0)
             {
