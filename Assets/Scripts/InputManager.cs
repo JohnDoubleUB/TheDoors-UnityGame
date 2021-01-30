@@ -12,7 +12,7 @@ public class InputManager : MonoBehaviour
     
     public bool useAxisValues = true;
 
-    public PlatformerPlayerV2 platformerPlayerV2;
+    public PlatformerPlayer platformerPlayer;
 
     public float HorizontalValue 
     {
@@ -24,9 +24,8 @@ public class InputManager : MonoBehaviour
         get { return verticalValue; }
     }
 
-    private bool PlayerNotNull { get { return platformerPlayerV2 != null; } }
+    private bool PlayerNotNull { get { return platformerPlayer != null; } }
 
-    //private List<KeyValuePair<InputMapping, KeyCode>> controlMappings = new List<KeyValuePair<InputMapping, KeyCode>>();
     private Dictionary<InputMapping, List<KeyCode>> controlMappings = new Dictionary<InputMapping, List<KeyCode>>();
 
     private Dictionary<InputMapping, bool> controlKey = new Dictionary<InputMapping, bool>();
@@ -114,7 +113,7 @@ public class InputManager : MonoBehaviour
                 : 0f;
 
             //Move Input
-            platformerPlayerV2.Move(new Vector2(currentHorizontalValue, currentVerticalValue));
+            platformerPlayer.Move(new Vector2(currentHorizontalValue, currentVerticalValue));
         }
     }
 
@@ -140,7 +139,7 @@ public class InputManager : MonoBehaviour
                 break;
 
             case InputMapping.Jump:
-                platformerPlayerV2.Jump();
+                platformerPlayer.Jump();
                 break;
         }
     }
