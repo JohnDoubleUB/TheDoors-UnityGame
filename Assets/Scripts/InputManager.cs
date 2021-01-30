@@ -61,8 +61,6 @@ public class InputManager : MonoBehaviour
         bool keyDownRegistered;
         bool keyRegistered;
 
-        //Dictionary<InputMapping, List<KeyCode>>
-
         foreach (KeyValuePair<InputMapping, List<KeyCode>> control in controlMappings) 
         {
             keyDownRegistered = false;
@@ -136,6 +134,7 @@ public class InputManager : MonoBehaviour
         return controlKey[input];
     }
 
+    //This will need a slight rearrange when we implement other player types/genres
     private void InputMappingKeyDown(InputMapping inputMapping) 
     {
         switch (inputMapping) 

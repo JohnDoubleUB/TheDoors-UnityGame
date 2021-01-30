@@ -3,6 +3,7 @@
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlatformerPlayer : MonoBehaviour
 {
+    //Note: This class will be slightly different for the different type of game controllers, it might be worth making a parent class or interface so that some of the class structure is consistent throughout.
     [Header("Movement")]
     public float movementSpeed = 1;
 
