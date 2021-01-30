@@ -41,12 +41,12 @@ GameObject:
   - component: {fileID: 4225139593928733652}
   - component: {fileID: 4225139593928733655}
   - component: {fileID: 6672660986227868995}
-  - component: {fileID: 6672660986227868994}
   - component: {fileID: 2201085275580213245}
   - component: {fileID: 6672660986964545201}
   - component: {fileID: 511233659}
+  - component: {fileID: 1252683724578903830}
   m_Layer: 0
-  m_Name: Player OLD
+  m_Name: PlayerNew
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,28 +139,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &6672660986227868994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4225139593928733654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e72787a95f2906d4ea84624a62cfec3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movementSpeed: 1
-  jumpVelocity: 1.5
-  fallMultiplier: 2.5
-  lowJumpMultiplier: 2
-  maxJumpCount: 2
-  ladderLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  ladderRaycastTarget: {fileID: 4510371441369111039}
-  raycastDistance: 0
 --- !u!70 &2201085275580213245
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -237,3 +215,25 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1252683724578903830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4225139593928733654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f1977e898cbfa04a9c3032a004b783e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 1
+  jumpVelocity: 2
+  fallMultiplier: 2.5
+  lowJumpMultiplier: 2
+  maxJumpCount: 1
+  ladderLayerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  ladderRaycastTarget: {fileID: 4510371441369111039}
+  raycastDistance: 0
