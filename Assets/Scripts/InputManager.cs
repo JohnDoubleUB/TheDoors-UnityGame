@@ -38,6 +38,7 @@ public class InputManager : MonoBehaviour
         controlMappings.Add(InputMapping.Down, new List<KeyCode> { KeyCode.S, KeyCode.DownArrow });
         controlMappings.Add(InputMapping.Cancel, new List<KeyCode> { KeyCode.Escape });
         controlMappings.Add(InputMapping.Jump, new List<KeyCode> { KeyCode.Space });
+        controlMappings.Add(InputMapping.Interact, new List<KeyCode> { KeyCode.E });
 
         foreach (InputMapping input in (InputMapping[]) Enum.GetValues(typeof(InputMapping))) 
         {
@@ -129,9 +130,14 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    public bool GetInputMapping(InputMapping input) 
+    //public bool GetInputMapping(InputMapping input) 
+    //{
+    //    return controlKey[input];
+    //}
+
+    public KeyCode[] GetKeyCodesForInputMapping(InputMapping inputMapping) 
     {
-        return controlKey[input];
+        return controlMappings[inputMapping].ToArray();
     }
 
     //This will need a slight rearrange when we implement other player types/genres
@@ -161,6 +167,12 @@ public class InputManager : MonoBehaviour
             case InputMapping.Cancel:
                 PauseGame();
                 break;
+
+            case InputMapping.Interact:
+                if (UIManager.current.UIState == UIState.None
+                    && GameManager.current != null
+                    && GameManager.current.player != null) GameManager.current.player.Interact();
+                break;
         }
     }
 
@@ -185,7 +197,8 @@ public enum InputMapping
     Up,
     Down,
     Jump,
-    Cancel
+    Cancel,
+    Interact
 }
 
 public enum GameLevelType 

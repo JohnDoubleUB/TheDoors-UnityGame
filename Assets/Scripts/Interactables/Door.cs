@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class Door : MonoBehaviour
+public class Door : Interactable
 {
     public bool isLit = true;
     public bool includeBackgroundInFade = true;
@@ -24,8 +24,9 @@ public class Door : MonoBehaviour
     private float currentSpeed;
     private float targetSpeed;
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();
         primarySpriteRenderer = GetComponent<SpriteRenderer>();
         if (light2D != null) defaultLightIntensity = light2D.intensity;
         targetLightIntensity = defaultLightIntensity;
@@ -33,8 +34,9 @@ public class Door : MonoBehaviour
         targetSpeed = currentSpeed;
     }
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         if (GameManager.current != null) GameManager.current.AddDoor(this);
     }
 
@@ -65,7 +67,13 @@ public class Door : MonoBehaviour
             light2D.gameObject.transform.Rotate(new Vector3(0f, 0f, 1f) * currentSpeed * Time.deltaTime);
     }
 
+    public override void Interact()
+    {
+        //Debug.Log(gameObject.name + " interacted!");
 
+        //This is just for interaction test purposes!
+        isLit = !isLit;
+    }
 
 }
 

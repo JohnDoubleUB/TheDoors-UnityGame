@@ -7,6 +7,34 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1212555594, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
+      propertyPath: m_SpriteTilingProperty.adaptiveTilingThreshold
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 8180961632494980182, guid: 1431f547aebf20744a98e79ccb04238b,
         type: 3}
       propertyPath: m_Sprite
@@ -103,6 +131,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9139793803667712807, guid: 1431f547aebf20744a98e79ccb04238b,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1431f547aebf20744a98e79ccb04238b, type: 3}
