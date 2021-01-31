@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class Door : Interactable
 {
     public bool isLit = true;
     public bool includeBackgroundInFade = true;
     public bool includePointLightSource = true;
     public SpriteRenderer backgroundSpriteRender;
+    public SpriteRenderer primarySpriteRenderer;
     public Light2D light2D;
     public DoorName doorName;
-
-
-    private SpriteRenderer primarySpriteRenderer;
 
     private float targetAlpha = 1f;
 
@@ -27,7 +24,6 @@ public class Door : Interactable
     private new void Awake()
     {
         base.Awake();
-        primarySpriteRenderer = GetComponent<SpriteRenderer>();
         if (light2D != null) defaultLightIntensity = light2D.intensity;
         targetLightIntensity = defaultLightIntensity;
         currentSpeed = maxSpeed;
@@ -46,7 +42,7 @@ public class Door : Interactable
         targetLightIntensity = isLit ? defaultLightIntensity : 0.03f;
         targetSpeed = isLit ? maxSpeed : 0f;
 
-        if (primarySpriteRenderer.color.a != targetAlpha) 
+        if (primarySpriteRenderer != null && primarySpriteRenderer.color.a != targetAlpha) 
         {
             Color newColor = new Color(1f,1f,1f);
             float lerpFloat = Mathf.Lerp(primarySpriteRenderer.color.a, targetAlpha, 1f * Time.deltaTime);
