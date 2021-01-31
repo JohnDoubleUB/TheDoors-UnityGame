@@ -65,7 +65,7 @@ public class Door : Interactable
 
     public override void Interact()
     {
-        //Debug.Log(gameObject.name + " interacted!");
+        Debug.Log(gameObject.name + " interacted! This will take us to a level eventually!");
 
         //This is just for interaction test purposes!
         isLit = !isLit;
