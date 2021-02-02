@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager current;
+
+    private DialogueObject loadedDialogueObject;
     private DialogueTree loadedDialogueTree;
     private Dialogue loadedDialogue;
 
@@ -21,6 +23,10 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         if (current == null) current = this;
+
+        //This is for testing purposes
+
+
     }
 
     // Start is called before the first frame update
@@ -31,12 +37,20 @@ public class DialogueManager : MonoBehaviour
         
         LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
         LoadUIDialogue(loadedDialogueTree.Dialogues["1"]);
+        if (DialogueLoader.DialogueObjects != null) 
+        {
+            Debug.Log("Dialogue object names: " + string.Join(", ", DialogueLoader.DialogueObjects.Select(x => x.Name)));
+        }
+
+        Debug.Log(string.Join(", ", loadedDialogueObject.Speakers));
+        //DialogueLoader.LoadAllDialogueObjects();
     }
 
 
     public void LoadDialogueTree(string dialogueObjectName, string treeName)
     {
-        loadedDialogueTree = DialogueLoader.LoadDialogueFile(dialogueObjectName).DialogueTrees.First(x => x.Name == treeName);
+        loadedDialogueObject = DialogueLoader.DialogueObjects.First(x => x.Name == dialogueObjectName);
+        loadedDialogueTree = loadedDialogueObject.DialogueTrees.First(x => x.Name == treeName);
     }
 
     public void LoadUIDialogue(Dialogue dialogue)
@@ -45,9 +59,11 @@ public class DialogueManager : MonoBehaviour
         ClearUIDialogue();
 
         //Load speaker text
+        //Determine the speaker
+        string speaker = loadedDialogueObject.Speakers[0];
         if (speakerText != null && dialogue.Speaker != null && dialogue.Speaker.Any())
         {
-            speakerText.text = dialogue.Speaker[speakerDialogueNo];
+            speakerText.text = speaker + ": " + dialogue.Speaker[speakerDialogueNo]; //TODO: capitalize first letter of name?
         }
 
         //Generate Options

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dialogue-object speaker="sven">
+<dialogue-object speakers="sven unknown death">
 
 	<dialogue-tree id="1" name="intro">
 		
@@ -10,8 +10,8 @@
             <speaker>Through these doors you will find each God, simply end their lives and they will be freed – blah blah blah.</speaker>
 			<option dialogue-id="2">What? What are you talking about where am i?</option>
 			<option dialogue-id="3">You don't sound very enthusiastic about all this.</option>
-			<option dialogue-id="4">I know who you are, sven (This is locked behind something)</option>
-			<option-end>End Conversation.</option-end>
+			<option dialogue-id="4" reqflag="playthrough2">I know who you are, sven</option>
+			<option-end>End Conversation. (I just put this here for testing)</option-end>
 		</dialogue>
 
 		<dialogue id="2">
@@ -23,8 +23,8 @@
 			<speaker>You wouldn't be either.</speaker>
 		</dialogue>
 
-		<dialogue id="4">
-			<speaker-end>Shame (start boss fight)</speaker-end>
+		<dialogue id="4" actflag="fight-sven">
+			<speaker-end>Shame</speaker-end>
 		</dialogue>
 	</dialogue-tree>
 
@@ -58,7 +58,7 @@
 		<dialogue id="4">
 			<speaker>Legend has it they weren’t a fan of the way Gods treated humans for their personal gain, wanted to rise up and have the humans work for their own gain, rather than the gain of others.</speaker>
 			<option dialogue-id="5">That’s awful, how could they do that?</option>
-			<option dialogue-id="6">Gotta say, I’m becoming more of a fan of Sven the more I hear about them.</option>
+			<option dialogue-id="6" progflag="likes-sven">Gotta say, I’m becoming more of a fan of Sven the more I hear about them.</option>
 			<option dialogue-id="7">The world is a lot more complicated than I imagined.</option>
 		</dialogue>
 

@@ -7,55 +7,72 @@ using System.Linq;
 
 public static class DialogueLoader
 {
-    private static string DialoguePath = "/Dialogues/";
+    private static string DialoguePath = Application.dataPath + "/Dialogues/";
     private static string DialogueFileExtension = "xml";
+    private static readonly DialogueObject[] dialogueObjects = LoadAllDialogueObjects();  //Load all dialogue intially
+
+
     //Attributes: id, tree-name, dialogue-id
+    public static DialogueObject[] DialogueObjects { get; } = dialogueObjects; //This is where we intially load in all the dialogue for the game
 
-    public static DialogueObject LoadDialogueFile(string fileName)
+
+    private static DialogueObject[] LoadAllDialogueObjects()
     {
-        //Build path
-        string path = Application.dataPath + DialoguePath + fileName +"." + DialogueFileExtension;
+        //Find all filenames
+        string[] files = Directory.GetFiles(DialoguePath, "*." + DialogueFileExtension);
+        return files.Select(fPath => LoadDialogueFile(fPath)).Where(x => x != null).ToArray();
+    }
 
+
+    private static DialogueObject LoadDialogueFile(string path)
+    {
         if (File.Exists(path))
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(path);
+            try
+            {
+                doc.Load(path); //I think this can throw an error if the xml is malformed?
 
-            //Find top level xml node!
-            XmlNode topLevelNode = doc.DocumentElement.SelectSingleNode("/dialogue-object");
+                //Find top level xml node!
+                XmlNode topLevelNode = doc.DocumentElement.SelectSingleNode("/dialogue-object");
 
-            XmlNodeList xmlNodes = topLevelNode.SelectNodes("dialogue-tree");
+                XmlNodeList xmlNodes = topLevelNode.SelectNodes("dialogue-tree");
 
-            Debug.Log("Node count" + xmlNodes.Count);
+                DialogueTree[] dialogueTrees = new List<XmlNode>(xmlNodes.Cast<XmlNode>()).Select(x => BuildDialogueTree(x)).ToArray();
 
-            DialogueTree[] dialogueTrees = new List<XmlNode>(xmlNodes.Cast<XmlNode>()).Select(x => BuildDialogueTree(x)).ToArray();
+                string[] speakers = topLevelNode.Attributes["speakers"].InnerText.Split(' ');
 
-
-            return new DialogueObject(topLevelNode.Attributes["speaker"].InnerText, dialogueTrees);
+                return new DialogueObject(speakers, dialogueTrees, Path.GetFileNameWithoutExtension(path));
+            }
+            catch (XmlException e)
+            {
+                Debug.LogError("ERROR: Malformed XML in file: " + path + ", this file will be skipped, Full stack trace: " + e);
+                return null;
+            }
         }
-        else 
+        else
         {
-            Debug.Log("failed to open");
+            Debug.LogError("FILE MISSING: file at path: " + path + " doesn't exist!");
 
             return null;
         }
-  
+
     }
 
     //TODO: run various data through this to make sure it works properly, and genrally cleanup this mess! I haven't run this yet but I think it mostly should work
-    private static DialogueTree BuildDialogueTree(XmlNode dialogueTree) 
+    private static DialogueTree BuildDialogueTree(XmlNode dialogueTree)
     {
         List<Dialogue> dList = new List<Dialogue>();
         //First loop
 
         XmlNodeList xmlDialogues = dialogueTree.SelectNodes("dialogue");
 
-        foreach (XmlNode xmlDialogue in xmlDialogues) 
+        foreach (XmlNode xmlDialogue in xmlDialogues)
         {
             List<XmlNode> xmlDialogueList = new List<XmlNode>(xmlDialogue.ChildNodes.Cast<XmlNode>());
-            
+
             string id = xmlDialogue.Attributes["id"].InnerText;
-            
+
             bool endsConversation = xmlDialogueList.Any(x => x.Name == "speaker-end");
 
             string[] speaker = xmlDialogueList
@@ -67,8 +84,6 @@ public static class DialogueLoader
                 .Where(x => x.Name == "option" || x.Name == "option-end")
                 .ToList();
 
-            //Debug.Log("Count" + options.Count);
-
             DialogueOption[] dialogueOptions =
                 options
                 .Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Name == "option-end" ? null : x.Attributes["dialogue-id"].InnerText))
@@ -77,15 +92,15 @@ public static class DialogueLoader
 
             dList.Add(options != null && options.Count > 0 ?
                 new Dialogue(
-                    id, 
-                    speaker, 
+                    id,
+                    speaker,
                     endsConversation,
-                    dialogueOptions //options.Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Attributes["dialogue-id"].InnerText)).ToArray()
+                    dialogueOptions
                     )
                 :
                 new Dialogue(
-                    id, 
-                    speaker, 
+                    id,
+                    speaker,
                     endsConversation
                     )
                 );
@@ -95,15 +110,17 @@ public static class DialogueLoader
     }
 }
 
-public class DialogueObject 
+public class DialogueObject
 {
-    public string Speaker;
+    public string[] Speakers;
+    public string Name;
     public DialogueTree[] DialogueTrees;
 
-    public DialogueObject(string speaker, DialogueTree[] dialogueTrees) 
+    public DialogueObject(string[] speakers, DialogueTree[] dialogueTrees, string name)
     {
-        Speaker = speaker;
+        Speakers = speakers;
         DialogueTrees = dialogueTrees;
+        Name = name;
     }
 }
 
@@ -113,22 +130,32 @@ public class DialogueTree
     public string Name;
     public Dictionary<string, Dialogue> Dialogues;
 
-    public DialogueTree(string id, string name, Dialogue[] dialogues) 
+    public DialogueTree(string id, string name, Dialogue[] dialogues)
     {
         Id = id;
         Name = name;
-        if(dialogues != null && dialogues.Length > 0) Dialogues = dialogues.ToDictionary(x => x.Id, x => x);
+        if (dialogues != null && dialogues.Length > 0) Dialogues = dialogues.ToDictionary(x => x.Id, x => x);
     }
 }
 
-public class Dialogue 
+public class Dialogue
 {
     public string Id;
-    public string[] Speaker;
+    public string[] Speaker; //TODO: This needs to also indicate the speaker
     public bool EndsConversation;
     public DialogueOption[] DialogueOptions;
 
-    public Dialogue(string id, string[] speaker, bool endsConversation, DialogueOption[] dialogueOptions) 
+    /* 
+     * --:NOTES ON FLAGS FOR DIALOGUES:--
+     * ActionFlags - These activate after this dialogue is left
+     * ProgressFlags - Just stores this flag in your save, it might be useful later, who knows? its for progress tracking mostly but in particular related to conversations
+     */
+
+    //TODO: Get these flags working!
+    public string[] ActionFlags;
+    public string[] ProgressFlags;
+
+    public Dialogue(string id, string[] speaker, bool endsConversation, DialogueOption[] dialogueOptions)
     {
         Id = id;
         Speaker = speaker;
@@ -144,146 +171,28 @@ public class Dialogue
     }
 }
 
-public class DialogueOption 
+public class DialogueOption
 {
     public string OptionText;
     public bool EndsConversation;
     public string DialogueID;
 
-    public DialogueOption(string optionText, bool endsConversation, string dialogueId) 
+    /* 
+     * --:NOTES ON FLAGS FOR DIALOGUE OPTIONS:--
+     * ActionFlags - These activate immediately once an option is clicked which has one, it usually starts an event of somesort
+     * ProgressFlags - Just stores this flag in your save, it might be useful later, who knows? its for progress tracking mostly but in particular related to conversations
+     * RequiredFlags - This is unique to dialogue options, if there is a required flag then this flag must be present in the players flags in order to allow this option to appear
+     */
+
+    //TODO: Get these flags working!
+    public string[] ActionFlags;
+    public string[] ProgressFlags;
+    public string[] RequiredFlags;
+
+    public DialogueOption(string optionText, bool endsConversation, string dialogueId)
     {
         OptionText = optionText;
         EndsConversation = endsConversation;
         DialogueID = dialogueId;
     }
 }
-
-//I don't know if this should be an instantiable class?
-
-//public class DialogueManager
-//{
-//    private static DialogueManager dialogueManager;
-
-//    private DialogueTree currentDialogueTree;
-//    private Dialogue currentDialogue;
-//    private Dialogue lastDialogue;
-
-//    private string lastSpeakerDialogue = "";
-
-//    public DialogueTree CurrentDialogueTree
-//    {
-//        get
-//        {
-//            return currentDialogueTree;
-//        }
-//        set
-//        {
-//            if (value != currentDialogueTree)
-//            {
-//                currentDialogueTree = value;
-//                currentDialogue = value.Dialogues["1"];
-//                lastDialogue = null;
-//                lastSpeakerDialogue = "";
-//            }
-//        }
-//    }
-
-//    public Dialogue CurrentDialogue 
-//    {
-//        get { return currentDialogue; }
-//    }
-
-//    public static DialogueManager GetManager() 
-//    {
-//        if (dialogueManager == null) dialogueManager = new DialogueManager();
-//        return dialogueManager;
-//    }
-
-//    public string GetDialogue() 
-//    {
-//        string dialogueString = "";
-//        if (currentDialogue != null)
-//        {
-
-//            //Add speaker dialogue
-//            if (currentDialogue.Speaker.Length > 0)
-//            {
-//                foreach (string s in currentDialogue.Speaker)
-//                {
-//                    dialogueString += s + "\n";
-//                    lastSpeakerDialogue = s;
-//                }
-//                dialogueString += "\n";
-//            }
-//            else 
-//            {
-//                dialogueString += lastSpeakerDialogue + "\n";
-//            }
-
-//            //Add option dialogue
-//            if (currentDialogue.DialogueOptions != null && currentDialogue.DialogueOptions.Length > 0) 
-//            {
-//                for (int i = 0; i < currentDialogue.DialogueOptions.Length; i++) 
-//                {
-//                    dialogueString += "(" + (i+1) +"). " + currentDialogue.DialogueOptions[i].OptionText + "\n";
-//                }
-//            }
-
-
-//        }
-
-//        return dialogueString;
-//    }
-
-//    public string SelectDialogueOption(int option) 
-//    {
-//        if (!currentDialogue.EndsConversation && currentDialogue.DialogueOptions != null && (option < currentDialogue.DialogueOptions.Length || option >= 0))
-//        {
-//            //If current conversation dialogue is then an end then end the conversation
-//            if (currentDialogue.EndsConversation) return "conversation has ended";
-            
-//            //Get the selected dialogue option
-//            DialogueOption selectedDialogueOption = currentDialogue.DialogueOptions[option];
-
-
-//            if (selectedDialogueOption.EndsConversation)
-//            {
-                
-//                return "ends"; //Conversation ends
-//            }
-//            else
-//            {
-//                //Get the intended new dialogue
-//                Dialogue newDialogue = currentDialogueTree.Dialogues[selectedDialogueOption.DialogueID];
-
-//                //If this ends the conversation then set it to current
-//                if (newDialogue.EndsConversation) 
-//                {
-//                    currentDialogue = newDialogue;
-//                }
-//                else if (newDialogue.DialogueOptions == null || newDialogue.DialogueOptions.Length <= 0) //If this dialogue has no options then use the previous options
-//                {
-//                    currentDialogue = new Dialogue(newDialogue.Id, newDialogue.Speaker, newDialogue.EndsConversation, currentDialogue.DialogueOptions);
-//                }
-//                else 
-//                {
-//                    currentDialogue = newDialogue;
-//                }
-
-//                //currentDialogue = currentDialogueTree.Dialogues[selectedDialogueOption.DialogueID];
-//                return GetDialogue();
-//            }
-
-
-
-//            //currentDialogue = currentDialogueTree.Dialogues[c]
-//        }
-
-//        return ""; //Im gonna do this tomorrow cba
-//    }
-
-//    private DialogueManager() 
-//    {
-
-//    }
-//}

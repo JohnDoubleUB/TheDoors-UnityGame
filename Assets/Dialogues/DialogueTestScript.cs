@@ -12,8 +12,8 @@ public class DialogueTestScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        testFile = Application.dataPath + "/Dialogues" + "/DialogueTreeTest1.xml";
-        DialogueObject dObject = DialogueLoader.LoadDialogueFile(testFile);
+        //testFile = Application.dataPath + "/Dialogues" + "/DialogueTreeTest1.xml";
+        //DialogueObject dObject = DialogueLoader.LoadDialogueFile(testFile);
 
 
        // Debug.Log("All the info is here!");
@@ -24,9 +24,9 @@ public class DialogueTestScript : MonoBehaviour
 
         //Debug.Log("There are: " + dObject.DialogueTrees.Length + " dialogues for speaker: " + dObject.Speaker + ".");
 
-        DialogueTree introDialogue = dObject.DialogueTrees.First(x => x.Name == "intro");
+        //DialogueTree introDialogue = dObject.DialogueTrees.First(x => x.Name == "intro");
 
-        if (introDialogue.Dialogues == null) Debug.Log("its null");
+        //if (introDialogue.Dialogues == null) Debug.Log("its null");
 
        // Debug.Log(dObject.DialogueTrees[0].Name);
 
