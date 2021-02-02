@@ -29,9 +29,9 @@ public class DialogueOptionText : MonoBehaviour
 
     public void InitializeOption(int id, string dialogueText)
     {
-        string test = id == 1 ? " a bunch of words to try and break this dialogue stuff yeah yeah yeah blah ooof because reasons ops" : "";
+        //string test = id == 1 ? " a bunch of words to try and break this dialogue stuff yeah yeah yeah blah ooof because reasons ops" : "";
         this.id = id;
-        text.text = (this.id+1) + ". " + dialogueText + test;
+        text.text = (this.id+1) + ". " + dialogueText;
         
         Canvas.ForceUpdateCanvases(); //Prefered height doesn't get updated until canvas updates, which isn't as regular (that is insanely annoying)
         rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, text.preferredHeight);

@@ -11,7 +11,6 @@ public static class DialogueLoader
     private static string DialogueFileExtension = "xml";
     //Attributes: id, tree-name, dialogue-id
 
-
     public static DialogueObject LoadDialogueFile(string fileName)
     {
         //Build path
@@ -74,7 +73,6 @@ public static class DialogueLoader
                 options
                 .Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Name == "option-end" ? null : x.Attributes["dialogue-id"].InnerText))
                 .ToArray();
-            //TODO: There are circumstances where the speaker may not have accompannying dialogue options, in these cases we should return to the last dialogue options!
 
 
             dList.Add(options != null && options.Count > 0 ?

@@ -15,6 +15,8 @@ public class DialogueManager : MonoBehaviour
     public GameObject dialogueOptionPrefab;
 
     private List<DialogueOptionText> dialogueOptions = new List<DialogueOptionText>();
+    
+    private int speakerDialogueNo = 0; // Used to allow separate lines to be displayed separately instead of together joined.
 
     private void Awake()
     {
@@ -27,7 +29,7 @@ public class DialogueManager : MonoBehaviour
         //This will need to be changed later
         string[] testDialogueNames = { "intro", "who-did-this-sven" };
         
-        LoadDialogueTree("DialogueTreeTest1", testDialogueNames[1]);
+        LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
         LoadUIDialogue(loadedDialogueTree.Dialogues["1"]);
     }
 
@@ -45,11 +47,15 @@ public class DialogueManager : MonoBehaviour
         //Load speaker text
         if (speakerText != null && dialogue.Speaker != null && dialogue.Speaker.Any())
         {
-            speakerText.text = string.Join(",", dialogue.Speaker);
+            speakerText.text = dialogue.Speaker[speakerDialogueNo];
         }
 
         //Generate Options
-        if (dialogue.EndsConversation)
+        if (speakerDialogueNo != (dialogue.Speaker.Length - 1)) 
+        {
+            CreateDialogueOptionText(0, "Continue.");
+        }
+        else if (dialogue.EndsConversation)
         {
             CreateDialogueOptionText(0, "End Conversation.");
         }
@@ -64,12 +70,21 @@ public class DialogueManager : MonoBehaviour
     public void SelectOption(int option)
     {
         //If this is the end of a conversation then whatever was clicked ends the conversation;
-        if (loadedDialogue.EndsConversation)
+        if (loadedDialogue.Speaker != null && 
+            loadedDialogue.Speaker.Any() && 
+            speakerDialogueNo != loadedDialogue.Speaker.Length - 1) 
         {
+            speakerDialogueNo++;
+            LoadUIDialogue(loadedDialogue);
+        }
+        else if (loadedDialogue.EndsConversation)
+        {
+            speakerDialogueNo = 0;
             ClearUIDialogue();
         }
         else
         {
+            speakerDialogueNo = 0;
             LoadSelectedOption(loadedDialogue.DialogueOptions[option]);
         }
     }

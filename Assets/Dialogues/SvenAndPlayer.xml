@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialogue-object speaker="sven">
+
+	<dialogue-tree id="1" name="intro">
+		
+		
+		<dialogue id="1">
+            <speaker>*Sigh* Welcome Chosen One, I’m glad you have arrived safely.</speaker>
+            <speaker>You have been brough here by the grace of the Gods to free them from their imprisonment.</speaker>
+            <speaker>Through these doors you will find each God, simply end their lives and they will be freed – blah blah blah.</speaker>
+			<option dialogue-id="2">What? What are you talking about where am i?</option>
+			<option dialogue-id="3">You don't sound very enthusiastic about all this.</option>
+			<option dialogue-id="4">I know who you are, sven (This is locked behind something)</option>
+			<option-end>End Conversation.</option-end>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker>Oh right yeah this is the middle zone</speaker>
+		</dialogue>
+
+		<dialogue id="3">
+            <speaker>Yeah.</speaker>
+			<speaker>You wouldn't be either.</speaker>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker-end>Shame (start boss fight)</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<dialogue-tree id="2" name="who-did-this-sven">
+		<dialogue id="1">
+			<speaker>...</speaker>
+			<option dialogue-id="2">So who trapped the gods like this?</option>
+		</dialogue>
+
+
+		<dialogue id="2">
+			<speaker>Sven.</speaker>
+			<option dialogue-id="3alternate">Sven? I've heard that name around.</option>
+			<option dialogue-id="3">Why would they do all this?</option>
+		</dialogue>
+
+
+		<!-- Alternate Path Starts -->
+		<dialogue id="3alternate">
+			<speaker>There’s a good reason for that, fought the Gods a long time ago.</speaker>
+			<option dialogue-id="3"> Why would they do all this?</option>
+		</dialogue>
+
+		<!-- Alternate Path Ends (To rejoin at id="4")-->
+
+		<dialogue id="3">
+			<speaker>After their fight with the Gods, a lot of people think they died, that’s apparently untrue. They’ve been trying to get back at the Gods ever since, eventually coming up with this plan and pulling it off.</speaker>
+			<option dialogue-id="4">So this was the end game, keep them all trapped so they couldn’t influence the mortal world? Why?</option>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker>Legend has it they weren’t a fan of the way Gods treated humans for their personal gain, wanted to rise up and have the humans work for their own gain, rather than the gain of others.</speaker>
+			<option dialogue-id="5">That’s awful, how could they do that?</option>
+			<option dialogue-id="6">Gotta say, I’m becoming more of a fan of Sven the more I hear about them.</option>
+			<option dialogue-id="7">The world is a lot more complicated than I imagined.</option>
+		</dialogue>
+
+		<dialogue id="5">
+			<speaker-end>Yes *clears throat* Truly. Some people are just crazy I guess.</speaker-end>
+		</dialogue>
+
+		<dialogue id="6">
+			<speaker>Oh really?</speaker>
+			<option dialogue-id="8"> Yeah. If the gods were oppressive, why wouldn’t we want someone to fight back against them?</option>
+		</dialogue>
+
+		<dialogue id="7">
+			<speaker-end>I’m afraid that’s the lesson we all come to learn at some point in our lives.</speaker-end>
+		</dialogue>
+
+		<dialogue id="8">
+			<speaker-end>Huh, well we can discuss more later. Back to work now.</speaker-end>
+		</dialogue>
+
+	</dialogue-tree>
+
+</dialogue-object>
