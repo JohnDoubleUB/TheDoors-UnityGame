@@ -35,7 +35,7 @@ public class DialogueManager : MonoBehaviour
         //This will need to be changed later
         string[] testDialogueNames = { "intro", "who-did-this-sven" };
         
-        LoadDialogueTree("SvenAndPlayer", testDialogueNames[1]);
+        LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
         LoadUIDialogue(loadedDialogueTree.Dialogues["1"]);
     }
 

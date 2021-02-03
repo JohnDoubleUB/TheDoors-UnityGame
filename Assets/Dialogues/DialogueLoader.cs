@@ -23,6 +23,7 @@ public static class DialogueLoader
         return files.Select(fPath => LoadDialogueFile(fPath)).Where(x => x != null).ToArray();
     }
 
+    //TODO: make a find all flags method! Could be useful, maybe also a find all speakers?
 
     private static DialogueObject LoadDialogueFile(string path)
     {
@@ -263,6 +264,7 @@ public class SpeakerDialogue
     public int SpeakerId;
     public bool EndsConversation;
 
+    //TODO: Add required flags for speaker dialogues
     public SpeakerDialogue(string text, int speakerId, bool endsConversation)
     {
         Text = text;

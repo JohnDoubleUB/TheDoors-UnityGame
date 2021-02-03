@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dialogue-object speakers="sven unknown death">
+<dialogue-object speakers="sven theunknown death">
 
 	<dialogue-tree id="1" name="intro">
-		
-		
+
+
 		<dialogue id="1">
-            <speaker>*Sigh* Welcome Chosen One, I’m glad you have arrived safely.</speaker>
-            <speaker speaker-index="0">You have been brough here by the grace of the Gods to free them from their imprisonment.</speaker>
-            <speaker>Through these doors you will find each God, simply end their lives and they will be freed – blah blah blah.</speaker>
+			<speaker>*Sigh* Welcome Chosen One, I’m glad you have arrived safely.</speaker>
+			<speaker speaker-index="0">You have been brough here by the grace of the Gods to free them from their imprisonment.</speaker>
+			<speaker>Through these doors you will find each God, simply end their lives and they will be freed – blah blah blah.</speaker>
 			<option dialogue-id="2">What? What are you talking about where am i?</option>
 			<option dialogue-id="3">You don't sound very enthusiastic about all this.</option>
 			<option dialogue-id="4" reqflags="playthrough2">I know who you are, sven</option>
-			<option-end>End Conversation. (I just put this here for testing)</option-end>
+			<option-end>End Conversation.</option-end>
 		</dialogue>
 
 		<dialogue id="2">
@@ -19,7 +19,7 @@
 		</dialogue>
 
 		<dialogue id="3">
-            <speaker>Yeah.</speaker>
+			<speaker>Yeah.</speaker>
 			<speaker>You wouldn't be either.</speaker>
 		</dialogue>
 
@@ -28,7 +28,73 @@
 		</dialogue>
 	</dialogue-tree>
 
-	<dialogue-tree id="2" name="who-did-this-sven">
+	<!-- Needs testing! -->
+	<dialogue-tree id="2" name="after-first-door">
+		<dialogue id="1">
+			<speaker>Holy shit you’re ali- uhh, Excellent Chosen One. One of the gods has been freed, I can feel their influence sweeping through the mortal realm as we speak.</speaker>
+			<option dialogue-id="2">But… how does defeating them make them free?</option>
+			<option dialogue-id="3">I can’t believe I’m the chosen one, this is amazing!</option>
+			<option dialogue-id="4">Do you even know what you’re talking about?</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker>Well umm.. they’re not technically them, it’s like a… image, yeah an image of their soul. So when you defeat the image, their soul is rebuilt and they live once more.</speaker>
+			<option dialogue-id="3">I can’t believe I’m the chosen one, this is amazing!</option>
+			<option dialogue-id="4">Do you even know what you’re talking about?</option>
+		</dialogue>
+
+		<dialogue id="3">
+			<speaker-end>Yeah it’s crazy. Now listen, we need to get the rest of this stuff done asap. So get going.</speaker-end>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker-end>What? Yes umm… Of course I do, now go through the doors.</speaker-end>
+		</dialogue>
+
+	</dialogue-tree>
+
+	<!-- Needs testing! -->
+	<dialogue-tree id="3" name="after-a-few-doors1">
+		<dialogue id="1">
+			<speaker>...</speaker>
+			<option dialogue-id="2">I keep seeing these eyes around this place, what are they?</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker>Don’t mind them, they’re my little helper. Wasn’t exactly easy to get here, let alone getting you here, so I got an extra pair of hands.</speaker>
+			<option dialogue-id="3">Where did you find them?</option>
+			<option dialogue-id="3alternate">I don’t see any helping hands, just some ugly eyes.</option>
+			<option>It puts me on edge.</option>
+		</dialogue>
+
+		<dialogue id="3alternate">
+			<speaker-end speaker-index="1">Grrrrr.</speaker-end>
+		</dialogue>
+
+		<dialogue id="3">
+			<speaker>Old friend, we’ve helped each other out a few times.</speaker>
+			<option dialogue-id="5">And… who are you?</option>
+			<option dialogue-id="6">How can they get us out?</option>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker>Don’t mind them, they’re just waiting until this is all done. We need them to get out of here after so he’s just hanging out.</speaker>
+			<option dialogue-id="5">And… who are you?</option>
+			<option dialogue-id="6">How can they get us out?</option>
+		</dialogue>
+
+		<dialogue id="5">
+			<speaker-end>A warrior, the Gods and I have been fighting the same wars for decades. That’s all I’ll say.</speaker-end>
+		</dialogue>
+
+		<dialogue id="6">
+			<speaker-end>Because they weren’t trapped in a door.</speaker-end>
+		</dialogue>
+
+
+	</dialogue-tree>
+
+	<dialogue-tree id="4" name="after-a-few-doors2">
 		<dialogue id="1">
 			<speaker>...</speaker>
 			<option dialogue-id="2">So who trapped the gods like this?</option>
@@ -77,6 +143,68 @@
 
 		<dialogue id="8">
 			<speaker-end>Huh, well we can discuss more later. Back to work now.</speaker-end>
+		</dialogue>
+
+	</dialogue-tree>
+
+	<!-- Needs testing! Unfinished -->
+	<dialogue-tree id="5" name="after-a-few-doors3">
+		<dialogue id="1">
+			<speaker>...</speaker>
+			<option dialogue-id="2">So what prompted Sven to fight the Gods in the first place, how oppressive were they?</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker>He believed they would go to any lengths to keep their way of life, exploiting and sacrificing as many birds as they needed to.</speaker>
+			<option dialogue-id="3">Was that true?</option>
+			<option dialogue-id="4">From what I’ve seen, that’s pretty accurate.</option>
+			<option reqflags="probird-uprising" dialogue-id="5">That is surprising. You mentioned he dealt with the Gods, did he not speak with the pro-uprising ones?</option>
+		</dialogue>
+
+		<dialogue id="3">
+			<speaker>From my perspective… Yes. The Gods are powerful and capable of great things, that doesn’t make them perfect.</speaker>
+			<option dialogue-id="6">Maybe they will change their ways?</option>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker>I agree, there’s been a lot of issues with God-bird relations, and that’s not even mentioning the issues between the Gods themselves.</speaker>
+			<option dialogue-id="7">You'd think with all that power they'd be happier.</option>
+			<option reqflags="gods-arguing" dialogue-id="8">I’ve seen some of it, some of them really were angry. I wonder what lead to this crack in their alliance.</option>
+		</dialogue>
+
+		<dialogue id="5">
+			<speaker>Pro-uprising?</speaker>
+			<option dialogue-id="9">Yeah, I’ve met Gods who seem to support the toppling of their control. Many seem to think Artiman has lost his way.</option>
+		</dialogue>
+
+		<dialogue id="6">
+			<speaker-end>Ha. When pigs fly</speaker-end>
+		</dialogue>
+
+		<dialogue id="7">
+			<speaker>That's the funny thing about power I guess.</speaker>
+			<option-end>It's a shame things aren't different.</option-end>
+			<option dialogue-id="10">For a person who fought with the Gods, you don’t seem to like them very much.</option>
+		</dialogue>
+
+		<dialogue id="8">
+			<speaker>Arrogance, blindness, apathy. The list goes on</speaker>
+			<option-end>It's a shame things aren't different.</option-end>
+			<option dialogue-id="10">For a person who fought with the Gods, you don’t seem to like them very much.</option>
+		</dialogue>
+
+		<dialogue id="9">
+			<speaker-end>I knew of 1, I had no idea there were many. God that would have made this… Never mind.</speaker-end>
+		</dialogue>
+
+		<dialogue id="10">
+			<speaker>What do you mean?</speaker>
+			<option-end>You know what? Never mind.</option-end>
+			<option dialogue-id="11">You spoke about being an ally to the gods, but you don’t seem to have a nice thing to say about them. I was wondering why.</option>
+		</dialogue>
+
+		<dialogue id="11">
+			<!-- Oops it looks like we need required flags on dialogue for speakers too -->
 		</dialogue>
 
 	</dialogue-tree>
