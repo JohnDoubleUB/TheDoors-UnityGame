@@ -35,15 +35,8 @@ public class DialogueManager : MonoBehaviour
         //This will need to be changed later
         string[] testDialogueNames = { "intro", "who-did-this-sven" };
         
-        LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
+        LoadDialogueTree("SvenAndPlayer", testDialogueNames[1]);
         LoadUIDialogue(loadedDialogueTree.Dialogues["1"]);
-        if (DialogueLoader.DialogueObjects != null) 
-        {
-            Debug.Log("Dialogue object names: " + string.Join(", ", DialogueLoader.DialogueObjects.Select(x => x.Name)));
-        }
-
-        Debug.Log(string.Join(", ", loadedDialogueObject.Speakers));
-        //DialogueLoader.LoadAllDialogueObjects();
     }
 
 
@@ -76,7 +69,11 @@ public class DialogueManager : MonoBehaviour
         }
         else if (dialogueBox != null && dialogueOptionPrefab && dialogue.DialogueOptions != null && dialogue.DialogueOptions.Any())
         {
-            for (int i = 0; i < dialogue.DialogueOptions.Length; i++) CreateDialogueOptionText(i, dialogue.DialogueOptions[i].OptionText);
+            for (int i = 0; i < dialogue.DialogueOptions.Length; i++) 
+            {
+                LoadRequiredFlags(dialogue.DialogueOptions[i].RequiredFlags);
+                CreateDialogueOptionText(i, dialogue.DialogueOptions[i].OptionText); 
+            }
         }
 
         loadedDialogue = dialogue;
@@ -94,11 +91,14 @@ public class DialogueManager : MonoBehaviour
         }
         else if (loadedDialogue.EndsConversation)
         {
+            LoadFlags(loadedDialogue);
             speakerDialogueNo = 0;
             ClearUIDialogue();
         }
         else
         {
+            LoadFlags(loadedDialogue);
+            LoadFlags(loadedDialogue.DialogueOptions[option]);
             speakerDialogueNo = 0;
             LoadSelectedOption(loadedDialogue.DialogueOptions[option]);
         }
@@ -138,9 +138,34 @@ public class DialogueManager : MonoBehaviour
 
             LoadUIDialogue(
                 retainPreviousOptions ?
-                new Dialogue(newDialogue.Id, newDialogue.SpeakerDialogues, newDialogue.EndsConversation, loadedDialogue.DialogueOptions) :
+                new Dialogue(newDialogue, loadedDialogue.DialogueOptions) :
                 newDialogue
             );
         }
     }
+
+    //TODO: Once the flag system is implemented then make these do things!
+    private void LoadFlags(Dialogue dialogue) 
+    {
+        //Load all flags
+        LoadFlags(dialogue.ProgressFlags, dialogue.ActionFlags);
+    }
+
+    private void LoadFlags(DialogueOption dialogueOption) 
+    {
+        LoadFlags(dialogueOption.ProgressFlags, dialogueOption.ActionFlags);
+    }
+
+    private void LoadFlags(string[] progressFlags, string[] actionFlags) 
+    {
+        if (progressFlags != null) Debug.Log("ProgressFlags triggered: " + string.Join(", ", progressFlags));
+        if (actionFlags != null) Debug.Log("ActionFlags triggered: " + string.Join(", ", actionFlags));
+    }
+
+    private void LoadRequiredFlags(string[] requiredFlags) 
+    {
+        if (requiredFlags != null) Debug.Log("RequiredFlags: " + string.Join(", ", requiredFlags));
+    }
+
+
 }
