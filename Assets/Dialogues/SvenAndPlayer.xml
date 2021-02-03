@@ -6,7 +6,7 @@
 		
 		<dialogue id="1">
             <speaker>*Sigh* Welcome Chosen One, I’m glad you have arrived safely.</speaker>
-            <speaker>You have been brough here by the grace of the Gods to free them from their imprisonment.</speaker>
+            <speaker speaker-index="0">You have been brough here by the grace of the Gods to free them from their imprisonment.</speaker>
             <speaker>Through these doors you will find each God, simply end their lives and they will be freed – blah blah blah.</speaker>
 			<option dialogue-id="2">What? What are you talking about where am i?</option>
 			<option dialogue-id="3">You don't sound very enthusiastic about all this.</option>
@@ -24,7 +24,7 @@
 		</dialogue>
 
 		<dialogue id="4" actflag="fight-sven">
-			<speaker-end>Shame</speaker-end>
+			<speaker-end>Shame.</speaker-end>
 		</dialogue>
 	</dialogue-tree>
 

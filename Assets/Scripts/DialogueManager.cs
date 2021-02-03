@@ -58,16 +58,15 @@ public class DialogueManager : MonoBehaviour
         //Clear previous dialogue
         ClearUIDialogue();
 
-        //Load speaker text
-        //Determine the speaker
-        string speaker = loadedDialogueObject.Speakers[0];
-        if (speakerText != null && dialogue.Speaker != null && dialogue.Speaker.Any())
+        //Load speaker text and speaker name
+        if (speakerText != null && dialogue.SpeakerDialogues != null && dialogue.SpeakerDialogues.Any())
         {
-            speakerText.text = speaker + ": " + dialogue.Speaker[speakerDialogueNo]; //TODO: capitalize first letter of name?
+            SpeakerDialogue speaker = dialogue.SpeakerDialogues[speakerDialogueNo];
+            speakerText.text = loadedDialogueObject.GetSpeakerWithCapital(speaker.SpeakerId) + ": " + speaker.Text;
         }
 
         //Generate Options
-        if (speakerDialogueNo != (dialogue.Speaker.Length - 1)) 
+        if (speakerDialogueNo != (dialogue.SpeakerDialogues.Length - 1)) 
         {
             CreateDialogueOptionText(0, "Continue.");
         }
@@ -86,9 +85,9 @@ public class DialogueManager : MonoBehaviour
     public void SelectOption(int option)
     {
         //If this is the end of a conversation then whatever was clicked ends the conversation;
-        if (loadedDialogue.Speaker != null && 
-            loadedDialogue.Speaker.Any() && 
-            speakerDialogueNo != loadedDialogue.Speaker.Length - 1) 
+        if (loadedDialogue.SpeakerDialogues != null && 
+            loadedDialogue.SpeakerDialogues.Any() && 
+            speakerDialogueNo != loadedDialogue.SpeakerDialogues.Length - 1) 
         {
             speakerDialogueNo++;
             LoadUIDialogue(loadedDialogue);
@@ -139,7 +138,7 @@ public class DialogueManager : MonoBehaviour
 
             LoadUIDialogue(
                 retainPreviousOptions ?
-                new Dialogue(newDialogue.Id, newDialogue.Speaker, newDialogue.EndsConversation, loadedDialogue.DialogueOptions) :
+                new Dialogue(newDialogue.Id, newDialogue.SpeakerDialogues, newDialogue.EndsConversation, loadedDialogue.DialogueOptions) :
                 newDialogue
             );
         }

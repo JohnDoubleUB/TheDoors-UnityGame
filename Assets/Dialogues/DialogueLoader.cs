@@ -59,7 +59,6 @@ public static class DialogueLoader
 
     }
 
-    //TODO: run various data through this to make sure it works properly, and genrally cleanup this mess! I haven't run this yet but I think it mostly should work
     private static DialogueTree BuildDialogueTree(XmlNode dialogueTree)
     {
         List<Dialogue> dList = new List<Dialogue>();
@@ -75,9 +74,9 @@ public static class DialogueLoader
 
             bool endsConversation = xmlDialogueList.Any(x => x.Name == "speaker-end");
 
-            string[] speaker = xmlDialogueList
+            SpeakerDialogue[] speakerDialogues = xmlDialogueList
                 .Where(x => x.Name == "speaker" || x.Name == "speaker-end")
-                .Select(x => x.InnerText)
+                .Select(x => new SpeakerDialogue(x.InnerText, GetSpeakerId(x), x.Name == "speaker-end"))
                 .ToArray();
 
             List<XmlNode> options = xmlDialogueList
@@ -86,27 +85,44 @@ public static class DialogueLoader
 
             DialogueOption[] dialogueOptions =
                 options
-                .Select(x => new DialogueOption(x.InnerText, x.Name == "option-end", x.Name == "option-end" ? null : x.Attributes["dialogue-id"].InnerText))
+                .Select(dOption => 
+                {
+                    //TODO: Retreive all the requiredflags, progressflags and actionflags "reqflag", "progflag" and "actflag"
+
+                    
+                    return new DialogueOption(dOption.InnerText, dOption.Name == "option-end", dOption.Name == "option-end" ? null : dOption.Attributes["dialogue-id"].InnerText);
+                })
                 .ToArray();
 
 
             dList.Add(options != null && options.Count > 0 ?
                 new Dialogue(
                     id,
-                    speaker,
+                    speakerDialogues,
                     endsConversation,
                     dialogueOptions
                     )
                 :
                 new Dialogue(
                     id,
-                    speaker,
+                    speakerDialogues,
                     endsConversation
                     )
                 );
         }
 
         return new DialogueTree(dialogueTree.Attributes["id"].InnerText, dialogueTree.Attributes["name"].InnerText, dList.ToArray());
+    }
+
+    private static int GetSpeakerId(XmlNode xmlNode) 
+    {
+        XmlNode speakerIndexXml = xmlNode.Attributes["speaker-index"];
+
+        string speakerIndexText = speakerIndexXml != null ? speakerIndexXml.InnerText : null;
+
+        return !string.IsNullOrEmpty(speakerIndexText) ? 
+            int.TryParse(speakerIndexText, out int speakerIndex) ? 
+            speakerIndex : 0 : 0;
     }
 }
 
@@ -115,6 +131,12 @@ public class DialogueObject
     public string[] Speakers;
     public string Name;
     public DialogueTree[] DialogueTrees;
+
+    public string GetSpeakerWithCapital(int index) 
+    {
+        string speaker = Speakers[index];
+        return speaker.Length > 1 ? speaker.Substring(0,1).ToUpper() + speaker.Remove(0, 1) : speaker.ToUpper();
+    }
 
     public DialogueObject(string[] speakers, DialogueTree[] dialogueTrees, string name)
     {
@@ -141,7 +163,7 @@ public class DialogueTree
 public class Dialogue
 {
     public string Id;
-    public string[] Speaker; //TODO: This needs to also indicate the speaker
+    public SpeakerDialogue[] SpeakerDialogues;
     public bool EndsConversation;
     public DialogueOption[] DialogueOptions;
 
@@ -155,19 +177,19 @@ public class Dialogue
     public string[] ActionFlags;
     public string[] ProgressFlags;
 
-    public Dialogue(string id, string[] speaker, bool endsConversation, DialogueOption[] dialogueOptions)
+    public Dialogue(string id, SpeakerDialogue[] speakerDialogues, bool endsConversation, DialogueOption[] dialogueOptions)
     {
         Id = id;
-        Speaker = speaker;
         EndsConversation = endsConversation;
         DialogueOptions = dialogueOptions;
+        SpeakerDialogues = speakerDialogues;
     }
 
-    public Dialogue(string id, string[] speaker, bool endsConversation)
+    public Dialogue(string id, SpeakerDialogue[] speakerDialogues, bool endsConversation)
     {
         Id = id;
-        Speaker = speaker;
         EndsConversation = endsConversation;
+        SpeakerDialogues = speakerDialogues;
     }
 }
 
@@ -194,5 +216,19 @@ public class DialogueOption
         OptionText = optionText;
         EndsConversation = endsConversation;
         DialogueID = dialogueId;
+    }
+}
+
+public class SpeakerDialogue 
+{
+    public string Text;
+    public int SpeakerId;
+    public bool EndsConversation;
+
+    public SpeakerDialogue(string text, int speakerId, bool endsConversation) 
+    {
+        Text = text;
+        SpeakerId = speakerId;
+        EndsConversation = endsConversation;
     }
 }
