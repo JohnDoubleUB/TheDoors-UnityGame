@@ -98,7 +98,18 @@ public static class DialogueLoader
 
             SpeakerDialogue[] speakerDialogues = xmlDialogueList
                 .Where(x => x.Name == "speaker" || x.Name == "speaker-end")
-                .Select(x => new SpeakerDialogue(x.InnerText, GetSpeakerId(x), x.Name == "speaker-end"))
+                .Select(sDialogue => 
+                {
+                    XmlNode sDialogueReqFlagsNode = sDialogue.Attributes["reqflags"];
+                    XmlNode sDialogueUnReqFlagsNode = sDialogue.Attributes["unreqflags"];
+
+                    string[] sDialogueReqFlags = sDialogueReqFlagsNode != null ? sDialogueReqFlagsNode.InnerText.Split(' ') : null;
+                    string[] sDialogueUnReqFlags = sDialogueUnReqFlagsNode != null ? sDialogueUnReqFlagsNode.InnerText.Split(' ') : null;
+
+                    AddDistinctAddedFlagsToList(sDialogueReqFlags, sDialogueUnReqFlags);
+
+                    return new SpeakerDialogue(sDialogue.InnerText, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags);
+                })
                 .ToArray();
 
             List<XmlNode> options = xmlDialogueList
@@ -113,12 +124,14 @@ public static class DialogueLoader
                     XmlNode dOptionReqFlagsNode = dOption.Attributes["reqflags"];
                     XmlNode dOptionProgFlagsNode = dOption.Attributes["progflags"];
                     XmlNode dOptionActFlagsNode = dOption.Attributes["actflags"];
+                    XmlNode dOptionUnReqFlagsNode = dOption.Attributes["unreqflags"];
 
                     string[] dOptionReqFlags = dOptionReqFlagsNode != null ? dOptionReqFlagsNode.InnerText.Split(' ') : null;
                     string[] dOptionActFlags = dOptionActFlagsNode != null ? dOptionActFlagsNode.InnerText.Split(' ') : null;
                     string[] dOptionProgFlags = dOptionProgFlagsNode != null ? dOptionProgFlagsNode.InnerText.Split(' ') : null;
+                    string[] dOptionUnReqFlags = dOptionUnReqFlagsNode != null ? dOptionUnReqFlagsNode.InnerText.Split(' ') : null;
 
-                    AddDistinctAddedFlagsToList(dOptionReqFlags, dOptionActFlags, dOptionProgFlags);
+                    AddDistinctAddedFlagsToList(dOptionReqFlags, dOptionActFlags, dOptionProgFlags, dOptionUnReqFlags);
 
                     XmlNode dDialogueIdXml = dOption.Attributes["dialogue-id"];
 
@@ -133,7 +146,8 @@ public static class DialogueLoader
                         dOption.Name == "option-end" || dDialogueIdXml == null ? null : dOption.Attributes["dialogue-id"].InnerText,
                         dOptionReqFlags,
                         dOptionProgFlags,
-                        dOptionActFlags
+                        dOptionActFlags,
+                        dOptionUnReqFlags
                         );
                 })
                 .ToArray();
@@ -146,7 +160,6 @@ public static class DialogueLoader
             string[] dialogueProgFlags = dialogueProgFlagsNode != null ? dialogueProgFlagsNode.InnerText.Split(' ') : null;
 
             AddDistinctAddedFlagsToList(dialogueActFlags, dialogueProgFlags);
-            //AddDistinctAddedFlagsToList(dialogueActFlags);
 
             dList.Add(options != null && options.Count > 0 ?
                 new Dialogue(
@@ -233,12 +246,32 @@ public class Dialogue
     public string[] ProgressFlags;
     public string[] ActionFlags;
 
-    public Dialogue(Dialogue dialogue, DialogueOption[] retainedDialogueOptions) 
+    public Dialogue(Dialogue dialogue, DialogueOption[] dialogueOptions) 
     {
         Id = dialogue.Id;
         EndsConversation = dialogue.EndsConversation;
         SpeakerDialogues = dialogue.SpeakerDialogues;
-        DialogueOptions = retainedDialogueOptions;
+        DialogueOptions = dialogueOptions;
+        ProgressFlags = dialogue.ProgressFlags;
+        ActionFlags = dialogue.ActionFlags;
+    }
+
+    public Dialogue(Dialogue dialogue, SpeakerDialogue[] speakerDialogues) 
+    {
+        Id = dialogue.Id;
+        EndsConversation = dialogue.EndsConversation;
+        SpeakerDialogues = speakerDialogues;
+        DialogueOptions = dialogue.DialogueOptions;
+        ProgressFlags = dialogue.ProgressFlags;
+        ActionFlags = dialogue.ActionFlags;
+    }
+
+    public Dialogue(Dialogue dialogue, SpeakerDialogue[] speakerDialogues, DialogueOption[] dialogueOptions)
+    {
+        Id = dialogue.Id;
+        EndsConversation = dialogue.EndsConversation;
+        SpeakerDialogues = speakerDialogues;
+        DialogueOptions = dialogueOptions;
         ProgressFlags = dialogue.ProgressFlags;
         ActionFlags = dialogue.ActionFlags;
     }
@@ -274,13 +307,15 @@ public class DialogueOption
      * ActionFlags - These activate immediately once an option is clicked which has one, it usually starts an event of somesort
      * ProgressFlags - Just stores this flag in your save, it might be useful later, who knows? its for progress tracking mostly but in particular related to conversations
      * RequiredFlags - This is unique to dialogue options, if there is a required flag then this flag must be present in the players flags in order to allow this option to appear
+     * UnRequiredFlags - Unique to dialogue options, if one of these flags is present then this option will not appear
      */
 
     public string[] RequiredFlags;
     public string[] ProgressFlags;
     public string[] ActionFlags;
+    public string[] UnRequiredFlags;
 
-    public DialogueOption(string optionText, bool endsConversation, string dialogueId, string[] requiredFlags, string[] progressFlags, string[] actionFlags)
+    public DialogueOption(string optionText, bool endsConversation, string dialogueId, string[] requiredFlags, string[] progressFlags, string[] actionFlags, string[] unRequiredFlags)
     {
         OptionText = optionText;
         EndsConversation = endsConversation;
@@ -288,6 +323,7 @@ public class DialogueOption
         RequiredFlags = requiredFlags;
         ProgressFlags = progressFlags;
         ActionFlags = actionFlags;
+        UnRequiredFlags = unRequiredFlags;
     }
 }
 
@@ -297,11 +333,21 @@ public class SpeakerDialogue
     public int SpeakerId;
     public bool EndsConversation;
 
-    //TODO: Add required flags for speaker dialogues
-    public SpeakerDialogue(string text, int speakerId, bool endsConversation)
+    /* 
+     * --:NOTES ON FLAGS FOR SPEAKER DIALOGUE:--
+     * RequiredFlags - This is unique to dialogue options, if there is a required flag then this flag must be present in the players flags in order to allow this option to appear
+     * UnRequiredFlags - Unique to dialogue options, if one of these flags is present then this option will not appear
+     */
+
+    public string[] RequiredFlags;
+    public string[] UnRequiredFlags;
+
+    public SpeakerDialogue(string text, int speakerId, bool endsConversation, string[] requiredFlags, string[] unRequiredFlags)
     {
         Text = text;
         SpeakerId = speakerId;
         EndsConversation = endsConversation;
+        RequiredFlags = requiredFlags;
+        UnRequiredFlags = unRequiredFlags;
     }
 }

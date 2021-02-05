@@ -209,4 +209,36 @@
 
 	</dialogue-tree>
 
+	<!-- I'm testing the limit of this system -->
+	<dialogue-tree id="6" name="testdialogue">
+		<dialogue id="1">
+			<speaker>...</speaker>
+			<option dialogue-id="2" unreqflags="test-isnt-new">Hi</option>
+			<option dialogue-id="2" reqflags="test-isnt-new" unreqflags="test-weird-alternate">Hello??</option>
+			<option dialogue-id="2" reqflags="test-isnt-new test-weird-alternate">HeLlO?!?!</option>
+		</dialogue>
+		
+		<dialogue id="2">
+			<speaker>Hi there newbie</speaker>
+			<speaker>Welcome to the game</speaker>
+			<speaker reqflags="test-isnt-new" unreqflags="test-weird-alternate">Oh wait, haven't I just?.. Eh whatever, you're still green</speaker>
+			<speaker unreqflags="test-isnt-new">Yeah you're totally green</speaker>
+			<speaker reqflags="test-weird-alternate">...</speaker>
+			<speaker reqflags="test-weird-alternate">Huh, we've done this twice now haven't we?</speaker>
+			<option dialogue-id="1" unreqflags="test-isnt-new" progflags="test-isnt-new">No I'm not</option>
+			<option dialogue-id="1" reqflags="test-isnt-new" unreqflags="test-weird-alternate" progflags="test-weird-alternate">NO I'M NOT!</option>
+			<option dialogue-id="3" reqflags="test-isnt-new test-weird-alternate">Yes...</option>
+			<option dialogue-id="4" reqflags="test-isnt-new test-weird-alternate">I'm not new...</option>
+		</dialogue>
+
+		<dialogue id="3">
+			<speaker-end>Bugger...</speaker-end>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker>Yeah, well... fine</speaker>
+			<speaker-end>Have it your way...</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
 </dialogue-object>

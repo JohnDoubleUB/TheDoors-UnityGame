@@ -35,11 +35,16 @@ public class GameManager : MonoBehaviour
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
+
+        //Add flags here for testing
+        AddFlag("playthrough2");
+        //AddFlag("test-isnt-new");
     }
 
     private void Update()
     {
-        if (firstUpdate)
+        //TODO: Maybe look into this
+        if (firstUpdate) //I think this is here because the doors use awake to notify the game manager and that's a problem? or its the awakeness current thing? idk
         {
             if (SaveSystem.SessionSaveData != null) //Ensures save data is loaded if it needs to be
             {
@@ -49,8 +54,6 @@ public class GameManager : MonoBehaviour
             {
                 UpdateSessionData(); //This way we always have a current savedata
             }
-            AddFlag("playthrough2");
-
             firstUpdate = false;
         }
     }
@@ -114,8 +117,11 @@ public class GameManager : MonoBehaviour
 
     private void UpdateSessionFlags() 
     {
-        SaveSystem.SessionSaveData.Flags = flags.ToArray();
-        Debug.Log("session flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+        if (SaveSystem.SessionSaveData != null)
+        {
+            SaveSystem.SessionSaveData.Flags = flags.ToArray();
+            Debug.Log("session flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+        }
     }
 
     private void UpdateSessionData(SaveData saveData)
@@ -218,5 +224,13 @@ public class GameManager : MonoBehaviour
             if (!HasFlag(flag)) return false;
 
         return true;
+    }
+
+    public bool HasAnyFlags(string[] flags) 
+    {
+        foreach (string flag in flags)
+            if (HasFlag(flag)) return true;
+
+        return false;
     }
 }
