@@ -33,10 +33,13 @@ public class DialogueManager : MonoBehaviour
     void Start()
     {
         //This will need to be changed later
-        string[] testDialogueNames = { "intro", "who-did-this-sven" };
-        
-        LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
+        string[] testDialogueNames = { "intro", "after-first-door", "after-a-few-doors2" };
+
+
+        LoadDialogueTree("SvenAndPlayer", testDialogueNames[2]);
         LoadUIDialogue(loadedDialogueTree.Dialogues["1"]);
+
+        //Debug.Log("All dialogue flags: " + string.Join(", ", DialogueLoader.AllAddedFlags));
     }
 
 
@@ -71,8 +74,8 @@ public class DialogueManager : MonoBehaviour
         {
             for (int i = 0; i < dialogue.DialogueOptions.Length; i++) 
             {
-                LoadRequiredFlags(dialogue.DialogueOptions[i].RequiredFlags);
-                CreateDialogueOptionText(i, dialogue.DialogueOptions[i].OptionText); 
+                if(HasRequiredFlags(dialogue.DialogueOptions[i].RequiredFlags))
+                    CreateDialogueOptionText(i, dialogue.DialogueOptions[i].OptionText); 
             }
         }
 
@@ -158,14 +161,27 @@ public class DialogueManager : MonoBehaviour
 
     private void LoadFlags(string[] progressFlags, string[] actionFlags) 
     {
-        if (progressFlags != null) Debug.Log("ProgressFlags triggered: " + string.Join(", ", progressFlags));
-        if (actionFlags != null) Debug.Log("ActionFlags triggered: " + string.Join(", ", actionFlags));
+        if (progressFlags != null) 
+        {
+            GameManager.current.AddFlags(progressFlags);
+            //Debug.Log("ProgressFlags triggered: " + string.Join(", ", progressFlags)); 
+        }
+        if (actionFlags != null) 
+        {
+            GameManager.current.AddFlags(actionFlags);
+            //Debug.Log("ActionFlags triggered: " + string.Join(", ", actionFlags)); 
+        }
     }
 
-    private void LoadRequiredFlags(string[] requiredFlags) 
+    private bool HasRequiredFlags(string[] requiredFlags)
     {
-        if (requiredFlags != null) Debug.Log("RequiredFlags: " + string.Join(", ", requiredFlags));
+        if (requiredFlags != null)
+        {
+            return GameManager.current.HasAllFlags(requiredFlags);
+        }
+        else 
+        {
+            return true;
+        }
     }
-
-
 }

@@ -9,21 +9,42 @@ public static class DialogueLoader
 {
     private static string DialoguePath = Application.dataPath + "/Dialogues/";
     private static string DialogueFileExtension = "xml";
+    private static List<string> allAddedFlags = new List<string>();
+
+
     private static readonly DialogueObject[] dialogueObjects = LoadAllDialogueObjects();  //Load all dialogue intially
 
-
     //Attributes: id, tree-name, dialogue-id
-    public static DialogueObject[] DialogueObjects { get; } = dialogueObjects; //This is where we intially load in all the dialogue for the game
+    public static DialogueObject[] DialogueObjects //This is where we intially load in all the dialogue for the game
+    {
+        get { return dialogueObjects; }
+    }
+    public static List<string> AllAddedFlags 
+    { 
+        get { return allAddedFlags; } 
+    }
 
 
     private static DialogueObject[] LoadAllDialogueObjects()
     {
         //Find all filenames
         string[] files = Directory.GetFiles(DialoguePath, "*." + DialogueFileExtension);
-        return files.Select(fPath => LoadDialogueFile(fPath)).Where(x => x != null).ToArray();
+        DialogueObject[] dialogueObjects = files.Select(fPath => LoadDialogueFile(fPath)).Where(x => x != null).ToArray();
+        
+        return dialogueObjects;
     }
 
-    //TODO: make a find all flags method! Could be useful, maybe also a find all speakers?
+    private static void AddDistinctAddedFlagsToList(params string[][] flags) 
+    {
+        if (flags == null) return;
+
+        string[] allFlags = flags.Where(x => x != null).SelectMany(x => x).ToArray();
+
+        foreach (string flag in allFlags) 
+        {
+            if (!allAddedFlags.Contains(flag)) allAddedFlags.Add(flag);
+        }
+    }
 
     private static DialogueObject LoadDialogueFile(string path)
     {
@@ -97,10 +118,19 @@ public static class DialogueLoader
                     string[] dOptionActFlags = dOptionActFlagsNode != null ? dOptionActFlagsNode.InnerText.Split(' ') : null;
                     string[] dOptionProgFlags = dOptionProgFlagsNode != null ? dOptionProgFlagsNode.InnerText.Split(' ') : null;
 
+                    AddDistinctAddedFlagsToList(dOptionReqFlags, dOptionActFlags, dOptionProgFlags);
+
+                    XmlNode dDialogueIdXml = dOption.Attributes["dialogue-id"];
+
+                    bool isInvalidDialogueOption = dDialogueIdXml == null && dOption.Name != "option-end";
+
+                    if (isInvalidDialogueOption) 
+                        Debug.LogError("ERROR: Dialogue option containing text: \"" + dOption.InnerText + "\" leads nowhere (isn't an \"option-end\" tag or contains a \"dialogue-id\")");
+
                     return new DialogueOption(
-                        dOption.InnerText,
+                        isInvalidDialogueOption ? dOption.InnerText + "[INVALID DIALOGUE!]" : dOption.InnerText,
                         dOption.Name == "option-end",
-                        dOption.Name == "option-end" ? null : dOption.Attributes["dialogue-id"].InnerText,
+                        dOption.Name == "option-end" || dDialogueIdXml == null ? null : dOption.Attributes["dialogue-id"].InnerText,
                         dOptionReqFlags,
                         dOptionProgFlags,
                         dOptionActFlags
@@ -114,6 +144,9 @@ public static class DialogueLoader
 
             string[] dialogueActFlags = dialogueActFlagsNode != null ? dialogueActFlagsNode.InnerText.Split(' ') : null;
             string[] dialogueProgFlags = dialogueProgFlagsNode != null ? dialogueProgFlagsNode.InnerText.Split(' ') : null;
+
+            AddDistinctAddedFlagsToList(dialogueActFlags, dialogueProgFlags);
+            //AddDistinctAddedFlagsToList(dialogueActFlags);
 
             dList.Add(options != null && options.Count > 0 ?
                 new Dialogue(

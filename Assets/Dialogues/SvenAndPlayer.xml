@@ -23,7 +23,7 @@
 			<speaker>You wouldn't be either.</speaker>
 		</dialogue>
 
-		<dialogue id="4" actflags="fight-sven">
+		<dialogue id="4" actflags="fight-sven-early">
 			<speaker-end>Shame.</speaker-end>
 		</dialogue>
 	</dialogue-tree>
@@ -64,7 +64,7 @@
 			<speaker>Don’t mind them, they’re my little helper. Wasn’t exactly easy to get here, let alone getting you here, so I got an extra pair of hands.</speaker>
 			<option dialogue-id="3">Where did you find them?</option>
 			<option dialogue-id="3alternate">I don’t see any helping hands, just some ugly eyes.</option>
-			<option>It puts me on edge.</option>
+			<option dialogue-id="4">It puts me on edge.</option>
 		</dialogue>
 
 		<dialogue id="3alternate">

@@ -7,7 +7,7 @@ using System.Linq;
 public static class SaveSystem
 {
     private static string saveExtension = ".doorsave";
-    public static SaveDataSerialized CurrentSaveData; // Current save data
+    public static SaveDataSerialized SessionSaveData; // Session save data
     public static string currentTextTest;
 
     /* 

@@ -7,15 +7,16 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager current;
-    
+
     //Platformer related
     public PlatformerPlayer player;
     public VerticalPlatform verticalPlatform;
 
     public List<Door> doors; //make private?
     public List<SaveOptionObject> saveOptionObjects;
+
     private string saveName = "SaveSlot";
-    //private List<DoorName> doorNames = new List<DoorName>() { DoorName.Tent }; sdasd
+    public List<string> flags = new List<string>();
 
     private int selectedSavefile = 0;
 
@@ -23,11 +24,11 @@ public class GameManager : MonoBehaviour
 
     private bool firstUpdate = true;
 
-    private List<DoorName> CurrentlyDisabledDoors { 
-        get 
+    private List<DoorName> CurrentlyDisabledDoors {
+        get
         {
             return doors.Where(d => !d.isLit).Select(d => d.doorName).ToList();
-        } 
+        }
     }
 
     private void Awake()
@@ -38,19 +39,28 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (firstUpdate) 
+        if (firstUpdate)
         {
-            if (SaveSystem.CurrentSaveData != null) LoadGameData(SaveSystem.CurrentSaveData); //Ensures save data is loaded if it needs to be
+            if (SaveSystem.SessionSaveData != null) //Ensures save data is loaded if it needs to be
+            {
+                LoadGameData(SaveSystem.SessionSaveData);
+            }
+            else 
+            {
+                UpdateSessionData(); //This way we always have a current savedata
+            }
+            AddFlag("playthrough2");
+
             firstUpdate = false;
-        }   
+        }
     }
 
-    public void AddDoor(Door door) 
+    public void AddDoor(Door door)
     {
         doors.Add(door);
     }
 
-    public void AddSaveOptionObject(SaveOptionObject saveOptionObject) 
+    public void AddSaveOptionObject(SaveOptionObject saveOptionObject)
     {
         saveOptionObjects.Add(saveOptionObject);
     }
@@ -59,22 +69,20 @@ public class GameManager : MonoBehaviour
     {
         selectedSavefile = optionNo;
 
-        if (saveOptionObjects.Count > 0) 
+        if (saveOptionObjects.Count > 0)
         {
-            foreach (SaveOptionObject so in saveOptionObjects) 
+            foreach (SaveOptionObject so in saveOptionObjects)
             {
                 so.IsSelected = so.saveNumber == optionNo;
             }
         }
     }
 
-    public void InitiateSave() 
+    public void InitiateSave()
     {
-        if (player != null && selectedSavefile != 0) 
+        if (player != null && selectedSavefile != 0)
         {
-            //Debug.Log("Initiating Save");
-            SaveData newSaveData = new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors);
-            SaveSystem.SaveGame(newSaveData);
+            SaveSystem.SaveGame(GenerateSaveData());
             RefreshSaveSlotData();
         }
     }
@@ -83,21 +91,41 @@ public class GameManager : MonoBehaviour
     {
         if (player != null && selectedSavefile != 0)
         {
-            //Debug.Log("Initiating Load");
             SaveData savedData = SaveSystem.LoadGame(saveName + selectedSavefile);
 
 
-            if(savedData != null) 
+            if (savedData != null)
             {
-                SaveSystem.CurrentSaveData = savedData;
+                UpdateSessionData(savedData);
                 SceneManager.LoadScene(savedData.Level);
             }
         }
     }
 
-    private void UpdateDoors(bool enabled, List<DoorName> doorsToUpdate) 
+    private SaveData GenerateSaveData() 
     {
-        foreach (Door door in doors) 
+        return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, flags);
+    }
+
+    private void UpdateSessionData() 
+    {
+        UpdateSessionData(GenerateSaveData());
+    }
+
+    private void UpdateSessionFlags() 
+    {
+        SaveSystem.SessionSaveData.Flags = flags.ToArray();
+        Debug.Log("session flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+    }
+
+    private void UpdateSessionData(SaveData saveData)
+    {
+        SaveSystem.SessionSaveData = saveData;
+    }
+
+    private void UpdateDoors(bool enabled, List<DoorName> doorsToUpdate)
+    {
+        foreach (Door door in doors)
         {
             door.isLit = doorsToUpdate.Contains(door.doorName) ? enabled : true;
         }
@@ -113,6 +141,7 @@ public class GameManager : MonoBehaviour
 
         //Door states
         UpdateDoors(false, savedData.CompletedDoors);
+        LoadFlags(savedData.Flags);
     }
 
     public void RefreshSaveSlotData()
@@ -124,5 +153,70 @@ public class GameManager : MonoBehaviour
                 so.SetContent(SaveSystem.GetSaveLastModifiedDate(saveName + so.saveNumber));
             }
         }
+    }
+
+    //Flag related functions
+
+    private void LoadFlags(List<string> activeFlags)
+    {
+        flags = activeFlags;
+    }
+
+    public void AddFlag(string flag) 
+    {
+        if (!flags.Contains(flag)) flags.Add(flag);
+
+        UpdateSessionFlags();
+    }
+
+    public void AddFlags(string[] flags) 
+    {
+        foreach (string flag in flags)
+        {
+            if (!this.flags.Contains(flag)) this.flags.Add(flag);
+        }
+
+        UpdateSessionFlags();
+    }
+
+    public void RemoveFlag(string flag) 
+    {
+        if (flags.Contains(flag)) flags.Remove(flag);
+
+        UpdateSessionFlags();
+    }
+
+    public void RemoveFlags(string[] flags) 
+    {
+        foreach (string flag in flags) 
+            if (this.flags.Contains(flag)) this.flags.Remove(flag);
+
+        UpdateSessionFlags();
+    }
+
+    public void ToggleFlag(string flag) 
+    {
+        if (flags.Contains(flag)) flags.Remove(flag);
+        else flags.Add(flag);
+
+        UpdateSessionFlags();
+    }
+
+    public bool HasFlag(string flag) 
+    {
+        return flags.Contains(flag);
+    }
+
+    public bool[] HasFlags(string[] flags) 
+    {
+        return flags.Select(x => HasFlag(x)).ToArray();
+    }
+
+    public bool HasAllFlags(string[] flags) 
+    {
+        foreach (string flag in flags) 
+            if (!HasFlag(flag)) return false;
+
+        return true;
     }
 }
