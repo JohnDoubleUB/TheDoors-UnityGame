@@ -36,9 +36,8 @@ public class GameManager : MonoBehaviour
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
 
-        //Add flags here for testing
-        AddFlag("playthrough2");
-        //AddFlag("test-isnt-new");
+        //Testing
+        //AddFlag("playthrough2");
     }
 
     private void Update()
@@ -54,6 +53,8 @@ public class GameManager : MonoBehaviour
             {
                 UpdateSessionData(); //This way we always have a current savedata
             }
+
+            if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
             firstUpdate = false;
         }
     }
@@ -121,6 +122,7 @@ public class GameManager : MonoBehaviour
         {
             SaveSystem.SessionSaveData.Flags = flags.ToArray();
             Debug.Log("session flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+            if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
         }
     }
 
@@ -162,7 +164,7 @@ public class GameManager : MonoBehaviour
     }
 
     //Flag related functions
-
+    //TODO: I think the GameManager should BE a FlagManager, I.e. inherrit from a new FlagManager, that way we can keep things cleaner? Idk
     private void LoadFlags(List<string> activeFlags)
     {
         flags = activeFlags;

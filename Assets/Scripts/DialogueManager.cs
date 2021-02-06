@@ -15,6 +15,7 @@ public class DialogueManager : MonoBehaviour
     public Text speakerText;
     public GameObject dialogueBox;
     public GameObject dialogueOptionPrefab;
+    public bool includeDialogueOptionNumbers;
 
     private List<DialogueOptionText> dialogueOptions = new List<DialogueOptionText>();
 
@@ -23,10 +24,6 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         if (current == null) current = this;
-
-        //This is for testing purposes
-
-
     }
 
     // Start is called before the first frame update
@@ -37,7 +34,7 @@ public class DialogueManager : MonoBehaviour
 
 
         LoadDialogueTree("SvenAndPlayer", testDialogueNames[3]);
-        LoadUIDialogue(loadedDialogueTree.Dialogues["1"]);
+        LoadUIDialogueFrame(loadedDialogueTree.Dialogues["1"]);
 
         Debug.Log("All flags: " + string.Join(", ", DialogueLoader.AllAddedFlags));
     }
@@ -49,42 +46,40 @@ public class DialogueManager : MonoBehaviour
         loadedDialogueTree = loadedDialogueObject.DialogueTrees.First(x => x.Name == treeName);
     }
 
-    public void LoadUIDialogue(Dialogue dialogue)
+    public void LoadUIDialogueFrame(Dialogue dialogue)
     {
         //Clear previous dialogue
         ClearUIDialogue();
-        
-        //Load speaker text and speaker name
-        if (speakerText != null && dialogue.SpeakerDialogues != null && dialogue.SpeakerDialogues.Any())
-        {
-            //filter speaker dialogue
-            SpeakerDialogue[] filteredSpeakerDialogue = FilterDialogueByFlagRequirements(dialogue.SpeakerDialogues);
-            if (filteredSpeakerDialogue.Length != dialogue.SpeakerDialogues.Length) dialogue = new Dialogue(dialogue, filteredSpeakerDialogue);
 
+        //Apply all the flag requirement filters
+        Dialogue filteredDialogue = FilterDialogueByFlagRequirements(dialogue);
+
+        //Load speaker text and speaker name
+        if (speakerText != null && filteredDialogue.SpeakerDialogues != null && filteredDialogue.SpeakerDialogues.Any())
+        {
             //Load speaker dialogue and a name
-            SpeakerDialogue speaker = dialogue.SpeakerDialogues[speakerDialogueNo];
+            SpeakerDialogue speaker = filteredDialogue.SpeakerDialogues[speakerDialogueNo];
             speakerText.text = loadedDialogueObject.GetSpeakerWithCapital(speaker.SpeakerId) + ": " + speaker.Text;
         }
 
         //Generate Options
-        if (speakerDialogueNo != (dialogue.SpeakerDialogues.Length - 1))
+        if (speakerDialogueNo != (filteredDialogue.SpeakerDialogues.Length - 1))
         {
             CreateDialogueOptionText(0, "Continue.");
         }
-        else if (dialogue.EndsConversation)
+        else if (filteredDialogue.EndsConversation)
         {
             CreateDialogueOptionText(0, "End Conversation.");
         }
-        else if (dialogueBox != null && dialogueOptionPrefab && dialogue.DialogueOptions != null && dialogue.DialogueOptions.Any())
+        else if (dialogueBox != null && dialogueOptionPrefab && filteredDialogue.DialogueOptions != null && filteredDialogue.DialogueOptions.Any())
         {
-            for (int i = 0; i < dialogue.DialogueOptions.Length; i++)
+            for (int i = 0; i < filteredDialogue.DialogueOptions.Length; i++)
             {
-                //TODO: this screws up numbering when options are missing, these options need to be filtered the same way that the speaker dialogue is
-                if (DialogueMeetsFlagRequirements(dialogue.DialogueOptions[i])) CreateDialogueOptionText(i, dialogue.DialogueOptions[i].OptionText); 
+                CreateDialogueOptionText(i, filteredDialogue.DialogueOptions[i].OptionText); 
             }
         }
 
-        loadedDialogue = dialogue;
+        loadedDialogue = filteredDialogue;
     }
 
     public void SelectOption(int option)
@@ -95,7 +90,7 @@ public class DialogueManager : MonoBehaviour
             speakerDialogueNo != loadedDialogue.SpeakerDialogues.Length - 1)
         {
             speakerDialogueNo++;
-            LoadUIDialogue(loadedDialogue);
+            LoadUIDialogueFrame(loadedDialogue);
         }
         else if (loadedDialogue.EndsConversation)
         {
@@ -115,7 +110,7 @@ public class DialogueManager : MonoBehaviour
     private void CreateDialogueOptionText(int index, string optionText)
     {
         DialogueOptionText newDialogueOption = Instantiate(dialogueOptionPrefab, dialogueBox.transform).GetComponent<DialogueOptionText>();
-        newDialogueOption.InitializeOption(index, optionText);
+        newDialogueOption.InitializeOption(index, optionText, includeDialogueOptionNumbers);
         dialogueOptions.Add(newDialogueOption);
     }
 
@@ -144,7 +139,7 @@ public class DialogueManager : MonoBehaviour
             //Check whether this new Dialogue ends the conversation because if it doesn't and we are given no dialogue options then we use the previous dialogues options
             bool retainPreviousOptions = !newDialogue.EndsConversation && (newDialogue.DialogueOptions == null || !newDialogue.DialogueOptions.Any());
 
-            LoadUIDialogue(
+            LoadUIDialogueFrame(
                 retainPreviousOptions ?
                 new Dialogue(newDialogue, loadedDialogue.DialogueOptions) :
                 newDialogue
@@ -178,6 +173,38 @@ public class DialogueManager : MonoBehaviour
     private SpeakerDialogue[] FilterDialogueByFlagRequirements(SpeakerDialogue[] speakerDialogue)
     {
         return speakerDialogue.Where(x => DialogueMeetsFlagRequirements(x)).ToArray();
+    }
+
+    private DialogueOption[] FilterDialogueByFlagRequirements(DialogueOption[] dialogueOption)
+    {
+        return dialogueOption.Where(x => DialogueMeetsFlagRequirements(x)).ToArray();
+    }
+
+    private Dialogue FilterDialogueByFlagRequirements(Dialogue dialogueToFilter)
+    {
+        DialogueOption[] filteredDialogueOptions = null;
+        SpeakerDialogue[] filteredSpeakerDialogue = null;
+
+        if (dialogueToFilter.DialogueOptions != null && dialogueToFilter.DialogueOptions.Any()) filteredDialogueOptions = FilterDialogueByFlagRequirements(dialogueToFilter.DialogueOptions);
+        if (speakerText != null && dialogueToFilter.SpeakerDialogues != null && dialogueToFilter.SpeakerDialogues.Any()) filteredSpeakerDialogue = FilterDialogueByFlagRequirements(dialogueToFilter.SpeakerDialogues);
+
+        bool speakerDialoguesNeedsUpdating = filteredSpeakerDialogue != null && filteredSpeakerDialogue.Length != dialogueToFilter.SpeakerDialogues.Length;
+        bool dialogueOptionsNeedUpdating = filteredDialogueOptions != null && filteredDialogueOptions.Length != dialogueToFilter.DialogueOptions.Length;
+
+        if (speakerDialoguesNeedsUpdating && dialogueOptionsNeedUpdating)
+        {
+            return new Dialogue(dialogueToFilter, filteredSpeakerDialogue, filteredDialogueOptions);
+        }
+        else if (speakerDialoguesNeedsUpdating)
+        {
+            return new Dialogue(dialogueToFilter, filteredSpeakerDialogue);
+        }
+        else if (dialogueOptionsNeedUpdating)
+        {
+            return new Dialogue(dialogueToFilter, filteredDialogueOptions);
+        }
+
+        return dialogueToFilter;
     }
 
     private bool DialogueMeetsFlagRequirements(DialogueOption dialogueOption) 

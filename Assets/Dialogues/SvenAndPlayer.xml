@@ -209,7 +209,7 @@
 
 	</dialogue-tree>
 
-	<!-- I'm testing the limit of this system -->
+	<!-- testing new functionality -->
 	<dialogue-tree id="6" name="testdialogue">
 		<dialogue id="1">
 			<speaker>...</speaker>
