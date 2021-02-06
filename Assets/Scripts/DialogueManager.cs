@@ -33,7 +33,7 @@ public class DialogueManager : MonoBehaviour
         string[] testDialogueNames = { "intro", "after-first-door", "after-a-few-doors2", "testdialogue" };
 
 
-        LoadDialogueTree("SvenAndPlayer", testDialogueNames[3]);
+        LoadDialogueTree("SvenAndPlayer", testDialogueNames[2]);
         LoadUIDialogueFrame(loadedDialogueTree.Dialogues["1"]);
 
         Debug.Log("All flags: " + string.Join(", ", DialogueLoader.AllAddedFlags));

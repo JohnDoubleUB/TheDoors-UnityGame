@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : FlagManager
 {
     public static GameManager current;
 
@@ -16,11 +16,8 @@ public class GameManager : MonoBehaviour
     public List<SaveOptionObject> saveOptionObjects;
 
     private string saveName = "SaveSlot";
-    public List<string> flags = new List<string>();
 
     private int selectedSavefile = 0;
-
-
 
     private bool firstUpdate = true;
 
@@ -108,7 +105,7 @@ public class GameManager : MonoBehaviour
 
     private SaveData GenerateSaveData() 
     {
-        return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, flags);
+        return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, Flags);
     }
 
     private void UpdateSessionData() 
@@ -116,11 +113,11 @@ public class GameManager : MonoBehaviour
         UpdateSessionData(GenerateSaveData());
     }
 
-    private void UpdateSessionFlags() 
+    protected override void UpdateSessionFlags(string[] updatedFlags)
     {
         if (SaveSystem.SessionSaveData != null)
         {
-            SaveSystem.SessionSaveData.Flags = flags.ToArray();
+            SaveSystem.SessionSaveData.Flags = updatedFlags;
             Debug.Log("session flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
             if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
         }
@@ -161,78 +158,5 @@ public class GameManager : MonoBehaviour
                 so.SetContent(SaveSystem.GetSaveLastModifiedDate(saveName + so.saveNumber));
             }
         }
-    }
-
-    //Flag related functions
-    //TODO: I think the GameManager should BE a FlagManager, I.e. inherrit from a new FlagManager, that way we can keep things cleaner? Idk
-    private void LoadFlags(List<string> activeFlags)
-    {
-        flags = activeFlags;
-    }
-
-    public void AddFlag(string flag) 
-    {
-        if (!flags.Contains(flag)) flags.Add(flag);
-
-        UpdateSessionFlags();
-    }
-
-    public void AddFlags(string[] flags) 
-    {
-        foreach (string flag in flags)
-        {
-            if (!this.flags.Contains(flag)) this.flags.Add(flag);
-        }
-
-        UpdateSessionFlags();
-    }
-
-    public void RemoveFlag(string flag) 
-    {
-        if (flags.Contains(flag)) flags.Remove(flag);
-
-        UpdateSessionFlags();
-    }
-
-    public void RemoveFlags(string[] flags) 
-    {
-        foreach (string flag in flags) 
-            if (this.flags.Contains(flag)) this.flags.Remove(flag);
-
-        UpdateSessionFlags();
-    }
-
-    public void ToggleFlag(string flag) 
-    {
-        if (flags.Contains(flag)) flags.Remove(flag);
-        else flags.Add(flag);
-
-        UpdateSessionFlags();
-    }
-
-    public bool HasFlag(string flag) 
-    {
-        return flags.Contains(flag);
-    }
-
-    public bool[] HasFlags(string[] flags) 
-    {
-        return flags.Select(x => HasFlag(x)).ToArray();
-    }
-
-    public bool HasAllFlags(string[] flags) 
-    {
-        foreach (string flag in flags) 
-            if (!HasFlag(flag)) return false;
-
-        return true;
-    }
-
-    public bool HasAnyFlags(string[] flags) 
-    {
-        foreach (string flag in flags)
-            if (HasFlag(flag)) return true;
-
-        return false;
     }
 }
