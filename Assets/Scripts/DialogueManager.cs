@@ -32,8 +32,8 @@ public class DialogueManager : MonoBehaviour
         //This will need to be changed later
         string[] testDialogueNames = { "intro", "after-first-door", "after-a-few-doors2", "testdialogue" };
 
-
-        LoadDialogueTree("SvenAndPlayer", testDialogueNames[2]);
+        //TODO: This loads after the flags are added from loading, oof
+        LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
         LoadUIDialogueFrame(loadedDialogueTree.Dialogues["1"]);
 
         Debug.Log("All flags: " + string.Join(", ", DialogueLoader.AllAddedFlags));
@@ -147,6 +147,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    //Flag loading code
     private void LoadFlags(Dialogue dialogue)
     {
         //Load all flags
@@ -166,8 +167,21 @@ public class DialogueManager : MonoBehaviour
         }
         if (actionFlags != null)
         {
-            GameManager.current.AddFlags(actionFlags);
+            GameManager.current.AddActionFlags(actionFlags);
         }
+    }
+
+    //Flag requirement filtering code
+    private bool DialogueMeetsFlagRequirements(DialogueOption dialogueOption)
+    {
+        return (dialogueOption.RequiredFlags != null ? GameManager.current.HasAllFlags(dialogueOption.RequiredFlags) : true)
+            && (dialogueOption.UnRequiredFlags != null ? !GameManager.current.HasAnyFlags(dialogueOption.UnRequiredFlags) : true);
+    }
+
+    private bool DialogueMeetsFlagRequirements(SpeakerDialogue speakerDialogue)
+    {
+        return (speakerDialogue.RequiredFlags != null ? GameManager.current.HasAllFlags(speakerDialogue.RequiredFlags) : true)
+            && (speakerDialogue.UnRequiredFlags != null ? !GameManager.current.HasAnyFlags(speakerDialogue.UnRequiredFlags) : true);
     }
 
     private SpeakerDialogue[] FilterDialogueByFlagRequirements(SpeakerDialogue[] speakerDialogue)
@@ -205,17 +219,5 @@ public class DialogueManager : MonoBehaviour
         }
 
         return dialogueToFilter;
-    }
-
-    private bool DialogueMeetsFlagRequirements(DialogueOption dialogueOption) 
-    {
-        return (dialogueOption.RequiredFlags != null ? GameManager.current.HasAllFlags(dialogueOption.RequiredFlags) : true)
-            && (dialogueOption.UnRequiredFlags != null ? !GameManager.current.HasAnyFlags(dialogueOption.UnRequiredFlags) : true);
-    }
-
-    private bool DialogueMeetsFlagRequirements(SpeakerDialogue speakerDialogue)
-    {
-        return (speakerDialogue.RequiredFlags != null ? GameManager.current.HasAllFlags(speakerDialogue.RequiredFlags) : true) 
-            && (speakerDialogue.UnRequiredFlags != null ? !GameManager.current.HasAnyFlags(speakerDialogue.UnRequiredFlags) : true);
     }
 }

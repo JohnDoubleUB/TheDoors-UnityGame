@@ -13,8 +13,9 @@ public class SaveDataSerialized
     public float[] PlayerPosition;
     public int[] CompletedDoors;
     public string[] Flags;
+    public string[] ActionQueue;
 
-    public SaveDataSerialized(int level, string saveName, Vector3 position, List<DoorName> completedDoors, List<string> flags) 
+    public SaveDataSerialized(int level, string saveName, Vector3 position, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue) 
     {
         Level = level;
         SaveName = saveName;
@@ -27,6 +28,7 @@ public class SaveDataSerialized
 
         CompletedDoors = completedDoors.Distinct().Select(dn => (int)dn).ToArray();
         Flags = flags.ToArray();
+        ActionQueue = actionQueue.ToArray();
     }
 
 
@@ -38,7 +40,8 @@ public class SaveDataSerialized
             saveData.SaveName, 
             saveData.PlayerPosition, 
             saveData.CompletedDoors,
-            saveData.Flags
+            saveData.Flags,
+            saveData.ActionQueue
             );
     }
 
@@ -51,7 +54,8 @@ public class SaveDataSerialized
             saveData.Level,
             playerPositionVector,
             saveData.CompletedDoors.Select(dn => (DoorName)dn).ToList(),
-            saveData.Flags.ToList()
+            saveData.Flags.ToList(),
+            saveData.ActionQueue.ToList()
             );
     }
 }

@@ -15,6 +15,9 @@ public class GameManager : FlagManager
     public List<Door> doors; //make private?
     public List<SaveOptionObject> saveOptionObjects;
 
+    //The action queue is used to store actions for when they can happen
+    public List<string> actionQueue = new List<string>(); //TODO: Implement what happens to these actions!
+
     private string saveName = "SaveSlot";
 
     private int selectedSavefile = 0;
@@ -105,7 +108,7 @@ public class GameManager : FlagManager
 
     private SaveData GenerateSaveData() 
     {
-        return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, Flags);
+        return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, Flags, actionQueue);
     }
 
     private void UpdateSessionData() 
@@ -146,7 +149,12 @@ public class GameManager : FlagManager
 
         //Door states
         UpdateDoors(false, savedData.CompletedDoors);
+        
+        //Flags
         LoadFlags(savedData.Flags);
+
+        //Queued Actions
+        actionQueue = savedData.ActionQueue;
     }
 
     public void RefreshSaveSlotData()
@@ -158,5 +166,11 @@ public class GameManager : FlagManager
                 so.SetContent(SaveSystem.GetSaveLastModifiedDate(saveName + so.saveNumber));
             }
         }
+    }
+
+    protected override void QueueActions(params string[] actions)
+    {
+        if(actions != null) actionQueue.AddRange(actions);
+        Debug.Log("actions added!" + string.Join(", ", actionQueue));
     }
 }

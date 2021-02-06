@@ -5,11 +5,13 @@ using UnityEngine;
 
 public abstract class FlagManager : MonoBehaviour
 {
-    private List<string> flags = new List<string>();
+    public List<string> flags = new List<string>();
 
     public List<string> Flags { get { return flags; } }
 
     protected abstract void UpdateSessionFlags(string[] updatedFlags);
+
+    protected abstract void QueueActions(params string[] actions);
 
     protected void LoadFlags(List<string> activeFlags)
     {
@@ -23,6 +25,12 @@ public abstract class FlagManager : MonoBehaviour
         UpdateSessionFlags(Flags.ToArray());
     }
 
+    public void AddActionFlag(string flag) 
+    {
+        AddFlag(flag);
+        QueueActions(flag);
+    }
+
     public void AddFlags(string[] flags)
     {
         foreach (string flag in flags)
@@ -31,6 +39,12 @@ public abstract class FlagManager : MonoBehaviour
         }
 
         UpdateSessionFlags(Flags.ToArray());
+    }
+
+    public void AddActionFlags(string[] flags)
+    {
+        AddFlags(flags);
+        QueueActions(flags);
     }
 
     public void RemoveFlag(string flag)
