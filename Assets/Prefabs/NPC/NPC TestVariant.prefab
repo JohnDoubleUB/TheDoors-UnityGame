@@ -62,10 +62,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4911752452020318094, guid: e81389d63cf7a1b428b8ee4c4759cbe5,
+        type: 3}
+      propertyPath: NpcDataObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 9c754b7604e6b6b469e78d84fdb04912,
+        type: 2}
     - target: {fileID: 8634508958850246460, guid: e81389d63cf7a1b428b8ee4c4759cbe5,
         type: 3}
       propertyPath: m_Name
-      value: NPC
+      value: NPC TestVariant
       objectReference: {fileID: 0}
     - target: {fileID: 8927327227677327791, guid: e81389d63cf7a1b428b8ee4c4759cbe5,
         type: 3}

@@ -767,7 +767,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SpeakerText
+  m_Text: 
 --- !u!222 &469950171
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4219,6 +4219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1469111560}
+  - component: {fileID: 1469111561}
   m_Layer: 5
   m_Name: DialogueMenu
   m_TagString: Untagged
@@ -4248,6 +4249,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -130.56}
   m_SizeDelta: {x: 966.4828, y: 261.11853}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1469111561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1469111559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec75b18c168ab694da69e2c2a71245a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5
 --- !u!4 &1539903206 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8878139210490736908, guid: 31480fb6f68afc34c873c0f463f37747,
@@ -50398,6 +50412,7 @@ MonoBehaviour:
   dialogueBox: {fileID: 1438092049}
   dialogueOptionPrefab: {fileID: 2941686918564784380, guid: 5f276d58ca19d204396820364883b9a4,
     type: 3}
+  includeDialogueOptionNumbers: 0
 --- !u!1 &1991004945
 GameObject:
   m_ObjectHideFlags: 0
@@ -50428,11 +50443,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 782f150a620c42646aeaedce5e3d6257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flags: []
   player: {fileID: 428037798}
   verticalPlatform: {fileID: 0}
   doors: []
   saveOptionObjects: []
-  flags: []
+  actionQueue: []
 --- !u!4 &1991004947
 Transform:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     private Dictionary<UIContextType, bool> activeContextElements = new Dictionary<UIContextType, bool>();
 
     private bool activeContextsInitiated;
+    private UIContextType[] InitiallyEnabledContexts; //= { UIContextType.Dialogue }; //This is mostly for testing
 
     private UIState uiState = UIState.None;
     public UIState UIState 
@@ -40,7 +41,8 @@ public class UIManager : MonoBehaviour
         //Add all the types to the list
         foreach (UIContextType context in (UIContextType[])Enum.GetValues(typeof(UIContextType))) 
         {
-            activeContextElements.Add(context, false);
+            if (InitiallyEnabledContexts == null) activeContextElements.Add(context, false);
+            else activeContextElements.Add(context, InitiallyEnabledContexts.Contains(context) ? true : false);
         }
     }
 

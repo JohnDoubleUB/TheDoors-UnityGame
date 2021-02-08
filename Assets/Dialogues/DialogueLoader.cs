@@ -10,11 +10,13 @@ public static class DialogueLoader
     private static string DialoguePath = Application.dataPath + "/Dialogues/";
     private static string DialogueFileExtension = "xml";
     private static List<string> allAddedFlags = new List<string>();
+    private static string dialogueStartId = "1"; //This is essentially the default entrypoint to a given dialogue tree
 
 
     private static readonly DialogueObject[] dialogueObjects = LoadAllDialogueObjects();  //Load all dialogue intially
 
     //Attributes: id, tree-name, dialogue-id
+    //NOTE: DialogueObject Name are considered to be flags! Make sure they don't match anywhere they shouldn't!
     public static DialogueObject[] DialogueObjects //This is where we intially load in all the dialogue for the game
     {
         get { return dialogueObjects; }
@@ -24,6 +26,10 @@ public static class DialogueLoader
         get { return allAddedFlags; } 
     }
 
+    public static string DialogueStartId 
+    {
+        get { return dialogueStartId; }
+    }
 
     private static DialogueObject[] LoadAllDialogueObjects()
     {
@@ -221,6 +227,14 @@ public class DialogueTree
     public string Id;
     public string Name;
     public Dictionary<string, Dialogue> Dialogues;
+
+    public Dialogue EntryPoint 
+    {
+        get 
+        {
+            return Dialogues.ContainsKey(DialogueLoader.DialogueStartId) ? Dialogues[DialogueLoader.DialogueStartId] : null; 
+        }
+    }
 
     public DialogueTree(string id, string name, Dialogue[] dialogues)
     {
