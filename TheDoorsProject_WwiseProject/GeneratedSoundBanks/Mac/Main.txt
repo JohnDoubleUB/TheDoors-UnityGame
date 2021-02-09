@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	4258653052	Test_Event			\Default Work Unit\Test_Event	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	1023798108	hit_metalic	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\hit_metalic_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\hit_metalic		360508
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{0243C3A0-2E87-4E7E-9CFC-C0F852CB7A52}" SchemaVersion="97">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{0243C3A0-2E87-4E7E-9CFC-C0F852CB7A52}" PersistMode="Standalone">
+			<ChildrenList>
+				<Sound Name="hit_metalic" ID="{F6D08DA0-78DD-4E48-AE9D-A0439947A565}" ShortID="595736935">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="hit_metalic" ID="{D71615D6-3161-4722-8B40-3D5FAB03310C}">
+							<Language>SFX</Language>
+							<AudioFile>hit_metalic.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="1023798108"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="hit_metalic" ID="{D71615D6-3161-4722-8B40-3D5FAB03310C}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>
