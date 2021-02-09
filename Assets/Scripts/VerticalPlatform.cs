@@ -23,7 +23,7 @@ public class VerticalPlatform : MonoBehaviour
 
     private void Update()
     {
-        //When user presses down platform collision allows them to fall back through
+        //When user presses down platform collision allows them to fall back througH
         if (DropThroughPlatform)
         {
             if (currentWaitTime <= 0)
