@@ -173,6 +173,10 @@ public class PlatformerPlayer : MonoBehaviour
             rb.velocity = new Vector2(0, jumpVelocity * jumpVelocityMultiplier);
             currentJumpCount++;
             isJumping = true;
+            
+            //Test!!! 
+            //TODO: Remove this because the sound is annoying!
+            AkSoundEngine.PostEvent("Test_Event", gameObject);
         }
     }
 

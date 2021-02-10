@@ -1,0 +1,6 @@
+Event	ID	Name			Wwise Object Path	Notes
+	4258653052	Test_Event			\Default Work Unit\Test_Event	
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	1069383294	1_ Out of the Dark	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Windows\SFX\1. Out of the Dark_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\1_ Out of the Dark		49039344
+
