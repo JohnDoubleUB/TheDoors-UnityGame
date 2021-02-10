@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="12" SoundbankVersion="135">
 	<RootPaths>
-		<ProjectRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\</SourceFilesRoot>
-		<SoundBanksRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\GeneratedSoundBanks\Mac\</SoundBanksRoot>
+		<ProjectRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/</ProjectRoot>
+		<SourceFilesRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/.cache/Mac/</SourceFilesRoot>
+		<SoundBanksRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/GeneratedSoundBanks/Mac/</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\GeneratedSoundBanks\Mac</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/GeneratedSoundBanks/Mac</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -16,16 +16,16 @@
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 		</SoundBank>
-		<SoundBank Id="3161908922" Language="SFX" Hash="3387076742">
+		<SoundBank Id="3161908922" Language="SFX" Hash="73232296">
 			<ObjectPath>\SoundBanks\Default Work Unit\Main</ObjectPath>
 			<ShortName>Main</ShortName>
 			<Path>Main.bnk</Path>
 			<IncludedEvents>
-				<Event Id="4258653052" Name="Test_Event" ObjectPath="\Events\Default Work Unit\Test_Event" DurationType="OneShot" DurationMin="1.877313" DurationMax="1.877313">
+				<Event Id="4258653052" Name="Test_Event" ObjectPath="\Events\Default Work Unit\Test_Event" DurationType="OneShot" DurationMin="278.000000" DurationMax="278.000000">
 					<IncludedMemoryFiles>
-						<File Id="1023798108" Language="SFX">
-							<ShortName>hit_metalic.wav</ShortName>
-							<Path>SFX\hit_metalic_10C4C929.wem</Path>
+						<File Id="1069383294" Language="SFX">
+							<ShortName>1. Out of the Dark.wav</ShortName>
+							<Path>SFX/1. Out of the Dark_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>

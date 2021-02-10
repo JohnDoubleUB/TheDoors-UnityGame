@@ -5,10 +5,10 @@
 			<ChildrenList>
 				<Event Name="Test_Event" ID="{C4017FD3-2249-4676-8561-5E2C7367D4E3}">
 					<ChildrenList>
-						<Action Name="" ID="{69F2CE2D-4DA3-4922-BD5F-5E55698BE080}" ShortID="514491304">
+						<Action Name="" ID="{BB7DBA3E-6BBC-46B9-B797-57E168DEEA45}" ShortID="969089367">
 							<ReferenceList>
 								<Reference Name="Target">
-									<ObjectRef Name="hit_metalic" ID="{F6D08DA0-78DD-4E48-AE9D-A0439947A565}" WorkUnitID="{0243C3A0-2E87-4E7E-9CFC-C0F852CB7A52}"/>
+									<ObjectRef Name="1_ Out of the Dark" ID="{0922DF9E-7817-4195-9B69-1207A41F2103}" WorkUnitID="{0243C3A0-2E87-4E7E-9CFC-C0F852CB7A52}"/>
 								</Reference>
 							</ReferenceList>
 						</Action>
