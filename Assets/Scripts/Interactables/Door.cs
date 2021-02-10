@@ -33,7 +33,6 @@ public class Door : Interactable
     private new void Start()
     {
         base.Start();
-        if (GameManager.current != null) GameManager.current.AddDoor(this);
     }
 
     private void Update()

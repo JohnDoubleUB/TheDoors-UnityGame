@@ -36,10 +36,16 @@ public class GameManager : FlagManager
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
 
+        /* I think we should be having the game manager find the player, doors and anything it needs to know about rather than having them find it
+         * Mainly because this means that all the other objects need to use a lifecyclehook that logically occurs AFTER Awake which means we end up with
+         * and because creating a savegame requires us knowing about the player, doors etc these then have to logically occur AFTER the doors lifecyclehook 
+         * all of a sudden we are using Awake, Start, and also the first call of Update, this is not ideal.
+         */
+
+        FindKeyComponents(); //New thing!
         //Testing
         //AddFlag("playthrough2");
     }
-
     private void Update()
     {
         //TODO: Maybe look into this
@@ -57,11 +63,6 @@ public class GameManager : FlagManager
             if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
             firstUpdate = false;
         }
-    }
-
-    public void AddDoor(Door door)
-    {
-        doors.Add(door);
     }
 
     public void AddSaveOptionObject(SaveOptionObject saveOptionObject)
@@ -106,6 +107,19 @@ public class GameManager : FlagManager
         }
     }
 
+    private void FindKeyComponents() //Find things like doors and the player etc,
+    {
+        Debug.Log("Find key components!");
+        //Tag things, that saves having to do horrible comparisons!
+        GameObject[] sceneDoorGameObjects = GameObject.FindGameObjectsWithTag("WorldDoor");
+        if (sceneDoorGameObjects != null && sceneDoorGameObjects.Any()) 
+        {
+            List<Door> doorComponents = sceneDoorGameObjects.Select(x => x.GetComponent<Door>()).ToList();
+            if (doorComponents.Any()) doors = doorComponents;
+        }
+        
+
+    }
     private SaveData GenerateSaveData() 
     {
         return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, Flags, actionQueue);
