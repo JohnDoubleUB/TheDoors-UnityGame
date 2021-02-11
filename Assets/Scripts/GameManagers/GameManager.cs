@@ -39,6 +39,10 @@ public class GameManager : FlagManager
         LoadSessionData();
 
         Debug.Log("Level build index!: " + SceneManager.GetActiveScene().buildIndex);
+
+        LevelSaveDataSerialized test1 = SaveSystem.SessionSaveData.LevelData[0];
+
+        Debug.Log("Level index: " + test1.Level + ", Level Name: " + test1.LevelName + ", saved player position (x,y,z): " + string.Join(", " , test1.PlayerPosition));
     }
 
     public void SetSelectedSaveOption(int optionNo)
@@ -128,9 +132,36 @@ public class GameManager : FlagManager
         
 
     }
-    private SaveData GenerateSaveData() 
+    private SaveData GenerateSaveData() //Responsible for generating our save data!
     {
-        return new SaveData(saveName + selectedSavefile, SceneManager.GetActiveScene().buildIndex, player.transform.position, CurrentlyDisabledDoors, Flags, actionQueue);
+        Scene activeScene = SceneManager.GetActiveScene(); //Get our current scene for convenience
+
+        List<LevelSaveData> levelData;
+
+        //This should allow us to persist player location in addition to other things in the save data! (hopefully)
+        //Check whether we currently have save data in our session
+        if (SaveSystem.SessionSaveData != null)
+        {
+            levelData = SaveSystem.SessionSaveData.LevelData.Select(x => (LevelSaveData)x).Where(x => x.LevelName != activeScene.name).ToList(); //Get all the levelSaveData we have currently in our session except any for our current session
+        }
+        else 
+        {
+            levelData = new List<LevelSaveData>(); //If we happen to not have any existing session data then we make this list from scratch
+        }
+
+        levelData.Add(new LevelSaveData(activeScene.name, activeScene.buildIndex, player.transform.position)); //Add our current levels levelSaveData
+
+        //If we are not on the hubworld we aren't gonna have the doors and so currentlyDisabledDoors is going to be confused, so we need to leave that as is in our save
+        List<DoorName> disabledDoors = doors != null && doors.Any() ?
+            CurrentlyDisabledDoors : 
+            SaveSystem.SessionSaveData != null ?
+            SaveSystem.SessionSaveData.CompletedDoors.Select(x => (DoorName)x).ToList() : 
+            new List<DoorName>(); //If we have session save data currently
+
+        //I hope this stuff works 
+
+        //Generate our new save!
+        return new SaveData(saveName + selectedSavefile, activeScene.name, activeScene.buildIndex, player.transform.position, disabledDoors, Flags, actionQueue, levelData);
     }
 
     private void UpdateSessionData() 
@@ -163,11 +194,25 @@ public class GameManager : FlagManager
 
     private void LoadGameData(SaveData savedData)
     {
+        //Get the current level
+        //Find associated save data
+        LevelSaveData currentLevelSaveData = savedData.LevelData.First(x => x.LevelName == savedData.LevelName);
+
+        //If we have save data for the player on this level
+        if (currentLevelSaveData != null)
+        {
+            //Player position
+            player.transform.position = currentLevelSaveData.PlayerPosition;
+
+            //Move camera
+            if (Camera.main) Camera.main.transform.position = new Vector3(currentLevelSaveData.PlayerPosition.x, currentLevelSaveData.PlayerPosition.y, Camera.main.transform.position.z);
+        }
+
         //Player position
-        player.transform.position = savedData.PlayerPosition;
+        //player.transform.position = savedData.PlayerPosition; 
 
         //Move camera
-        if (Camera.main) Camera.main.transform.position = new Vector3(savedData.PlayerPosition.x, savedData.PlayerPosition.y, Camera.main.transform.position.z);
+        //if (Camera.main) Camera.main.transform.position = new Vector3(savedData.PlayerPosition.x, savedData.PlayerPosition.y, Camera.main.transform.position.z);
 
         //Door states
         UpdateDoors(false, savedData.CompletedDoors);
