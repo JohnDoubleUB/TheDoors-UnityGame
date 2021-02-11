@@ -70,15 +70,6 @@ public class PlatformerPlayer : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
-
-    private void Start()
-    {
-        if (GameManager.current != null)
-        {
-            GameManager.current.player = this;
-        }
-    }
-
     void Update()
     {
         JumpGravityScript();

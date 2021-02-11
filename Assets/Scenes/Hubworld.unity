@@ -686,18 +686,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &428037798 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1252683724578903830, guid: 3fc2b34c408f6b94fbccf417c9e1c279,
-    type: 3}
-  m_PrefabInstance: {fileID: 1400506930}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f1977e898cbfa04a9c3032a004b783e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &428037801 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4225139593928733652, guid: 3fc2b34c408f6b94fbccf417c9e1c279,
@@ -2566,7 +2554,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: 279.75}
+  m_AnchoredPosition: {x: -32, y: 254}
   m_SizeDelta: {x: 927.87805, y: 46.50168}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &946064082
@@ -50555,7 +50543,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: []
-  player: {fileID: 428037798}
   verticalPlatform: {fileID: 0}
   doors: []
   saveOptionObjects: []

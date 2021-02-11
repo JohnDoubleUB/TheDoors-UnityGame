@@ -9,7 +9,7 @@ public class GameManager : FlagManager
     public static GameManager current;
 
     //Platformer related
-    public PlatformerPlayer player;
+    private PlatformerPlayer player;
     public VerticalPlatform verticalPlatform;
 
     public List<Door> doors; //make private?
@@ -22,8 +22,6 @@ public class GameManager : FlagManager
 
     private int selectedSavefile = 0;
 
-    private bool firstUpdate = true;
-
     private List<DoorName> CurrentlyDisabledDoors {
         get
         {
@@ -31,43 +29,16 @@ public class GameManager : FlagManager
         }
     }
 
+    public PlatformerPlayer Player {get { return player; }}
+
     private void Awake()
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
+        FindKeyComponents();
+        LoadSessionData();
 
-        /* I think we should be having the game manager find the player, doors and anything it needs to know about rather than having them find it
-         * Mainly because this means that all the other objects need to use a lifecyclehook that logically occurs AFTER Awake which means we end up with
-         * and because creating a savegame requires us knowing about the player, doors etc these then have to logically occur AFTER the doors lifecyclehook 
-         * all of a sudden we are using Awake, Start, and also the first call of Update, this is not ideal.
-         */
-
-        FindKeyComponents(); //New thing!
-        //Testing
-        //AddFlag("playthrough2");
-    }
-    private void Update()
-    {
-        //TODO: Maybe look into this
-        if (firstUpdate) //I think this is here because the doors use awake to notify the game manager and that's a problem? or its the awakeness current thing? idk
-        {
-            if (SaveSystem.SessionSaveData != null) //Ensures save data is loaded if it needs to be
-            {
-                LoadGameData(SaveSystem.SessionSaveData);
-            }
-            else 
-            {
-                UpdateSessionData(); //This way we always have a current savedata
-            }
-
-            if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
-            firstUpdate = false;
-        }
-    }
-
-    public void AddSaveOptionObject(SaveOptionObject saveOptionObject)
-    {
-        saveOptionObjects.Add(saveOptionObject);
+        Debug.Log("Level build index!: " + SceneManager.GetActiveScene().buildIndex);
     }
 
     public void SetSelectedSaveOption(int optionNo)
@@ -107,15 +78,52 @@ public class GameManager : FlagManager
         }
     }
 
+    private void LoadSessionData() 
+    {
+        if (SaveSystem.SessionSaveData != null) //Ensures save data is loaded if it needs to be
+        {
+            LoadGameData(SaveSystem.SessionSaveData);
+        }
+        else
+        {
+            UpdateSessionData(); //This way we always have a current savedata
+        }
+
+        //Debug text!
+        if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+    }
+
     private void FindKeyComponents() //Find things like doors and the player etc,
     {
         Debug.Log("Find key components!");
         //Tag things, that saves having to do horrible comparisons!
+
+        //TODO: These will only be needed on the first level!
+        //Get all the doors!
         GameObject[] sceneDoorGameObjects = GameObject.FindGameObjectsWithTag("WorldDoor");
         if (sceneDoorGameObjects != null && sceneDoorGameObjects.Any()) 
         {
             List<Door> doorComponents = sceneDoorGameObjects.Select(x => x.GetComponent<Door>()).ToList();
             if (doorComponents.Any()) doors = doorComponents;
+        }
+
+        //Get the player!
+        GameObject[] scenePlayer = GameObject.FindGameObjectsWithTag("Player");
+        if (scenePlayer != null && scenePlayer.Any()) 
+        {
+            PlatformerPlayer pPlayer = scenePlayer[0].GetComponent<PlatformerPlayer>();
+            if (pPlayer != null) player = pPlayer;
+        }
+
+        //Get the save slots!
+        GameObject[] saveSlots = GameObject.FindGameObjectsWithTag("SaveSlot");
+        if (saveSlots != null && saveSlots.Any()) 
+        {
+            foreach (GameObject saveSlotGO in saveSlots) 
+            {
+                SaveOptionObject saveOption = saveSlotGO.GetComponent<SaveOptionObject>();
+                if (saveOption != null) saveOptionObjects.Add(saveOption);
+            }
         }
         
 
