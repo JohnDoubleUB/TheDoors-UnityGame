@@ -240,4 +240,17 @@ public class GameManager : FlagManager
         if(actions != null) actionQueue.AddRange(actions);
         Debug.Log("actions added!" + string.Join(", ", actionQueue));
     }
+
+    public void ChangeLevel(int buildIndex) 
+    {
+        //Update session data!
+        UpdateSessionData(); //Keep track of changes just before we travel to another level
+        if(SceneManager.GetSceneByBuildIndex(buildIndex) != null) SceneManager.LoadScene(buildIndex);
+    }
+
+    public void ChangeLevel(string levelName) 
+    {
+        UpdateSessionData();
+        if (SceneManager.GetSceneByName(levelName) != null) SceneManager.LoadScene(levelName);
+    }
 }
