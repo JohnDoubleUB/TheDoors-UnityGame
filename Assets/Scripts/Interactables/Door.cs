@@ -33,7 +33,7 @@ public class Door : Interactable
         currentSpeed = maxSpeed;
         targetSpeed = currentSpeed;
 
-        if (doorSceneRootingObj != null) doorSceneRooting = doorSceneRootingObj.doorSceneRootings.Where(x => x.doorName == doorName).First();
+        if (doorSceneRootingObj != null) doorSceneRooting = doorSceneRootingObj.doorSceneRootings.Where(x => x.doorName == doorName).FirstOrDefault();
     }
 
     private new void Start()

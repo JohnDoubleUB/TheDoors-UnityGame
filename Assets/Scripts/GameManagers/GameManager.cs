@@ -107,7 +107,8 @@ public class GameManager : FlagManager
         GameObject[] sceneDoorGameObjects = GameObject.FindGameObjectsWithTag("WorldDoor");
         if (sceneDoorGameObjects != null && sceneDoorGameObjects.Any()) 
         {
-            List<Door> doorComponents = sceneDoorGameObjects.Select(x => x.GetComponent<Door>()).ToList();
+            Debug.Log("This is happening?");
+            List<Door> doorComponents = sceneDoorGameObjects.Select(x => x.GetComponent<Door>()).Where(x => x != null).ToList(); // Added null check
             if (doorComponents.Any()) doors = doorComponents;
         }
 
@@ -152,6 +153,8 @@ public class GameManager : FlagManager
         levelData.Add(new LevelSaveData(activeScene.name, activeScene.buildIndex, player.transform.position)); //Add our current levels levelSaveData
 
         //If we are not on the hubworld we aren't gonna have the doors and so currentlyDisabledDoors is going to be confused, so we need to leave that as is in our save
+        if (doors != null && doors.Any()) Debug.Log("Door list length: " + doors.Count);
+
         List<DoorName> disabledDoors = doors != null && doors.Any() ?
             CurrentlyDisabledDoors : 
             SaveSystem.SessionSaveData != null ?

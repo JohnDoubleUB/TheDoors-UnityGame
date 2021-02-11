@@ -166,7 +166,6 @@ public class PlatformerPlayer : MonoBehaviour
             isJumping = true;
             
             //Test!!! 
-            //TODO: Remove this because the sound is annoying!
             //AkSoundEngine.PostEvent("Test_Event", gameObject);
         }
     }
