@@ -56,30 +56,18 @@ public class PlatformerPlayer : Player
 
     public int currentJumpCount; //To keep track of the amount of jumps since last standing on the ground
 
-    private List<Interactable> interactables = new List<Interactable>();
-    public Interactable closestInteractable;
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
-    void Update()
+    protected new void Update()
     {
+        base.Update();
         JumpGravityScript();
         CheckForLadder();
-        
-        if (Crouch && !IsClimbing)
-        {
-            isCrouching = true;
-        }
-        else 
-        {
-            isCrouching = false;
-        }
-
-        if (interactables.Any()) SelectClosestInteractable();
+        isCrouching = Crouch && !IsClimbing;
     }
 
     private void FixedUpdate()
@@ -103,32 +91,6 @@ public class PlatformerPlayer : Player
             animator.SetBool("IsJumping", isJumping);
             animator.SetBool("IsCrouching", isCrouching);
         }
-    }
-
-    private void SelectClosestInteractable() 
-    {
-        Interactable closestInteractable = null;
-        float shortestDistance = float.MaxValue;
-        float tempDistance;
-
-        foreach (Interactable interObj in interactables)
-        {
-            interObj.Selected = false;
-
-            tempDistance = Vector2.Distance(
-                new Vector2(interObj.transform.position.x, interObj.transform.position.y),
-                new Vector2(transform.position.x, transform.position.y)
-                );
-
-            if (tempDistance < shortestDistance)
-            {
-                shortestDistance = tempDistance;
-                closestInteractable = interObj;
-            }
-        }
-
-        closestInteractable.Selected = true;
-        this.closestInteractable = closestInteractable;
     }
 
     private void CheckForLadder()
@@ -188,16 +150,4 @@ public class PlatformerPlayer : Player
 
         rb.velocity = IsClimbing ? targetVelocity : new Vector2 (targetVelocity.x, rb.velocity.y);
     }
-
-    public void AddInteractable(Interactable interactable) 
-    {
-        if (!interactables.Contains(interactable)) interactables.Add(interactable);
-    }
-
-    public void RemoveInteractable(Interactable interactable)
-    {
-        if (interactables.Contains(interactable)) interactables.Remove(interactable);
-        if (!interactables.Any()) closestInteractable = null;
-    }
-
 }

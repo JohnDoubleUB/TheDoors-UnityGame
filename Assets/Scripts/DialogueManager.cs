@@ -26,18 +26,6 @@ public class DialogueManager : MonoBehaviour
         if (current == null) current = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //This will need to be changed later
-        //string[] testDialogueNames = { "intro", "after-first-door", "after-a-few-doors2", "testdialogue" };
-
-        //TODO: This loads after the flags are added from loading, oof
-        //LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
-
-        //Debug.Log("All flags: " + string.Join(", ", DialogueLoader.AllAddedFlags));
-    }
-
     public void LoadDialogueTree(string dialogueObjectName, string treeName)
     {
         DialogueObject newlyLoadedDialogueObject = DialogueLoader.DialogueObjects.First(x => x.Name == dialogueObjectName);
