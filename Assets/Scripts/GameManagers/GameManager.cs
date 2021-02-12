@@ -37,12 +37,9 @@ public class GameManager : FlagManager
         current = this;
         FindKeyComponents();
         LoadSessionData();
-
-        Debug.Log("Level build index!: " + SceneManager.GetActiveScene().buildIndex);
-
-        LevelSaveDataSerialized test1 = SaveSystem.SessionSaveData.LevelData[0];
-
-        Debug.Log("Level index: " + test1.Level + ", Level Name: " + test1.LevelName + ", saved player position (x,y,z): " + string.Join(", " , test1.PlayerPosition));
+        //We can add flags here now for testing
+        //Debug.Log("(SceneManager) Current Level build index!: " + SceneManager.GetActiveScene().buildIndex + ", and level name: " + SceneManager.GetActiveScene().name);
+        //Debug.Log("(SaveSystem.SessionSaveData) Session current Level build index!: " + SaveSystem.SessionSaveData.Level + ", and level name: " + SaveSystem.SessionSaveData.LevelName);
     }
 
     public void SetSelectedSaveOption(int optionNo)
@@ -99,15 +96,11 @@ public class GameManager : FlagManager
 
     private void FindKeyComponents() //Find things like doors and the player etc,
     {
-        Debug.Log("Find key components!");
         //Tag things, that saves having to do horrible comparisons!
-
-        //TODO: These will only be needed on the first level!
         //Get all the doors!
         GameObject[] sceneDoorGameObjects = GameObject.FindGameObjectsWithTag("WorldDoor");
         if (sceneDoorGameObjects != null && sceneDoorGameObjects.Any()) 
         {
-            Debug.Log("This is happening?");
             List<Door> doorComponents = sceneDoorGameObjects.Select(x => x.GetComponent<Door>()).Where(x => x != null).ToList(); // Added null check
             if (doorComponents.Any()) doors = doorComponents;
         }
@@ -133,7 +126,13 @@ public class GameManager : FlagManager
         
 
     }
-    private SaveData GenerateSaveData() //Responsible for generating our save data!
+
+    private SaveData GenerateSaveData() 
+    {
+        return GenerateSaveData(null, -1);
+    }
+
+    private SaveData GenerateSaveData(string targetSceneName, int targetSceneBuildIndex) //Responsible for generating our save data!
     {
         Scene activeScene = SceneManager.GetActiveScene(); //Get our current scene for convenience
 
@@ -153,18 +152,24 @@ public class GameManager : FlagManager
         levelData.Add(new LevelSaveData(activeScene.name, activeScene.buildIndex, player.transform.position)); //Add our current levels levelSaveData
 
         //If we are not on the hubworld we aren't gonna have the doors and so currentlyDisabledDoors is going to be confused, so we need to leave that as is in our save
-        if (doors != null && doors.Any()) Debug.Log("Door list length: " + doors.Count);
 
         List<DoorName> disabledDoors = doors != null && doors.Any() ?
             CurrentlyDisabledDoors : 
             SaveSystem.SessionSaveData != null ?
             SaveSystem.SessionSaveData.CompletedDoors.Select(x => (DoorName)x).ToList() : 
-            new List<DoorName>(); //If we have session save data currently
-
-        //I hope this stuff works 
+            new List<DoorName>(); //If we have session save data currently 
 
         //Generate our new save!
-        return new SaveData(saveName + selectedSavefile, activeScene.name, activeScene.buildIndex, player.transform.position, disabledDoors, Flags, actionQueue, levelData);
+        return new SaveData(
+            saveName + selectedSavefile, 
+            targetSceneName != null ? targetSceneName : activeScene.name, 
+            targetSceneBuildIndex != -1 ? targetSceneBuildIndex : activeScene.buildIndex, 
+            player.transform.position, 
+            disabledDoors, 
+            Flags, 
+            actionQueue, 
+            levelData
+            );
     }
 
     private void UpdateSessionData() 
@@ -172,12 +177,16 @@ public class GameManager : FlagManager
         UpdateSessionData(GenerateSaveData());
     }
 
+    private void UpdateSessionData_WithTargetScene(string targetSceneName, int targetSceneBuildIndex) 
+    {
+        UpdateSessionData(GenerateSaveData(targetSceneName, targetSceneBuildIndex));
+    }
+
     protected override void UpdateSessionFlags(string[] updatedFlags)
     {
         if (SaveSystem.SessionSaveData != null)
         {
             SaveSystem.SessionSaveData.Flags = updatedFlags;
-            Debug.Log("session flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
             if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
         }
     }
@@ -196,10 +205,10 @@ public class GameManager : FlagManager
     }
 
     private void LoadGameData(SaveData savedData)
-    {
+    {   
         //Get the current level
         //Find associated save data
-        LevelSaveData currentLevelSaveData = savedData.LevelData.First(x => x.LevelName == savedData.LevelName);
+        LevelSaveData currentLevelSaveData = savedData.LevelData.FirstOrDefault(x => x.LevelName == savedData.LevelName);
 
         //If we have save data for the player on this level
         if (currentLevelSaveData != null)
@@ -210,12 +219,6 @@ public class GameManager : FlagManager
             //Move camera
             if (Camera.main) Camera.main.transform.position = new Vector3(currentLevelSaveData.PlayerPosition.x, currentLevelSaveData.PlayerPosition.y, Camera.main.transform.position.z);
         }
-
-        //Player position
-        //player.transform.position = savedData.PlayerPosition; 
-
-        //Move camera
-        //if (Camera.main) Camera.main.transform.position = new Vector3(savedData.PlayerPosition.x, savedData.PlayerPosition.y, Camera.main.transform.position.z);
 
         //Door states
         UpdateDoors(false, savedData.CompletedDoors);
@@ -244,16 +247,25 @@ public class GameManager : FlagManager
         Debug.Log("actions added!" + string.Join(", ", actionQueue));
     }
 
-    public void ChangeLevel(int buildIndex) 
+    public void ChangeLevel(int buildIndex)
     {
-        //Update session data!
-        UpdateSessionData(); //Keep track of changes just before we travel to another level
-        if(SceneManager.GetSceneByBuildIndex(buildIndex) != null) SceneManager.LoadScene(buildIndex);
+        Scene sceneToLoad = SceneManager.GetSceneByBuildIndex(buildIndex);
+
+        if (sceneToLoad != null) 
+        {
+            UpdateSessionData_WithTargetScene(sceneToLoad.name, buildIndex);
+            SceneManager.LoadScene(buildIndex);
+        }
     }
 
     public void ChangeLevel(string levelName) 
     {
-        UpdateSessionData();
-        if (SceneManager.GetSceneByName(levelName) != null) SceneManager.LoadScene(levelName);
+        Scene sceneToLoad = SceneManager.GetSceneByName(levelName);
+        
+        if (sceneToLoad != null) 
+        {
+            UpdateSessionData_WithTargetScene(levelName, sceneToLoad.buildIndex);
+            SceneManager.LoadScene(levelName);
+        }
     }
 }
