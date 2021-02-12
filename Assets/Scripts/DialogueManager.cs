@@ -88,7 +88,7 @@ public class DialogueManager : MonoBehaviour
         {
             //Load speaker dialogue and a name
             SpeakerDialogue speaker = filteredDialogue.SpeakerDialogues[speakerDialogueNo];
-            speakerText.text = loadedDialogueObject.GetSpeakerWithCapital(speaker.SpeakerId) + ": " + speaker.Text;
+            speakerText.text = loadedDialogueObject.GetSpeakerNiceName(speaker.SpeakerId) + ": " + speaker.Text;
         }
 
         //Generate Options

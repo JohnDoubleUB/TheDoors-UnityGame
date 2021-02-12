@@ -40,6 +40,13 @@ public class GameManager : FlagManager
         //We can add flags here now for testing
         //Debug.Log("(SceneManager) Current Level build index!: " + SceneManager.GetActiveScene().buildIndex + ", and level name: " + SceneManager.GetActiveScene().name);
         //Debug.Log("(SaveSystem.SessionSaveData) Session current Level build index!: " + SaveSystem.SessionSaveData.Level + ", and level name: " + SaveSystem.SessionSaveData.LevelName);
+
+        string teststring1 = "the_unknown";
+        string teststring2 = "sven";
+
+        Debug.Log(string.Join(" ", teststring2.Split('_')));
+
+
     }
 
     public void SetSelectedSaveOption(int optionNo)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dialogue-object speakers="sven theunknown death">
+<dialogue-object speakers="sven the_unknown death">
 
 	<dialogue-tree id="1" name="intro">
 

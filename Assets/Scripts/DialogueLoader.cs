@@ -208,10 +208,10 @@ public class DialogueObject
     public string Name;
     public DialogueTree[] DialogueTrees;
 
-    public string GetSpeakerWithCapital(int index)
+    public string GetSpeakerNiceName(int index)
     {
         string speaker = Speakers[index];
-        return speaker.Length > 1 ? speaker.Substring(0, 1).ToUpper() + speaker.Remove(0, 1) : speaker.ToUpper();
+        return speaker.Length > 1 ? string.Join(" ", speaker.Split('_').Select(x => x.Substring(0, 1).ToUpper() + x.Remove(0, 1))) : speaker.ToUpper();
     }
 
     public DialogueObject(string[] speakers, DialogueTree[] dialogueTrees, string name)
