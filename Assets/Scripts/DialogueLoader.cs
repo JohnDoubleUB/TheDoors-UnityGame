@@ -113,8 +113,8 @@ public static class DialogueLoader
                     string[] sDialogueUnReqFlags = sDialogueUnReqFlagsNode != null ? sDialogueUnReqFlagsNode.InnerText.Split(' ') : null;
 
                     AddDistinctAddedFlagsToList(sDialogueReqFlags, sDialogueUnReqFlags);
-
-                    return new SpeakerDialogue(sDialogue.InnerText, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags);
+                    //TODO: Change sDialogue.InnerText to sDialogue.InnerXML?
+                    return new SpeakerDialogue(sDialogue.InnerXml, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags);
                 })
                 .ToArray();
 
