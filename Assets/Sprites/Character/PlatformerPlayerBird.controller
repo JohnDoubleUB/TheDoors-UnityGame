@@ -23,7 +23,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: dced4fe4ff4277b45acc59edd3ea4963, type: 2}
+  m_Motion: {fileID: 7400000, guid: 904d71f35d00b504188336ee1b674a76, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -51,7 +51,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: d1e5d3faa1baf7e40b2bb8266fde6884, type: 2}
+  m_Motion: {fileID: 7400000, guid: 08d7c270fd0aabb4c9fff0b15dd83fc4, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -112,7 +112,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: eb465a6f2b98a9040a551f8d5aed704b, type: 2}
+  m_Motion: {fileID: 7400000, guid: 904d71f35d00b504188336ee1b674a76, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -141,7 +141,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -396,7 +396,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlatformerPlayer
+  m_Name: PlatformerPlayerBird
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: IsMoving
@@ -486,7 +486,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: ed94a93adde28be4d87563acf0f7e841, type: 2}
+  m_Motion: {fileID: 7400000, guid: 904d71f35d00b504188336ee1b674a76, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -544,7 +544,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: eb465a6f2b98a9040a551f8d5aed704b, type: 2}
+  m_Motion: {fileID: 7400000, guid: 904d71f35d00b504188336ee1b674a76, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -573,7 +573,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5bd406295ba69c54a96c1b0b923f12bc, type: 2}
+  m_Motion: {fileID: 7400000, guid: 904d71f35d00b504188336ee1b674a76, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -629,6 +629,32 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1102 &3816912325974254974
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlatformerCharacterBird_Walking2
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions: []
+  m_StateMachineBehaviours: []
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_TimeParameterActive: 0
+  m_Motion: {fileID: 7400000, guid: b8038f8457a53e742bb978eca98c1bb3, type: 2}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+  m_TimeParameter: 
 --- !u!1101 &4020816763778560775
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -686,7 +712,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -866,7 +892,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -922,7 +948,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0
-  m_HasExitTime: 1
+  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -978,7 +1004,10 @@ AnimatorStateMachine:
     m_Position: {x: 50, y: 20, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7208631263368408983}
-    m_Position: {x: 410, y: -90, z: 0}
+    m_Position: {x: 460, y: -90, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 3816912325974254974}
+    m_Position: {x: 495, y: -25, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -4509250303327971792}
