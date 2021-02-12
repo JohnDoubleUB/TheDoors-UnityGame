@@ -9,7 +9,7 @@ public class GameManager : FlagManager
     public static GameManager current;
 
     //Platformer related
-    private PlatformerPlayer player;
+    private Player player;
     public VerticalPlatform verticalPlatform;
 
     public List<Door> doors; //make private?
@@ -29,7 +29,7 @@ public class GameManager : FlagManager
         }
     }
 
-    public PlatformerPlayer Player {get { return player; }}
+    public Player Player {get { return player; }}
 
     private void Awake()
     {

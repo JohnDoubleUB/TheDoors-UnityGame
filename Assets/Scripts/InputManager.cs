@@ -92,7 +92,7 @@ public class InputManager : MonoBehaviour
     {
         if (GameManager.current != null && GameManager.current.Player != null) 
         {
-            PlatformerPlayer platformerPlayer = GameManager.current.Player;
+            Player platformerPlayer = GameManager.current.Player;
             VerticalPlatform verticalPlatform = GameManager.current.verticalPlatform;
 
             if (UIManager.current.UIState == UIState.None)
@@ -129,11 +129,6 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-
-    //public bool GetInputMapping(InputMapping input) 
-    //{
-    //    return controlKey[input];
-    //}
 
     public KeyCode[] GetKeyCodesForInputMapping(InputMapping inputMapping) 
     {
