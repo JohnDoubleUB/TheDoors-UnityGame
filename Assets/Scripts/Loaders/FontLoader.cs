@@ -49,7 +49,7 @@ public static class FontLoader
         if (IsFontLoaded(characterSheet)) return loadedFonts[loadedFontResources.IndexOf(characterSheet)];
 
         Sprite[] subsprites = Resources.LoadAll<Sprite>(characterSheet.name);
-        int spriteSize = characterSheet.width / subsprites.Length;
+        int spriteSize = (int)subsprites[0].rect.width; //characterSheet.width / subsprites.Length; //OLD
 
         Dictionary<char, CharData>  loadedFontDictionary = GenerateCharFontDictionary(characterSheet, spriteSize, subsprites);
 
@@ -84,62 +84,68 @@ public static class FontLoader
 
     private static Dictionary<char, CharData> GenerateCharFontDictionary(Texture2D characterSheet, int spriteSize, Sprite[] characterSprites)
     {
-        //int height = charSheet.height; // We might need this if we ever use a text image that is on more than one line
+        int height = characterSheet.height; // We might need this if we ever use a text image that is on more than one line
         int width = characterSheet.width;
 
         int charIndex = 0;
 
         Dictionary<char, CharData> charData = new Dictionary<char, CharData>();
-
-        int minY = 0;
-        int maxY = minY + spriteSize;
-
-        //Apparently GetPixel is weird and broken and when I use a private method to neaten things up unity just dies
-        //if(charIndex >= chars.Length)
-        for (int texCoordX = 0; texCoordX < width && charIndex < chars.Length; texCoordX += spriteSize)
+        //SHouldn't width be height
+        //for (int texCoordY = 0; texCoordY < width && charIndex < chars.Length; texCoordY += spriteSize)
+        //32
+        for (int texCoordY = height - spriteSize; texCoordY >= 0 && charIndex < chars.Length; texCoordY -= spriteSize)
         {
-            int minX = texCoordX;
-            int maxX = texCoordX + (spriteSize - 1);
-            bool edgeFound = false;
+            int minY = texCoordY;
+            int maxY = texCoordY + spriteSize;
 
-            //right edge
-            int rightEdge = 0;
-            for (int currentX = maxX; currentX >= minX; currentX--)
+            Debug.Log("texCoordY: " + texCoordY);
+
+            //Apparently GetPixel is weird and broken and when I use a private method to neaten things up unity just dies
+            //if(charIndex >= chars.Length)
+            for (int texCoordX = 0; texCoordX < width && charIndex < chars.Length; texCoordX += spriteSize)
             {
-                for (int currentY = minY; currentY < maxY; currentY++)
+                int minX = texCoordX;
+                int maxX = texCoordX + (spriteSize - 1);
+                bool edgeFound = false;
+
+                //right edge
+                int rightEdge = 0;
+                for (int currentX = maxX; currentX >= minX; currentX--)
                 {
-                    edgeFound = characterSheet.GetPixel(currentX, currentY).a != 0;
+                    for (int currentY = minY; currentY < maxY; currentY++)
+                    {
+                        edgeFound = characterSheet.GetPixel(currentX, currentY).a != 0;
+                        if (edgeFound) break;
+                    }
                     if (edgeFound) break;
+                    rightEdge++;
                 }
-                if (edgeFound) break;
-                rightEdge++;
-            }
 
-            edgeFound = false;
+                edgeFound = false;
 
 
-            //left edge
-            int leftEdge = 0;
-            for (int currentX = minX; currentX <= maxX; currentX++)
-            {
-                //X
-                for (int currentY = minY; currentY < maxY; currentY++)
+                //left edge
+                int leftEdge = 0;
+                for (int currentX = minX; currentX <= maxX; currentX++)
                 {
-                    edgeFound = characterSheet.GetPixel(currentX, currentY).a != 0;
+                    //X
+                    for (int currentY = minY; currentY < maxY; currentY++)
+                    {
+                        edgeFound = characterSheet.GetPixel(currentX, currentY).a != 0;
+                        if (edgeFound) break;
+                    }
                     if (edgeFound) break;
+                    leftEdge++;
                 }
-                if (edgeFound) break;
-                leftEdge++;
+
+                //Store current sprite width
+                int currentSpriteWidth = spriteSize - (leftEdge + rightEdge);
+
+                charData.Add(chars[charIndex], new CharData(currentSpriteWidth, characterSprites[charIndex]));
+
+                charIndex++;
             }
-
-            //Store current sprite width
-            int currentSpriteWidth = spriteSize - (leftEdge + rightEdge);
-
-            charData.Add(chars[charIndex], new CharData(currentSpriteWidth, characterSprites[charIndex]));
-
-            charIndex++;
         }
-
         return charData;
     }
 }

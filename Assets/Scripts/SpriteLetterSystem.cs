@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 public class SpriteLetterSystem : MonoBehaviour
 {
     public Texture2D charSheet;
+    public Texture2D charSheet2;
 
     /* 
      * Notes for future reference:
@@ -18,15 +20,34 @@ public class SpriteLetterSystem : MonoBehaviour
 
     private void Awake()
     {
-        Dictionary<char, CharData> testThing = FontLoader.LoadFontResource(charSheet);
+        Dictionary<char, CharData> testThing = FontLoader.LoadFontResource(charSheet2);
         Dictionary<char, CharData> testThing2 = FontLoader.LoadFontResource(charSheet);
 
         //https://youtu.be/jhwfA-QF54M?t=155 I wish this video was actually a tutorial
         //This is for testing that the characters are saved properly
+        List<string> charAndLength = new List<string>();
+        List<string> charAndLength2 = new List<string>();
+
         foreach (KeyValuePair<char, CharData> cD in testThing)
         {
-            Debug.Log("Char: " + cD.Key + ", CharWidth: " + cD.Value.Width);
+            //Debug.Log("Char: " + cD.Key + ", CharWidth: " + cD.Value.Width);
+            charAndLength.Add("[" + cD.Key + cD.Value.Width + "]");
         }
+
+        foreach (KeyValuePair<char, CharData> cD in testThing2)
+        {
+            //Debug.Log("Char: " + cD.Key + ", CharWidth: " + cD.Value.Width);
+            charAndLength2.Add("[" + cD.Key + cD.Value.Width + "]");
+        }
+
+        Debug.Log("Letter info: " + string.Join(", ", charAndLength));
+        Debug.Log("Letter info: " + string.Join(", ", charAndLength2));
+
+        int[] values1 = testThing.Select(x => x.Value.Width).ToArray();
+
+        int[] values2 = testThing2.Select(x => x.Value.Width).ToArray();
+
+        if (Enumerable.SequenceEqual(values1, values2)) Debug.Log("yeessssssss!");
     }
 
 

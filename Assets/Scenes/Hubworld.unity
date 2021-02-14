@@ -1244,8 +1244,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a90f60f3e8ad80c4ea4cf0ecbb1d8242, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteSize: 0
   charSheet: {fileID: 2800000, guid: 17542f87a2573b24ab23cada81cbe36d, type: 3}
+  charSheet2: {fileID: 2800000, guid: 67738979f9a99ab4cba636df7e9574dc, type: 3}
 --- !u!4 &541067802
 Transform:
   m_ObjectHideFlags: 0
