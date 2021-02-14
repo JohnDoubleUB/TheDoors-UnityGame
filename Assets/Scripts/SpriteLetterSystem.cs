@@ -7,7 +7,6 @@ using UnityEngine;
 public class SpriteLetterSystem : MonoBehaviour
 {
     public Texture2D charSheet;
-    public Texture2D charSheet2;
 
     /* 
      * Notes for future reference:
@@ -20,13 +19,11 @@ public class SpriteLetterSystem : MonoBehaviour
 
     private void Awake()
     {
-        Dictionary<char, CharData> testThing = FontLoader.LoadFontResource(charSheet2);
-        Dictionary<char, CharData> testThing2 = FontLoader.LoadFontResource(charSheet);
+        Dictionary<char, CharData> testThing = FontLoader.LoadFontResource(charSheet);
 
         //https://youtu.be/jhwfA-QF54M?t=155 I wish this video was actually a tutorial
         //This is for testing that the characters are saved properly
         List<string> charAndLength = new List<string>();
-        List<string> charAndLength2 = new List<string>();
 
         foreach (KeyValuePair<char, CharData> cD in testThing)
         {
@@ -34,76 +31,6 @@ public class SpriteLetterSystem : MonoBehaviour
             charAndLength.Add("[" + cD.Key + cD.Value.Width + "]");
         }
 
-        foreach (KeyValuePair<char, CharData> cD in testThing2)
-        {
-            //Debug.Log("Char: " + cD.Key + ", CharWidth: " + cD.Value.Width);
-            charAndLength2.Add("[" + cD.Key + cD.Value.Width + "]");
-        }
-
         Debug.Log("Letter info: " + string.Join(", ", charAndLength));
-        Debug.Log("Letter info: " + string.Join(", ", charAndLength2));
-
-        int[] values1 = testThing.Select(x => x.Value.Width).ToArray();
-
-        int[] values2 = testThing2.Select(x => x.Value.Width).ToArray();
-
-        if (Enumerable.SequenceEqual(values1, values2)) Debug.Log("yeessssssss!");
     }
-
-
-    //public void GetSpriteWidthsNope()
-    //{
-    //int height = charSheet.height;
-    //int width = charSheet.width;
-
-    //int charIndex = 0;
-
-    //charData = new Dictionary<char, CharData>();
-    //for (int texCoordY = 0; texCoordY > 0; texCoordY -= spriteSize) 
-    //{
-    //    for (int texCoordX = 0; texCoordX < width; texCoordX += spriteSize)
-    //    {
-    //        int x = 0;
-    //        int y = 0;
-
-    //        int min = 0;
-    //        int max = spriteSize;
-
-    //        while (min == 0 && x < spriteSize) 
-    //        {
-    //            for (y = 0; y < spriteSize; y++) 
-    //            {
-    //                if (charSheet.GetPixel(texCoordX + x, texCoordY - y).a != 0) 
-    //                {
-    //                    min = x;
-    //                }
-    //            }
-    //        }
-
-    //        x = spriteSize;
-
-    //        while (max == spriteSize && x > 0) 
-    //        {
-    //            for (y = 0; y < spriteSize; y++) 
-    //            {
-    //                if (charSheet.GetPixel(texCoordX + x, texCoordY + y).a != 0) 
-    //                {
-    //                    max = x;
-    //                }
-    //            }
-    //            x--;
-    //        }
-
-    //        int charWidth = max - min + 1;
-    //        if (charWidth <= spriteSize && charIndex < chars.Length) 
-    //        {
-    //            Debug.Log("hi");
-    //            char c = chars[charIndex];
-    //            Sprite charSprite = charSprites[charIndex];
-
-    //            charData.Add(c, new CharData(charWidth, charSprite));
-    //        }
-    //    }
-    //}
-    //}
 }

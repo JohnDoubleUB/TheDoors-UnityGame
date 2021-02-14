@@ -90,18 +90,16 @@ public static class FontLoader
         int charIndex = 0;
 
         Dictionary<char, CharData> charData = new Dictionary<char, CharData>();
-        //SHouldn't width be height
-        //for (int texCoordY = 0; texCoordY < width && charIndex < chars.Length; texCoordY += spriteSize)
-        //32
+
+        //Y Texture Coordinate
         for (int texCoordY = height - spriteSize; texCoordY >= 0 && charIndex < chars.Length; texCoordY -= spriteSize)
         {
             int minY = texCoordY;
             int maxY = texCoordY + spriteSize;
 
-            Debug.Log("texCoordY: " + texCoordY);
-
             //Apparently GetPixel is weird and broken and when I use a private method to neaten things up unity just dies
-            //if(charIndex >= chars.Length)
+            
+            //X Texture Coordinate
             for (int texCoordX = 0; texCoordX < width && charIndex < chars.Length; texCoordX += spriteSize)
             {
                 int minX = texCoordX;
