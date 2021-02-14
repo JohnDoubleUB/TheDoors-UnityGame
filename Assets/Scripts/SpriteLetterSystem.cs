@@ -5,90 +5,28 @@ using UnityEngine;
 
 public class SpriteLetterSystem : MonoBehaviour
 {
-    private char[] chars = "abcdefghijklmnopqrstuvwxyzæABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~><!?'\"#%&/\\()[]{}@£$*^+-.,:;_=".ToCharArray();
-    private Sprite[] charSprites;
-    public Dictionary<char, CharData> charData;
-    public int spriteSize;
-
     public Texture2D charSheet;
 
-    public void GetSubSprites()
-    {
-        Sprite[] subsprites = Resources.LoadAll<Sprite>(charSheet.name);
-        charSprites = subsprites;
-        spriteSize = charSheet.width / subsprites.Length;
-    }
-
-    public void GetSpriteWidths()
-    {
-        //int height = charSheet.height; // We might need this if we ever use a text image that is on more than one line
-        int width = charSheet.width;
-
-        int charIndex = 0;
-
-        charData = new Dictionary<char, CharData>();
-
-        int minY = 0;
-        int maxY = minY + spriteSize;
-        
-        //Apparently GetPixel is weird and broken and when I use a private method to neaten things up unity just dies
-        
-        for (int texCoordX = 0; texCoordX < width; texCoordX += spriteSize)
-        {
-            int minX = texCoordX;
-            int maxX = texCoordX + (spriteSize - 1);
-            bool edgeFound = false;
-
-            //right edge
-            int rightEdge = 0;
-            for (int currentX = maxX; currentX >= minX; currentX--)
-            {
-                for (int currentY = minY; currentY < maxY; currentY++)
-                {
-                    edgeFound = charSheet.GetPixel(currentX, currentY).a != 0;
-                    if (edgeFound) break;
-                }
-                if (edgeFound) break;
-                rightEdge++;
-            }
-
-            edgeFound = false;
-
-
-            //left edge
-            int leftEdge = 0;
-            for (int currentX = minX; currentX <= maxX; currentX++)
-            {
-                //X
-                for (int currentY = minY; currentY < maxY; currentY++)
-                {
-                    edgeFound = charSheet.GetPixel(currentX, currentY).a != 0;
-                    if (edgeFound) break;
-                }
-                if (edgeFound) break;
-                leftEdge++;
-            }
-            
-            //Store current sprite width
-            int currentSpriteWidth = spriteSize - (leftEdge + rightEdge);
-
-            charData.Add(chars[charIndex], new CharData(currentSpriteWidth, charSprites[charIndex]));
-            
-            charIndex++;
-        }
-    }
+    /* 
+     * Notes for future reference:
+     * Texture2D objects .GetPixel() is janky as hell and can cause unity to crash or freeze (its great) so be aware.
+     * If you're image is larger than its set MaxSize in the inspector then set it up so that this doesn't change the size of the loaded image, if you don't you'll have a bad time
+     * Resources.LoadAll<>() it loads assets from a Resources folder, this can be in various places but its probably best to put it in your Assets folder
+     * Don't be tempted to use AssetDatabase because that only works in the editor and if your game compiled requires this you'll be in trouble
+     * Check your image is loaded at the right resolution properly first, I didn't and it was the last thing I ended up checking.
+     */
 
     private void Awake()
     {
-        GetSubSprites();
-        GetSpriteWidths();
+        Dictionary<char, CharData> testThing = FontLoader.LoadFontResource(charSheet);
+        Dictionary<char, CharData> testThing2 = FontLoader.LoadFontResource(charSheet);
 
         //https://youtu.be/jhwfA-QF54M?t=155 I wish this video was actually a tutorial
         //This is for testing that the characters are saved properly
-        //foreach (KeyValuePair<char, CharData> cD in charData) 
-        //{
-        //    Debug.Log("Char: " + cD.Key + ", CharWidth: " + cD.Value.Width);
-        //}
+        foreach (KeyValuePair<char, CharData> cD in testThing)
+        {
+            Debug.Log("Char: " + cD.Key + ", CharWidth: " + cD.Value.Width);
+        }
     }
 
 
@@ -147,22 +85,4 @@ public class SpriteLetterSystem : MonoBehaviour
     //    }
     //}
     //}
-
-    void Start()
-    {
-
-    }
-}
-
-public struct CharData
-{
-    public int Width;
-
-    public Sprite Sprite;
-
-    public CharData(int width, Sprite sprite)
-    {
-        Width = width;
-        Sprite = sprite;
-    }
 }
