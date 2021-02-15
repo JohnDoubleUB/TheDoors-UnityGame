@@ -139,7 +139,12 @@ public static class FontLoader
                 //Store current sprite width
                 int currentSpriteWidth = spriteSize - (leftEdge + rightEdge);
 
-                charData.Add(chars[charIndex], new CharData(currentSpriteWidth, characterSprites[charIndex]));
+                //Determine center offsets
+                int halfWidth = spriteSize / 2;
+                int leftOffset = halfWidth - leftEdge;
+                int rightOffset = halfWidth - rightEdge;
+
+                charData.Add(chars[charIndex], new CharData(currentSpriteWidth, characterSprites[charIndex], leftOffset, rightOffset));
 
                 charIndex++;
             }
@@ -151,12 +156,22 @@ public static class FontLoader
 public struct CharData
 {
     public int Width;
+    public int LeftOffset;
+    public int RightOffset;
 
     public Sprite Sprite;
 
-    public CharData(int width, Sprite sprite)
+    //public CharData(int width, Sprite sprite)
+    //{
+    //    Width = width;
+    //    Sprite = sprite;
+    //}
+
+    public CharData(int width, Sprite sprite, int leftOffset, int rightOffset) 
     {
         Width = width;
         Sprite = sprite;
+        LeftOffset = leftOffset;
+        RightOffset = rightOffset;
     }
 }
