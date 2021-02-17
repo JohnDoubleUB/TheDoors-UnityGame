@@ -1594,7 +1594,6 @@ GameObject:
   - component: {fileID: 519420033}
   - component: {fileID: 519420034}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1741,18 +1740,6 @@ MonoBehaviour:
     positionOffset: {x: 0, y: 0, z: 0}
   m_posOffsetData: {fileID: 0}
   listenerMask: 1
---- !u!114 &519420035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f00273754dba48579ce184de2820cec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &522940598
 GameObject:
   m_ObjectHideFlags: 0
@@ -6183,6 +6170,7 @@ GameObject:
   - component: {fileID: 1662445181}
   - component: {fileID: 1662445183}
   - component: {fileID: 1662445182}
+  - component: {fileID: 1662445184}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -50845,6 +50833,18 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1662445184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662445180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ba4c4d28a3f4c45a43ba4a17661b73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1677653734
 GameObject:
   m_ObjectHideFlags: 0

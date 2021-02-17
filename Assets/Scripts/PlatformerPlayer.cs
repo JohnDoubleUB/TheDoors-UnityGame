@@ -176,7 +176,9 @@ public class PlatformerPlayer : MonoBehaviour
             
             //Test!!! 
             //TODO: Remove this because the sound is annoying!
-            AkSoundEngine.PostEvent("Test_Event", gameObject);
+            AkSoundEngine.PostEvent("Jump", gameObject);
+
+          
         }
     }
 

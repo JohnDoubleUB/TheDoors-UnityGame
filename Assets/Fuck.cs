@@ -7,7 +7,7 @@ public class Fuck : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Hello John, I am an error, fuck you;
+        //Hello John, I am an error, fuck you;
     }
 
     // Update is called once per frame
