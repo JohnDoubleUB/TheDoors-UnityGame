@@ -205,6 +205,14 @@
 
 		<dialogue id="11">
 			<!-- Oops it looks like we need required flags on dialogue for speakers too -->
+			<speaker unreqflags="likes-sven">None of your business, you’re not here to ask questions. Now go back to why you’re here.</speaker>
+			<speaker reqflags="likes-sven">You really want to know?</speaker>
+			<option reqflags="likes-sven" dialogue-id="12">Yes</option>
+			<option-end reqflags="likes-sven">Nah, not really</option-end>
+		</dialogue>
+
+		<dialogue id="12">
+			<speaker>Okay, I am Sven.</speaker>
 		</dialogue>
 
 	</dialogue-tree>
@@ -219,6 +227,7 @@
 		</dialogue>
 		
 		<dialogue id="2">
+			<speaker-end reqflags="test-non-existent">Yeah lets end this.</speaker-end>
 			<speaker>Hi there newbie</speaker>
 			<speaker>Welcome to the game</speaker>
 			<speaker reqflags="test-isnt-new" unreqflags="test-weird-alternate">Oh wait, haven't I just?.. Eh whatever, you're still green</speaker>
@@ -229,6 +238,9 @@
 			<option dialogue-id="1" reqflags="test-isnt-new" unreqflags="test-weird-alternate" progflags="test-weird-alternate">NO I'M NOT!</option>
 			<option dialogue-id="3" reqflags="test-isnt-new test-weird-alternate">Yes...</option>
 			<option dialogue-id="4" reqflags="test-isnt-new test-weird-alternate">I'm not new...</option>
+			<option-end reqflags="test-isnt-new">escape!</option-end>
+			<option dialogue-id="2" progflags="test-non-existent">End this?</option>
+			
 		</dialogue>
 
 		<dialogue id="3">

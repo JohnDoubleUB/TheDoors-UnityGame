@@ -11,6 +11,7 @@ public class DialogueManager : MonoBehaviour
     private DialogueObject loadedDialogueObject;
     private DialogueTree loadedDialogueTree;
     private Dialogue loadedDialogue;
+    private SpeakerDialogue loadedSpeakerDialogue;
 
     public Text speakerText;
     public GameObject dialogueBox;
@@ -50,19 +51,21 @@ public class DialogueManager : MonoBehaviour
     public void SelectOption(int option)
     {
         //If this is the end of a conversation then whatever was clicked ends the conversation;
-        if (loadedDialogue.SpeakerDialogues != null &&
+
+        if (loadedSpeakerDialogue != null && loadedSpeakerDialogue.EndsConversation/*loadedDialogue.EndsConversation*/) //If the loaded dialogue ends conversation
+        {
+            Debug.Log("this is the end");
+            //If a dialogue frame is the end of a convesation
+            LoadFlags(loadedDialogue);
+            speakerDialogueNo = 0;
+            EndConversation();
+        }
+        else if (loadedDialogue.SpeakerDialogues != null &&
             loadedDialogue.SpeakerDialogues.Any() &&
             speakerDialogueNo != loadedDialogue.SpeakerDialogues.Length - 1) //Loop until all speaker dialogue has been displayed
         {
             speakerDialogueNo++;
             LoadUIDialogueFrame(loadedDialogue); //TODO: This is a little inefficent maybe? I don't know if I care enough to fix this its not a big issue
-        }
-        else if (loadedDialogue.EndsConversation) //If the loaded dialogue ends conversation
-        {
-            //If a dialogue frame is the end of a convesation
-            LoadFlags(loadedDialogue);
-            speakerDialogueNo = 0;
-            EndConversation();
         }
         else
         {
@@ -89,16 +92,21 @@ public class DialogueManager : MonoBehaviour
             //Load speaker dialogue and a name
             SpeakerDialogue speaker = filteredDialogue.SpeakerDialogues[speakerDialogueNo];
             speakerText.text = loadedDialogueObject.GetSpeakerNiceName(speaker.SpeakerId) + ": " + speaker.Text;
+            loadedSpeakerDialogue = speaker;
+        }
+        else 
+        {
+            loadedSpeakerDialogue = null;
         }
 
         //Generate Options
-        if (speakerDialogueNo != (filteredDialogue.SpeakerDialogues.Length - 1))
-        {
-            CreateDialogueOptionText(0, "Continue.");
-        }
-        else if (filteredDialogue.EndsConversation)
+        if (loadedSpeakerDialogue != null && loadedSpeakerDialogue.EndsConversation)
         {
             CreateDialogueOptionText(0, "End Conversation.");
+        }
+        else if (speakerDialogueNo != (filteredDialogue.SpeakerDialogues.Length - 1))
+        {
+            CreateDialogueOptionText(0, "Continue.");
         }
         else if (dialogueBox != null && dialogueOptionPrefab && filteredDialogue.DialogueOptions != null && filteredDialogue.DialogueOptions.Any())
         {
