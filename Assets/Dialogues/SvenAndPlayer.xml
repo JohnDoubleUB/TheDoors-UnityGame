@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dialogue-object speakers="sven the_unknown death">
 
+	<!-- 
+		FILE NOTES:-
+		flags to be aware of: 
+		playthrough2 - On second playthrough
+		fight-sven-early - Early fight of sven
+		probird-uprising - Having encountered one of the pro uprising gods
+		likes-sven - If the player shows approval of svens ideas
+		gods-arguing - If player has witnessed the gods arguing
+		sven-probird-uprising - if the player has mentioned about the probird uprising to sven
+		fight-sven - this is the normal fight sven flag
+		fight-the-unknown - for fighting the unknown
+
+		dialogueflags to be aware of:
+		intro, 
+		after-first-door, 
+		after-a-few-doors1, 
+		after-a-few-doors2, 
+		after-a-few-doors3,
+		defeated-all-gods-but-not-sven,
+		sven-alive-unknown-defeated
+	-->
 	<dialogue-tree id="1" name="intro">
 
 
@@ -147,7 +168,7 @@
 
 	</dialogue-tree>
 
-	<!-- Needs testing! Unfinished -->
+	<!-- Needs testing! -->
 	<dialogue-tree id="5" name="after-a-few-doors3">
 		<dialogue id="1">
 			<speaker>...</speaker>
@@ -158,7 +179,7 @@
 			<speaker>He believed they would go to any lengths to keep their way of life, exploiting and sacrificing as many birds as they needed to.</speaker>
 			<option dialogue-id="3">Was that true?</option>
 			<option dialogue-id="4">From what I’ve seen, that’s pretty accurate.</option>
-			<option reqflags="probird-uprising" dialogue-id="5">That is surprising. You mentioned he dealt with the Gods, did he not speak with the pro-uprising ones?</option>
+			<option reqflags="probird-uprising" dialogue-id="5" progflags="sven-probird-uprising">That is surprising. You mentioned he dealt with the Gods, did he not speak with the pro-uprising ones?</option>
 		</dialogue>
 
 		<dialogue id="3">
@@ -194,7 +215,8 @@
 		</dialogue>
 
 		<dialogue id="9">
-			<speaker-end>I knew of 1, I had no idea there were many. God that would have made this… Never mind.</speaker-end>
+			<speaker>I knew of 1, I had no idea there were many. God that would have made this…</speaker>
+			<speaker-end>Never mind.</speaker-end>
 		</dialogue>
 
 		<dialogue id="10">
@@ -204,21 +226,163 @@
 		</dialogue>
 
 		<dialogue id="11">
-			<!-- Oops it looks like we need required flags on dialogue for speakers too -->
-			<speaker unreqflags="likes-sven">None of your business, you’re not here to ask questions. Now go back to why you’re here.</speaker>
+			<!-- Dialogue diverges here based on whether we said we like sven's ideas -->
+			<speaker-end unreqflags="likes-sven">None of your business, you’re not here to ask questions. Now go back to why you’re here.</speaker-end>
 			<speaker reqflags="likes-sven">You really want to know?</speaker>
 			<option reqflags="likes-sven" dialogue-id="12">Yes</option>
-			<option-end reqflags="likes-sven">Nah, not really</option-end>
+			<option-end reqflags="likes-sven">Nah, not really.</option-end>
 		</dialogue>
 
 		<dialogue id="12">
-			<speaker>Okay, I am Sven.</speaker>
+			<speaker>Okay.</speaker>
+			<speaker>I am Sven.</speaker>
+			<option dialogue-id="13">I thought so.</option>
+			<option dialogue-id="14">What?! NO WAY!</option>
+			<option dialogue-id="15">Oh.. Wow.</option>
 		</dialogue>
 
+		<!-- For all intents and purposes, this is our part 1 which we'll refer back to -->
+
+		<dialogue id="13">
+			<speaker>Any further questions?</speaker>
+			<option dialogue-id="16">So the stuff about the Gods being images of souls?</option>
+			<option dialogue-id="18">You’re still trying to defeat the gods after all these years?</option>
+			<option dialogue-id="21" reqflags="sven-probird-uprising">Any regrets now you know about the pro-uprising gods?</option>
+			<option dialogue-id="23">The eyes?</option>
+			<option dialogue-id="26">I understand.</option>
+		</dialogue>
+
+		<dialogue id="14">
+			<speaker>Alright no need to be sarcastic about it, anything else?</speaker>
+			<option dialogue-id="16">So the stuff about the Gods being images of souls?</option>
+			<option dialogue-id="18">You’re still trying to defeat the gods after all these years?</option>
+			<option dialogue-id="21" reqflags="sven-probird-uprising">Any regrets now you know about the pro-uprising gods?</option>
+			<option dialogue-id="23">The eyes?</option>
+			<option dialogue-id="26">I understand.</option>
+		</dialogue>
+
+		<dialogue id="15">
+			<speaker>Oh you didn’t actually see this coming? Alright well anything else I can tell you?</speaker>
+			<option dialogue-id="16">So the stuff about the Gods being images of souls?</option>
+			<option dialogue-id="18">You’re still trying to defeat the gods after all these years?</option>
+			<option dialogue-id="21" reqflags="sven-probird-uprising">Any regrets now you know about the pro-uprising gods?</option>
+			<option dialogue-id="23">The eyes?</option>
+			<option dialogue-id="26">I understand.</option>
+		</dialogue>
+
+		<!-- path1 -->
+
+		<dialogue id="16">
+			<speaker>Yeah, all fake.</speaker>
+			<option dialogue-id="17">Why lie?</option>
+		</dialogue>
+
+		<dialogue id="17">
+			<speaker>A lot of people love the Gods, didn't have any guarentees you'd help.</speaker>
+			<option dialogue-id="13">I guess that makes sense. [Back].</option>
+		</dialogue>
+
+		<!-- path2 -->
+
+		<dialogue id="18">
+			<speaker>Of course, they need to be destroyed, they’ve done enough damage over these years.</speaker>
+			<option dialogue-id="13"> Yeah fair enough. [Back].</option>
+			<option dialogue-id="19">But the gods have done good for the world!</option>
+		</dialogue>
+
+		<dialogue id="19">
+			<speaker>Good for the world? Is that a joke? They’ve taken all they want and have given nothing back! You’re blind if you don’t see that.</speaker>	
+			<option dialogue-id="13">Hey hey, chill out, I was only joking around. [Back].</option>
+			<option dialogue-id="20">Oh please, you talk like a little child who hasn’t gotten his way and is throwing his toys around. The world is tough and there’s rules to it. Without them we’d be done, and they have the ability to make everything better for us, so I think you’re the real enemy here.</option>
+		</dialogue>
+
+		<dialogue id="20" actflags="fight-sven">
+			<speaker-end>Oh yeah? Well if we’re enemies, I have no use for you here.</speaker-end>
+		</dialogue>
+
+		<!-- path3 -->
+
+		<dialogue id="21">
+			<speaker>Maybe a few, but it’s probably better they’re dead anyway, not exactly rare of a God to change their mind.</speaker>
+			<option dialogue-id="13">I guess not, makes sense. [Back].</option>
+			<option dialogue-id="22">I disagree, I think you’ve made it harder for yourself by not doing the leg work and giving yourself less allies.</option>
+		</dialogue>
+
+		<dialogue id="22">
+			<speaker>Yeah well maybe that’s true, but what’s done is done now.</speaker>
+			<option dialogue-id="13">[Back].</option>
+		</dialogue>
+
+		<!-- path4 -->
+
+		<dialogue id="23"> <!-- We want a system for knowing the names of characters? -->
+			<speaker>I know them as “The Unknown”. They’re a god who helped me trap the others.</speaker>
+			<option dialogue-id="24">so you want to defeat all gods, but you trust a God to help you? He doesn’t think you might defeat him at the end?</option>
+		</dialogue>
+
+		<dialogue id="24">
+			<speaker>I guess that’s the last challenge I will face. If we fight, I will either achieve my goal or not live to know I didn’t.</speaker>
+			<option dialogue-id="13">I see. [Back].</option>
+			<option dialogue-id="25">Well I'll be there fighting along side you.</option>
+		</dialogue>
+
+		<dialogue id="25">
+			<speaker>I appreciate that.</speaker>
+			<option dialogue-id="13">[Back].</option>
+		</dialogue>
+
+		<!-- this is part2 -->
+		<dialogue id="26">
+			<speaker>So with all that out in the open, where do we stand?</speaker>
+			<option dialogue-id="27">I like you Sven, let's defeat some Gods!</option>
+			<option dialogue-id="28">I like you Sven, but I don’t think this is the way to get what you want.</option>
+			<option dialogue-id="30">You’re a monster, let me out of here!</option>
+			<option-end actflags="fight-sven">You’re a monster, I’m gonna defeat you! [Fight Sven]. </option-end> <!-- I'm not completely sure that this will trigger? -->
+		</dialogue>
+
+		<!-- part2 path1 -->
+		<dialogue id="27">
+			<speaker-end>Let's do it.</speaker-end>
+		</dialogue>
+
+		<!-- part2 path2 -->
+		<dialogue id="28">
+			<speaker>I’m sorry you feel that way, but I can’t let you stop me and I can’t let you leave. So either you help me, or I’m afraid I have to defeat you.</speaker>
+			<option dialogue-id="29">Fine, I’ll help. But I don’t like it.</option>
+			<option-end actflags="fight-sven">I guess this is how it has to be. [Fight Sven].</option-end> <!-- I'm not completely sure that this will trigger? -->
+		</dialogue>
+
+		<dialogue id="29">
+			<speaker-end>Noted.</speaker-end>
+		</dialogue>
+
+		<!-- part2 path3 -->
+		<dialogue id="30" actflags="fight-sven">
+			<speaker-end>And let you tell the whole world I’ve trapped all the Gods? No, I’ll have to defeat you instead.</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- Needs testing -->
+	<dialogue-tree id="6" name="defeated-all-gods-but-not-sven">
+		<dialogue id="1" actflags="fight-the-unknown">
+			<speaker>You did it! They’re all defeated! I can’t believe it, it’s the start of a new era! Once the Unknown gets us out of here we’ll be able to start a new society. Birds working for birds and thriving!</speaker>
+			<speaker speaker-index="1">Hahahahahahahahahahahahaha! I’m sorry Sven, I don’t think so.</speaker>
+			<speaker>What?</speaker>
+			<speaker speaker-index="1">Did you think I was doing this out of my fondness for the birds? No. With every God your little minion defeated, my power grew.</speaker>
+			<speaker speaker-index="1">I now have acquired the powers of every fallen God! You thought the gods power would be returned to the universe, but I have taken it, and I will leave here.</speaker>
+			<speaker-end speaker-index="1">Your world will be void of all the influence you were so desperate to get for yourself.</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- Needs testing - UNFINISHED -->
+	<dialogue-tree id="7" name="sven-alive-unknown-defeated">
+		<dialogue id="1">
+			<speaker>Alright… What do we do now?</speaker>
+		</dialogue>
 	</dialogue-tree>
 
 	<!-- testing new functionality -->
-	<dialogue-tree id="6" name="testdialogue">
+	<dialogue-tree id="8" name="testdialogue">
 		<dialogue id="1">
 			<speaker>...</speaker>
 			<option dialogue-id="2" unreqflags="test-isnt-new">Hi</option>

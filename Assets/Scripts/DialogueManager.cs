@@ -102,17 +102,17 @@ public class DialogueManager : MonoBehaviour
         //Generate Options
         if (loadedSpeakerDialogue != null && loadedSpeakerDialogue.EndsConversation)
         {
-            CreateDialogueOptionText(0, "End Conversation.");
+            CreateDialogueOptionText(0, "[End Conversation].");
         }
         else if (speakerDialogueNo != (filteredDialogue.SpeakerDialogues.Length - 1))
         {
-            CreateDialogueOptionText(0, "Continue.");
+            CreateDialogueOptionText(0, "[Continue].");
         }
         else if (dialogueBox != null && dialogueOptionPrefab && filteredDialogue.DialogueOptions != null && filteredDialogue.DialogueOptions.Any())
         {
             for (int i = 0; i < filteredDialogue.DialogueOptions.Length; i++)
             {
-                CreateDialogueOptionText(i, filteredDialogue.DialogueOptions[i].OptionText); 
+                CreateDialogueOptionText(i, filteredDialogue.DialogueOptions[i].OptionText + (filteredDialogue.DialogueOptions[i].EndsConversation ? " [End Conversation]." : "")); 
             }
         }
 
