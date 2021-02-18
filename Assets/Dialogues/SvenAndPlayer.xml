@@ -6,9 +6,9 @@
 		flags to be aware of: 
 		playthrough2 - On second playthrough
 		fight-sven-early - Early fight of sven
-		probird-uprising - Having encountered one of the pro uprising gods
+		probird-uprising - Having encountered one of the pro uprising gods (only required in this file)
 		likes-sven - If the player shows approval of svens ideas
-		gods-arguing - If player has witnessed the gods arguing
+		gods-arguing - If player has witnessed the gods arguing (only required in this file)
 		sven-probird-uprising - if the player has mentioned about the probird uprising to sven
 		fight-sven - this is the normal fight sven flag
 		fight-the-unknown - for fighting the unknown

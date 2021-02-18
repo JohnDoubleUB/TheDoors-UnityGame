@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,16 +7,7 @@ public static class FontLoader
     //This is the order that the characters should be in the characterSheet
     private static char[] chars = "abcdefghijklmnopqrstuvwxyzæABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890~><!?'\"#%&/\\()[]{}@£$*^+-.,:;_=".ToCharArray();
     private static List<Dictionary<char, CharData>> loadedFonts = new List<Dictionary<char, CharData>>(); //Stores all loaded fonts
-    private static List<Texture2D> loadedFontResources = new List<Texture2D>(); //I'm going to use this to check if we already have a resource loaded
-
-    /* 
-     * Notes for future reference:
-     * Texture2D objects .GetPixel() is janky as hell and can cause unity to crash or freeze (its great) so be aware.
-     * If you're image is larger than its set MaxSize in the inspector then set it up so that this doesn't change the size of the loaded image, if you don't you'll have a bad time
-     * Resources.LoadAll<>() it loads assets from a Resources folder, this can be in various places but its probably best to put it in your Assets folder
-     * Don't be tempted to use AssetDatabase because that only works in the editor and if your game compiled requires this you'll be in trouble
-     * Check your image is loaded at the right resolution properly first, I didn't and it was the last thing I ended up checking.
-     */
+    private static List<Texture2D> loadedFontResources = new List<Texture2D>(); //This is to keep track of all the loaded fonts and only load them once
 
     public static List<Dictionary<char, CharData>> LoadedFonts 
     {
@@ -96,8 +86,6 @@ public static class FontLoader
         {
             int minY = texCoordY;
             int maxY = texCoordY + spriteSize;
-
-            //Apparently GetPixel is weird and broken and when I use a private method to neaten things up unity just dies
             
             //X Texture Coordinate
             for (int texCoordX = 0; texCoordX < width && charIndex < chars.Length; texCoordX += spriteSize)
@@ -160,12 +148,6 @@ public struct CharData
     public int RightOffset;
 
     public Sprite Sprite;
-
-    //public CharData(int width, Sprite sprite)
-    //{
-    //    Width = width;
-    //    Sprite = sprite;
-    //}
 
     public CharData(int width, Sprite sprite, int leftOffset, int rightOffset) 
     {

@@ -7,92 +7,89 @@ using UnityEngine;
 public class Test : MonoBehaviour
 {
     // Start is called before the first frame update
-    char[] tags = { 'w', 'f' };
+    string[] reservedTags = { "w", "f", "s", "re", "green", "blue" };
 
     void Start()
     {
-        string test = "test <w>test<w> test";
-
+        string example = "<blue>test <w>test</w> test</blue>";
+        //              0123 5678 9
         string test2 = "test test test";
 
         Debug.Log("expected: " + test2);
 
-        Tuple<string, List<TextEffectType>> detagged = FindTags(test);
+        Tuple<string, Dictionary<string, List<int>>> result1 = ExtractTags(example);
 
-        string[] effects = detagged.Item2.Select(x => x.ToString()).ToArray();
-        Debug.Log("untagged: " + detagged.Item1 + " effects: " + string.Join<string>(", " , effects));
+
+        Debug.Log("result: " + result1.Item1);
+
+        foreach (KeyValuePair<string, List<int>> tagPair in result1.Item2) 
+        {
+            Debug.Log(tagPair.Key + " tagged indexes: " + string.Join(", ", tagPair.Value));
+        }
     }
 
 
-    private Tuple<string, List<TextEffectType>> FindTags(string test) 
+    private Tuple<string, Dictionary<string, List<int>>> ExtractTags(string taggedString)
     {
-        bool foundTag = false;
-        //bool foundTagEnd = false;
+        bool isClosingTag = false;
+        string untaggedString = "";
+        
+        List<string> currentTags = new List<string>();
 
-        string untagged = "";
-        char currentTag = ' ';
-        List<TextEffectType> effectList = new List<TextEffectType>();
-        
-        
-        for (int i = 0; i < test.Length; i++) 
+        //Used to check likely hood of tag quickly
+        char[] tagStartingCharacters = reservedTags.Select(x => x[0]).Distinct().ToArray();
+
+        Dictionary<string, List<int>> stringTags = new Dictionary<string, List<int>>();
+        //foreach (string tag in reservedTags) simpleTags.Add(tag, new List<int>());
+
+        for (int i = 0; i < taggedString.Length; i++)
         {
-            char currentLetter = test[i];
-
-            //Look for opening tag
-            if (!foundTag && currentLetter == '<' && i + 2 < test.Length && char.IsLetter(test[i+1]) && test[i+2] == '>' ) 
+            //Look for tag
+            if (taggedString[i] == '<' && i+2 < taggedString.Length)
             {
-                foundTag = true;
-                currentTag = test[i + 1];
-                if (i + 3 < test.Length)
+                //If the next letter is / we have a closing tag
+                isClosingTag = taggedString[i + 1] == '/';
+                
+                //This determines where the inside of a tag starts (past both < and / if its a closing tag)
+                int nextCharIndex = isClosingTag ? i + 2 : i + 1;
+
+                //Check quickly if this is likely to be a tag because this would be silly to check otherwise
+                
+                //Check which tags it could be
+                foreach (string reservedTag in reservedTags) 
                 {
-                    i += 3;
-                    currentLetter = test[i];
-                }
-                else 
-                {
-                    break;
+                    if (nextCharIndex + reservedTag.Length < taggedString.Length) 
+                    {
+                        string match = taggedString.Substring(nextCharIndex, reservedTag.Length);
+                        if (taggedString[nextCharIndex + reservedTag.Length] == '>' && reservedTag.Contains(match)) 
+                        {
+                            Debug.Log("Match? " + match);
+
+                            if (isClosingTag) currentTags.Remove(match);
+                            else currentTags.Add(match);
+
+                            if (!stringTags.ContainsKey(match)) stringTags.Add(match, new List<int>());
+
+                            i = nextCharIndex + reservedTag.Length + 1;
+                            break;
+                        }
+
+
+                    }
                 }
             }
 
-            if (foundTag && currentLetter == '<' && i + 2 < test.Length && char.IsLetter(test[i + 1]) && test[i + 2] == '>') 
+            if (i < taggedString.Length)
             {
-                if (i + 3 < test.Length)
-                {
-                    i += 3;
-                    currentLetter = test[i];
-                    foundTag = false;
-                    currentTag = ' ';
-                }
-                else
-                {
-                    break;
-                }
+                untaggedString += taggedString[i];
+                int currentNewIndex = untaggedString.Length - 1;
+                foreach (string t in currentTags) stringTags[t].Add(currentNewIndex);
             }
-
-            effectList.Add(GetTagType(currentTag));
-
-            untagged += currentLetter;
-
         }
-        return new Tuple<string, List<TextEffectType>>(untagged, effectList);
-    }
 
-    private TextEffectType GetTagType(char tagLetter) 
-    {
-        switch (tagLetter) 
-        {
-            case 'w':
-                return TextEffectType.Wavy;
-            case 's':
-                return TextEffectType.Stuttery;
-            case 'r':
-                return TextEffectType.Rainbow;
-            default:
-                return TextEffectType.None;
-        }
+        return new Tuple<string, Dictionary<string, List<int>>>(untaggedString, stringTags);
     }
 }
-
 
 
 public enum TextEffectType 
