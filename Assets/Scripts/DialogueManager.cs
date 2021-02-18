@@ -93,6 +93,12 @@ public class DialogueManager : MonoBehaviour
             SpeakerDialogue speaker = filteredDialogue.SpeakerDialogues[speakerDialogueNo];
             speakerText.text = loadedDialogueObject.GetSpeakerNiceName(speaker.SpeakerId) + ": " + speaker.Text;
             loadedSpeakerDialogue = speaker;
+
+            //TODO: Remove this, it's just to show that the tags on dialogue work!
+            foreach (KeyValuePair<string, int[]> dialogueEffect in speaker.DialogueEffects) 
+            {
+                Debug.Log(dialogueEffect.Key + " tag indexes: " + string.Join(", ", dialogueEffect.Value));
+            }
         }
         else 
         {

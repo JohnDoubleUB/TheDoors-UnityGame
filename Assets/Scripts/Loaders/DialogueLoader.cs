@@ -7,6 +7,7 @@ using System.Linq;
 
 public static class DialogueLoader
 {
+    private static string[] reservedTags = { "w", "f", "s" };
     private static string DialoguePath = Application.dataPath + "/Dialogues/";
     private static string DialogueFileExtension = "xml";
     private static List<string> allAddedFlags = new List<string>();
@@ -29,6 +30,11 @@ public static class DialogueLoader
     public static string DialogueStartId 
     {
         get { return dialogueStartId; }
+    }
+
+    public static string[] ReservedTags 
+    {
+        get { return reservedTags; }
     }
 
     private static DialogueObject[] LoadAllDialogueObjects()
@@ -113,8 +119,11 @@ public static class DialogueLoader
                     string[] sDialogueUnReqFlags = sDialogueUnReqFlagsNode != null ? sDialogueUnReqFlagsNode.InnerText.Split(' ') : null;
 
                     AddDistinctAddedFlagsToList(sDialogueReqFlags, sDialogueUnReqFlags);
-                    //TODO: Change sDialogue.InnerText to sDialogue.InnerXML?
-                    return new SpeakerDialogue(sDialogue.InnerXml, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags);
+                    //Change sDialogue.InnerText to sDialogue.InnerXML?
+                    //Filter here? Hopefully this doesn't go horribly wrong yeah?
+                    TagFilteredDialogue tagFilteredDialogue = ExtractTags(sDialogue.InnerXml);
+
+                    return new SpeakerDialogue(tagFilteredDialogue.UntaggedString, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags, tagFilteredDialogue.StringTags);
                 })
                 .ToArray();
 
@@ -200,6 +209,89 @@ public static class DialogueLoader
             int.TryParse(speakerIndexText, out int speakerIndex) ?
             speakerIndex : 0 : 0;
     }
+
+
+    private static TagFilteredDialogue ExtractTags(string taggedString)
+    {
+        bool isClosingTag;
+
+        string untaggedString = "";
+        List<string> currentTags = new List<string>();
+
+        //Used to check likely hood of tag quickly
+        char[] tagStartingCharacters = reservedTags.Select(x => x[0]).ToArray();
+
+        Dictionary<string, List<int>> stringTags = new Dictionary<string, List<int>>();
+
+        for (int i = 0; i < taggedString.Length; i++)
+        {
+            //Look for tag
+            if (taggedString[i] == '<' && i + 2 < taggedString.Length)
+            {
+                //If the next letter is / we have a closing tag
+                isClosingTag = taggedString[i + 1] == '/';
+
+                //This determines where the inside of a tag starts (past both < and / if its a closing tag)
+                int nextCharIndex = isClosingTag ? i + 2 : i + 1;
+
+                //Check quickly if this is likely to be a tag because this would be silly to check otherwise
+                //Check which tags it could be
+                if (tagStartingCharacters.Contains(taggedString[nextCharIndex]))
+                {
+                    foreach (string reservedTag in reservedTags)
+                    {
+                        if (nextCharIndex + reservedTag.Length < taggedString.Length)
+                        {
+                            string match = taggedString.Substring(nextCharIndex, reservedTag.Length);
+
+                            if (taggedString[nextCharIndex + reservedTag.Length] == '>' && reservedTag.Contains(match))
+                            {
+                                if (isClosingTag) currentTags.Remove(match);
+                                else currentTags.Add(match);
+
+                                if (!stringTags.ContainsKey(match)) stringTags.Add(match, new List<int>());
+
+                                i = nextCharIndex + reservedTag.Length + 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (i < taggedString.Length)
+            {
+                if (taggedString[i] == '<' && i + 2 < taggedString.Length)
+                {
+                    i--;
+                }
+                else
+                {
+                    untaggedString += taggedString[i];
+                    int currentNewIndex = untaggedString.Length - 1;
+                    foreach (string t in currentTags) stringTags[t].Add(currentNewIndex);
+                }
+            }
+        }
+
+        return new TagFilteredDialogue(
+            untaggedString,
+            stringTags.ToDictionary(x => x.Key, x => x.Value.ToArray())
+            );
+    }
+
+
+    private struct TagFilteredDialogue
+    {
+        public string UntaggedString;
+        public Dictionary<string, int[]> StringTags;
+        public TagFilteredDialogue(string untaggedString, Dictionary<string, int[]> stringTags)
+        {
+            UntaggedString = untaggedString;
+            StringTags = stringTags;
+        }
+    }
+
 }
 
 public class DialogueObject
@@ -346,6 +438,7 @@ public class SpeakerDialogue
     public string Text;
     public int SpeakerId;
     public bool EndsConversation;
+    public Dictionary<string, int[]> DialogueEffects;
 
     /* 
      * --:NOTES ON FLAGS FOR SPEAKER DIALOGUE:--
@@ -356,12 +449,22 @@ public class SpeakerDialogue
     public string[] RequiredFlags;
     public string[] UnRequiredFlags;
 
-    public SpeakerDialogue(string text, int speakerId, bool endsConversation, string[] requiredFlags, string[] unRequiredFlags)
+    //public SpeakerDialogue(string text, int speakerId, bool endsConversation, string[] requiredFlags, string[] unRequiredFlags)
+    //{
+    //    Text = text;
+    //    SpeakerId = speakerId;
+    //    EndsConversation = endsConversation;
+    //    RequiredFlags = requiredFlags;
+    //    UnRequiredFlags = unRequiredFlags;
+    //}
+    public SpeakerDialogue(string text, int speakerId, bool endsConversation, string[] requiredFlags, string[] unRequiredFlags, Dictionary<string, int[]> dialogueEffects = null)
     {
         Text = text;
         SpeakerId = speakerId;
         EndsConversation = endsConversation;
         RequiredFlags = requiredFlags;
         UnRequiredFlags = unRequiredFlags;
+        DialogueEffects = dialogueEffects;
     }
+
 }

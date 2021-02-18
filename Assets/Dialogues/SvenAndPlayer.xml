@@ -392,7 +392,7 @@
 		
 		<dialogue id="2">
 			<speaker-end reqflags="test-non-existent">Yeah lets end this.</speaker-end>
-			<speaker>Hi there newbie</speaker>
+			<speaker>Hi <w>there</w> newbie</speaker>
 			<speaker>Welcome to the game</speaker>
 			<speaker reqflags="test-isnt-new" unreqflags="test-weird-alternate">Oh wait, haven't I just?.. Eh whatever, you're still green</speaker>
 			<speaker unreqflags="test-isnt-new">Yeah you're totally green</speaker>
