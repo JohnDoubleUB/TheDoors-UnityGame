@@ -94,7 +94,7 @@ public class DialogueManager : MonoBehaviour
             speakerText.text = loadedDialogueObject.GetSpeakerNiceName(speaker.SpeakerId) + ": " + speaker.Text;
             loadedSpeakerDialogue = speaker;
 
-            //TODO: Remove this, it's just to show that the tags on dialogue work!
+            //TODO: Remove this, it's just to show that the tags on dialogue work! should this be the other way round? i.e. index as key and effects attached to each one?
             foreach (KeyValuePair<string, int[]> dialogueEffect in speaker.DialogueEffects) 
             {
                 Debug.Log(dialogueEffect.Key + " tag indexes: " + string.Join(", ", dialogueEffect.Value));

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dialogue-object speakers="sven the_unknown death">
+<dialogue-object speakers="sven the_unknown death artiman">
 
 	<!-- 
 		FILE NOTES:-
@@ -12,6 +12,8 @@
 		sven-probird-uprising - if the player has mentioned about the probird uprising to sven
 		fight-sven - this is the normal fight sven flag
 		fight-the-unknown - for fighting the unknown
+		unknown-defeats-artiman - artiman is defeated by the unknown
+
 
 		dialogueflags to be aware of:
 		intro, 
@@ -20,7 +22,14 @@
 		after-a-few-doors2, 
 		after-a-few-doors3,
 		defeated-all-gods-but-not-sven,
-		sven-alive-unknown-defeated
+		sven-alive-unknown-defeated,
+		fights-sven-after-unknown
+		defeats-sven-early,
+		after-all-gods-defeated,
+		after-unknown-defeated,
+		unknown-fights-artiman,
+		artiman-saved-from-unknown,
+		unknown-killed-after-artimans-defeat
 	-->
 	<dialogue-tree id="1" name="intro">
 
@@ -374,15 +383,256 @@
 		</dialogue>
 	</dialogue-tree>
 
-	<!-- Needs testing - UNFINISHED -->
+	<!-- Needs testing -->
 	<dialogue-tree id="7" name="sven-alive-unknown-defeated">
 		<dialogue id="1">
 			<speaker>Alright… What do we do now?</speaker>
+			<option dialogue-id="2">Sven it’s over, even if we never get out of here, you did it.</option>
+			<option dialogue-id="3">You’ve trapped me in here forever because you couldn’t see the Unknown’s plan?!</option>
+			<option dialogue-id="4">I may have an idea.</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker>You’re right, it’s done. I would like to get out of here though.</speaker>
+			<option dialogue-id="4">I may have an idea.</option>
+		</dialogue>
+
+		<dialogue id="3">
+			<speaker>Calm down! I know I messed up but it’s over, can you not be happy about that?</speaker>
+			<option-end actflags="fight-sven">No Sven, I had a life! Even if we can get out of here, the amount of things you’ve put me through, I’m going to defeat you before you can leave!</option-end>
+			<option dialogue-id="1">You're right, I'm sorry. [Back].</option>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker>Do tell.</speaker>
+			<option dialogue-id="5">Hey Death, you there?</option>
+		</dialogue>
+
+		<dialogue id="5">
+			<speaker speaker-index="2">Hello again young one.</speaker>
+			<speaker>Woah what, Death's still around?</speaker>
+			<option dialogue-id="6">It’s kind of hard to defeat the concept of death.</option>
+			<option dialogue-id="7">Think about what you just said.</option>
+		</dialogue>
+
+		<dialogue id="6">
+			<speaker>I guess, sure.</speaker>
+			<speaker speaker-index="2">Please young ones, we must act. The fabric of this place is falling apart. It seems without the Unknown’s influence; it is not stable enough to survive.</speaker>
+			<speaker>You’re not angry about us defeating the Gods?</speaker>
+			<speaker speaker-index="2">I’ll see them again.</speaker>
+			<speaker>I see, alright let’s go. What do you say?</speaker>
+			<option dialogue-id="8">Thank you Death, let’s all get out of here.</option>
+			<option dialogue-id="9">Death, let’s leave Sven, he doesn’t deserve to leave.</option>
+		</dialogue>
+
+		<dialogue id="7">
+			<speaker>I- …huh. Why did I not think of that before, how could we ever defeat Death?</speaker>
+			<speaker speaker-index="2">Please young ones, we must act. The fabric of this place is falling apart. It seems without the Unknown’s influence; it is not stable enough to survive.</speaker>
+			<speaker>You’re not angry about us defeating the Gods?</speaker>
+			<speaker speaker-index="2">I’ll see them again.</speaker>
+			<speaker>I see, alright let’s go. What do you say?</speaker>
+			<option dialogue-id="8">Thank you Death, let’s all get out of here.</option>
+			<option dialogue-id="9">Death, let’s leave Sven, he doesn’t deserve to leave.</option>
+		</dialogue>
+
+		<dialogue id="8">
+			<speaker-end speaker-index="2">Of course, good luck out there young ones.</speaker-end>
+		</dialogue>
+
+		<dialogue id="9">
+			<speaker-end>What?! No, you can't do this to me!</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- needs testing -->
+	<dialogue-tree id="8" name="fights-sven-after-unknown">
+		<dialogue id="1">
+			<speaker speaker-index="2">Hello young one. All alone?</speaker>
+			<option dialogue-id="2">It seems so.</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker speaker-index="2">You are the last remaining person involved in this; how would you like to proceed.</speaker>
+			<option dialogue-id="3">Let’s get out of here, back to the mortal world.</option>
+			<option dialogue-id="4">Leave me here, Death. I’ve done enough.</option>
+			<option dialogue-id="6">What about you?</option>
+		</dialogue>
+
+		<!-- path1 -->
+		<dialogue id="3">
+			<speaker-end speaker-index="2">As you wish.</speaker-end>
+		</dialogue>
+
+		<!-- path2 -->
+		<dialogue id="4">
+			<speaker speaker-index="2">You understand if I leave you here, the middle zone will not have enough energy to keep itself stable. You will not survive.</speaker>
+			<option dialogue-id="5">I understand. Thank you, Death, for everything.</option>
+			<option dialogue-id="3">Oh, didn't known that. Alright let's go to the mortal world.</option>
+		</dialogue>
+
+		<dialogue id="5">
+			<speaker-end speaker-index="2">As you wish... goodbye young one.</speaker-end>
+		</dialogue>
+
+		<!-- path3 -->
+		<dialogue id="6">
+			<speaker speaker-index="2">I think calling myself alive would be an overstatement.</speaker>
+			<speaker speaker-index="2">How would you like to proceed.</speaker>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- needs testing -->
+	<dialogue-tree id="9" name="defeats-sven-early">
+		<dialogue id="1">
+			<speaker speaker-index="1">Wow, I didn't think he'd go down that easy.</speaker>
+			<option dialogue-id="2">What? Oh yeah Unknown. I forgot you were here.</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker speaker-index="1">Charming. So are going to continue to fight the Gods?</speaker>
+			<option dialogue-id="3">No.</option>
+			<option dialogue-id="4">Yes, they deserve to go, that fight with Sven was payback.</option>
+		</dialogue>
+
+		<dialogue id="3" actflags="fight-the-unknown">
+			<speaker-end speaker-index="1">Then I have now use for you.</speaker-end>
+		</dialogue>
+
+		<dialogue id="4">
+			<speaker-end speaker-index="1">Good, well carry on.</speaker-end>
+		</dialogue>
+
+	</dialogue-tree>
+
+	<!-- needs testing -->
+	<dialogue-tree id="10" name="after-all-gods-defeated">
+		
+		<dialogue id="1">
+			<speaker speaker-index="1">Very good, you’ve done well. I now feel more powerful than I ever have.</speaker>
+			<option dialogue-id="2">What?</option>
+		</dialogue>
+
+		<dialogue id="2" actflags="fight-the-unknown">
+			<speaker speaker-index="1">Did you think I was doing this out of my fondness for the birds? No.</speaker>
+			<speaker speaker-index="1">With every God your little minion defeated, my power grew. I now have acquired the powers of every fallen God!</speaker>
+			<speaker speaker-index="1">You thought the gods power would be returned to the universe, but I have taken it, and I will leave here.</speaker>
+			<speaker-end speaker-index="1">Your world will be void of all the influence you were so desperate to get for yourself.</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- needs testing -->
+	<dialogue-tree id="11" name="after-unknown-defeated">
+		<dialogue id="1">
+			<speaker speaker-index="2">Hello young one. You are all alone?</speaker>
+			<option dialogue-id="2">I am.</option>
+		</dialogue>
+
+		<dialogue id="2">
+			<speaker speaker-index="2">I see, how do you wish to proceed?</speaker>
+			<option dialogue-id="7">We need to free the Gods.</option>
+			<option dialogue-id="3">Let’s get out of here, Sven may have been a monster, but they were right. We should leave the Gods in here forever.</option>
+			<option dialogue-id="4">You should leave. The things I’ve done, there’s no place for me in the mortal world anymore.</option>
+		</dialogue>
+
+		<!-- short path 1 -->
+
+		<dialogue id="3">
+			<speaker-end speaker-index="2">If that's what you wish, we will go.</speaker-end>
+		</dialogue>
+		
+		<!-- short path 2 -->
+
+		<dialogue id="4">
+			<speaker speaker-index="2">Young one, are you sure? There is always room in life to improve and move on.</speaker>
+			<option dialogue-id="5">I’m sure. Thank you, Death, for everything.</option>
+			<option dialogue-id="6">I guess you’re right… Okay let’s go.</option>
+		</dialogue>
+
+		<dialogue id="5">
+			<speaker-end speaker-index="2">You’re welcome young one, Goodbye.</speaker-end>
+		</dialogue>
+
+		<dialogue id="6">
+			<speaker-end speaker-index="2">Alright young one.</speaker-end>
+		</dialogue>
+
+		<!-- long path -->
+
+		<dialogue id="7">
+			<speaker speaker-index="2">If you wish, I will do so.</speaker>
+			<option dialogue-id="8">Thank you Death.</option>
+		</dialogue>
+
+		<dialogue id="8">
+			<speaker speaker-index="2">You're welcome.</speaker>
+			<speaker speaker-index="3">This one right here?</speaker>
+			<speaker speaker-index="2">Yes, them.</speaker>
+			<speaker speaker-index="3">Thank you, young one. We’ve been dealing with the fallout from Sven’s attack for many decades, it’s good to know it’s been put to rest.</speaker>
+			<option dialogue-id="9">You're welcome.</option>
+			<option dialogue-id="11">I wouldn't say put to rest.</option>
+		</dialogue>
+
+		<!-- You're welcome path -->
+
+		<dialogue id="9">
+			<speaker speaker-index="3">What do you say we get you home, the gods and I have a lot to discuss.</speaker>
+			<option-end>Sounds good.</option-end>
+			<option dialogue-id="10">Wait, what’s going to happen now?</option>
+		</dialogue>
+
+		<dialogue id="10">
+			<speaker speaker-index="3">We’ll discuss how to reintroduce ourselves to the world and attempt to bring calm to our relationships within the league of the Gods.</speaker>
+			<speaker-end speaker-index="3">Don’t worry young one, you will be rewarded greatly for this.</speaker-end>
+		</dialogue>
+
+		<!-- I wouldn't say put to rest path -->
+
+		<dialogue id="11">
+			<speaker speaker-index="3">What do you mean, young one?</speaker>
+			<option dialogue-id="12">With many gods defeated, the world will be changed.</option>
+			<option dialogue-id="13">Sven’s uprising didn’t just keep you locked up. The birds have been living without you for some time now, they know what a world is like without you. What if they think it’s better?</option>
+		</dialogue>
+
+		<dialogue id="12">
+			<speaker-end speaker-index="3">You speak truth, but we will have to adapt to any changes that have occurred. Don’t worry young one, we will regain peace with time.</speaker-end>
+		</dialogue>
+
+		<dialogue id="13">
+			<speaker speaker-index="3">This had not occurred to me. Maybe it’s time we rethink our position in relation to the birds.</speaker>
+			<option dialogue-id="14">You would do that?</option>
+		</dialogue>
+
+		<dialogue id="14">
+			<speaker-end speaker-index="3">If it must be done, it must be done. But for now, we thank you young one. We’ll send you back to your people now.</speaker-end>
+		</dialogue>
+
+	</dialogue-tree>
+
+	<!-- needs testing, is this tree supposed to be separate? -->
+	<dialogue-tree id="12" name="unknown-fights-artiman">
+		<dialogue id="1">
+			<speaker speaker-index="1">No. NO. ARTIMAN! I will defeat you!</speaker>
+			<option-end actflags="fight-the-unknown">Intervene. [Fight The Unknown].</option-end>
+			<option-end actflags="unknown-defeats-artiman fight-the-unknown">Do nothing.</option-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- needs testing -->
+	<dialogue-tree id="13" name="artiman-saved-from-unknown">
+		<dialogue id="1">
+			<speaker-end speaker-index="3">It appears you have saved us once again young one. You truly are a credit to your people and an ally to the Gods.</speaker-end>
+		</dialogue>
+	</dialogue-tree>
+
+	<!-- needs testing -->
+	<dialogue-tree id="14" name="unknown-killed-after-artimans-defeat">
+		<dialogue id="1">
+			<speaker-end speaker-index="2">Artiman is defeated. Come young one, let’s get you home.</speaker-end>
 		</dialogue>
 	</dialogue-tree>
 
 	<!-- testing new functionality -->
-	<dialogue-tree id="8" name="testdialogue">
+	<dialogue-tree id="15" name="testdialogue">
 		<dialogue id="1">
 			<speaker>...</speaker>
 			<option dialogue-id="2" unreqflags="test-isnt-new">Hi</option>
