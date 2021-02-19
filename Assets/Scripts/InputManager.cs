@@ -73,6 +73,7 @@ public class InputManager : MonoBehaviour
             {
                 if (!keyDownRegistered && Input.GetKeyDown(key))
                 {
+                    AnyKeyDown();
                     InputMappingKeyDown(control.Key);
                     keyDownRegistered = true;
                 }
@@ -90,9 +91,9 @@ public class InputManager : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameManager.current != null && GameManager.current.player != null) 
+        if (GameManager.current != null && GameManager.current.Player != null) 
         {
-            PlatformerPlayer platformerPlayer = GameManager.current.player;
+            Player platformerPlayer = GameManager.current.Player;
             VerticalPlatform verticalPlatform = GameManager.current.verticalPlatform;
 
             if (UIManager.current.UIState == UIState.None)
@@ -130,11 +131,6 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    //public bool GetInputMapping(InputMapping input) 
-    //{
-    //    return controlKey[input];
-    //}
-
     public KeyCode[] GetKeyCodesForInputMapping(InputMapping inputMapping) 
     {
         return controlMappings[inputMapping].ToArray();
@@ -160,7 +156,7 @@ public class InputManager : MonoBehaviour
             case InputMapping.Jump:
                 if(UIManager.current.UIState == UIState.None 
                     && GameManager.current != null 
-                    && GameManager.current.player != null) GameManager.current.player.Jump();
+                    && GameManager.current.Player != null) GameManager.current.Player.Jump();
 
                 break;
 
@@ -171,8 +167,16 @@ public class InputManager : MonoBehaviour
             case InputMapping.Interact:
                 if (UIManager.current.UIState == UIState.None
                     && GameManager.current != null
-                    && GameManager.current.player != null) GameManager.current.player.Interact();
+                    && GameManager.current.Player != null) GameManager.current.Player.Interact();
                 break;
+        }
+    }
+
+    private void AnyKeyDown() 
+    {
+        if (DialogueManager.current != null) 
+        {
+            DialogueManager.current.SkipDialogueTextEffect();
         }
     }
 

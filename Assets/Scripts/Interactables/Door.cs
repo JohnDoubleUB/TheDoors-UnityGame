@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
@@ -12,6 +13,7 @@ public class Door : Interactable
     public SpriteRenderer primarySpriteRenderer;
     public Light2D light2D;
     public DoorName doorName;
+    public DoorSceneRootingObject doorSceneRootingObj;
 
     private float targetAlpha = 1f;
 
@@ -21,6 +23,8 @@ public class Door : Interactable
     private float currentSpeed;
     private float targetSpeed;
 
+    private DoorSceneRooting doorSceneRooting;
+
     private new void Awake()
     {
         base.Awake();
@@ -28,6 +32,8 @@ public class Door : Interactable
         targetLightIntensity = defaultLightIntensity;
         currentSpeed = maxSpeed;
         targetSpeed = currentSpeed;
+
+        if (doorSceneRootingObj != null) doorSceneRooting = doorSceneRootingObj.doorSceneRootings.Where(x => x.doorName == doorName).FirstOrDefault();
     }
 
     private new void Start()
@@ -66,8 +72,15 @@ public class Door : Interactable
     {
         Debug.Log(gameObject.name + " interacted! This will take us to a level eventually!");
 
-        //This is just for interaction test purposes!
-        isLit = !isLit;
+        if (doorSceneRooting != null && !string.IsNullOrEmpty(doorSceneRooting.sceneName))
+        {
+            GameManager.current.ChangeLevel(doorSceneRooting.sceneName);
+        }
+        else 
+        {
+            //This is just for interaction test purposes!
+            isLit = !isLit;
+        }
     }
 
 }

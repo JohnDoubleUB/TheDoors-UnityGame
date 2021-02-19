@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{2FFD20FB-14C6-4DCA-A0D3-DD5E2DD4FA39}" SchemaVersion="97">
 	<GameParameters>
-		<WorkUnit Name="Default Work Unit" ID="{2FFD20FB-14C6-4DCA-A0D3-DD5E2DD4FA39}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{2FFD20FB-14C6-4DCA-A0D3-DD5E2DD4FA39}" PersistMode="Standalone">
+			<ChildrenList>
+				<GameParameter Name="Hub_World_Reverb" ID="{9D29B17C-7CDC-4F79-99A8-11A6360563BD}"/>
+			</ChildrenList>
+		</WorkUnit>
 	</GameParameters>
 </WwiseDocument>

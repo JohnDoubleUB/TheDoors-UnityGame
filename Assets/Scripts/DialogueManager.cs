@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,17 @@ public class DialogueManager : MonoBehaviour
     private DialogueObject loadedDialogueObject;
     private DialogueTree loadedDialogueTree;
     private Dialogue loadedDialogue;
+    private SpeakerDialogue loadedSpeakerDialogue;
 
-    public Text speakerText;
+    //public Text speakerText;
+    public TMP_Text speakerText;
+    public DialogueTextMesh speakerTextMesh;
     public GameObject dialogueBox;
     public GameObject dialogueOptionPrefab;
     public bool includeDialogueOptionNumbers;
+
+    public GameObject dialogueMenuObject; //This is used to parent the frame to
+    public GameObject dialogueMenuFrame;
 
     private List<DialogueOptionText> dialogueOptions = new List<DialogueOptionText>();
 
@@ -24,18 +31,13 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         if (current == null) current = this;
-    }
+        
+        if (dialogueMenuFrame != null && dialogueMenuObject != null) 
+        {
+            GameObject dialogueFrame = Instantiate(dialogueMenuFrame, dialogueMenuObject.transform);
+            dialogueFrame.transform.SetAsFirstSibling();
+        }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //This will need to be changed later
-        //string[] testDialogueNames = { "intro", "after-first-door", "after-a-few-doors2", "testdialogue" };
-
-        //TODO: This loads after the flags are added from loading, oof
-        //LoadDialogueTree("SvenAndPlayer", testDialogueNames[0]);
-
-        //Debug.Log("All flags: " + string.Join(", ", DialogueLoader.AllAddedFlags));
     }
 
     public void LoadDialogueTree(string dialogueObjectName, string treeName)
@@ -62,19 +64,21 @@ public class DialogueManager : MonoBehaviour
     public void SelectOption(int option)
     {
         //If this is the end of a conversation then whatever was clicked ends the conversation;
-        if (loadedDialogue.SpeakerDialogues != null &&
+
+        if (loadedSpeakerDialogue != null && loadedSpeakerDialogue.EndsConversation/*loadedDialogue.EndsConversation*/) //If the loaded dialogue ends conversation
+        {
+            Debug.Log("this is the end");
+            //If a dialogue frame is the end of a convesation
+            LoadFlags(loadedDialogue);
+            speakerDialogueNo = 0;
+            EndConversation();
+        }
+        else if (loadedDialogue.SpeakerDialogues != null &&
             loadedDialogue.SpeakerDialogues.Any() &&
             speakerDialogueNo != loadedDialogue.SpeakerDialogues.Length - 1) //Loop until all speaker dialogue has been displayed
         {
             speakerDialogueNo++;
             LoadUIDialogueFrame(loadedDialogue); //TODO: This is a little inefficent maybe? I don't know if I care enough to fix this its not a big issue
-        }
-        else if (loadedDialogue.EndsConversation) //If the loaded dialogue ends conversation
-        {
-            //If a dialogue frame is the end of a convesation
-            LoadFlags(loadedDialogue);
-            speakerDialogueNo = 0;
-            EndConversation();
         }
         else
         {
@@ -85,6 +89,11 @@ public class DialogueManager : MonoBehaviour
             speakerDialogueNo = 0;
             LoadSelectedOption(loadedDialogue.DialogueOptions[option]);
         }
+    }
+
+    public void SkipDialogueTextEffect() 
+    {
+        speakerTextMesh.SetAllTextVisible();
     }
 
     private void LoadUIDialogueFrame(Dialogue dialogue)
@@ -100,23 +109,27 @@ public class DialogueManager : MonoBehaviour
         {
             //Load speaker dialogue and a name
             SpeakerDialogue speaker = filteredDialogue.SpeakerDialogues[speakerDialogueNo];
-            speakerText.text = loadedDialogueObject.GetSpeakerWithCapital(speaker.SpeakerId) + ": " + speaker.Text;
+            SetSpeakerText(speaker);
+        }
+        else 
+        {
+            loadedSpeakerDialogue = null;
         }
 
         //Generate Options
-        if (speakerDialogueNo != (filteredDialogue.SpeakerDialogues.Length - 1))
+        if (loadedSpeakerDialogue != null && loadedSpeakerDialogue.EndsConversation)
         {
-            CreateDialogueOptionText(0, "Continue.");
+            CreateDialogueOptionText(0, "[End Conversation].");
         }
-        else if (filteredDialogue.EndsConversation)
+        else if (speakerDialogueNo != (filteredDialogue.SpeakerDialogues.Length - 1))
         {
-            CreateDialogueOptionText(0, "End Conversation.");
+            CreateDialogueOptionText(0, "[Continue].");
         }
         else if (dialogueBox != null && dialogueOptionPrefab && filteredDialogue.DialogueOptions != null && filteredDialogue.DialogueOptions.Any())
         {
             for (int i = 0; i < filteredDialogue.DialogueOptions.Length; i++)
             {
-                CreateDialogueOptionText(i, filteredDialogue.DialogueOptions[i].OptionText); 
+                CreateDialogueOptionText(i, filteredDialogue.DialogueOptions[i].OptionText + (filteredDialogue.DialogueOptions[i].EndsConversation ? " [End Conversation]." : "")); 
             }
         }
 
@@ -132,8 +145,8 @@ public class DialogueManager : MonoBehaviour
 
     private void ClearUIDialogue()
     {
-        if (speakerText != null) speakerText.text = "";
-
+        //if (speakerText != null) speakerText.text = "";
+        if (speakerText != null) SetSpeakerText("");
         //clear any existing dialogue options
         for (int j = 0; j < dialogueOptions.Count; j++)
         {
@@ -174,6 +187,8 @@ public class DialogueManager : MonoBehaviour
         //Clear all the things
         loadedDialogueObject = null;
         loadedDialogueTree = null;
+        loadedSpeakerDialogue = null;
+        loadedDialogue = null;
 
         //Set the Dialogue context to not be active (i.e. hide the dialogue ui because dialogue has ended)
         if (UIManager.current != null) UIManager.current.SetContextsActive(false, UIContextType.Dialogue);
@@ -251,5 +266,16 @@ public class DialogueManager : MonoBehaviour
         }
 
         return dialogueToFilter;
+    }
+
+    private void SetSpeakerText(string speakerDialogueText)
+    {
+        speakerTextMesh.SetText(speakerDialogueText);
+    }
+
+    private void SetSpeakerText(SpeakerDialogue speakerDialogue) 
+    {
+        speakerTextMesh.SetText(speakerDialogue.Text, loadedDialogueObject.GetSpeakerNiceName(speakerDialogue.SpeakerId) + ": ", speakerDialogue.DialogueEffects);
+        loadedSpeakerDialogue = speakerDialogue;
     }
 }

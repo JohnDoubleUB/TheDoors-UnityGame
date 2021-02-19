@@ -2,9 +2,15 @@
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
+    private Transform target;
     public float smoothSpeed = 0.125f;
     public Vector3 offset;
+
+    private void Start()
+    {
+        //Get the player transform from the GameManager!
+        if (GameManager.current != null) target = GameManager.current.Player.transform;
+    }
 
     private void LateUpdate()
     {

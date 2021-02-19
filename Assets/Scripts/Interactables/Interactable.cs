@@ -10,7 +10,7 @@ public class Interactable : MonoBehaviour
     private BoxCollider2D bc;
     public Text interactText;
 
-    private PlatformerPlayer platformerPlayer;
+    private Player player;
 
     public bool Selected 
     {
@@ -39,8 +39,8 @@ public class Interactable : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.GetMask("Player")) 
         {
-            platformerPlayer = collision.gameObject.GetComponent<PlatformerPlayer>();
-            platformerPlayer.AddInteractable(this);
+            player = collision.gameObject.GetComponent<Player>();
+            player.AddInteractable(this);
         }
     }
 
@@ -48,8 +48,8 @@ public class Interactable : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.GetMask("Player"))
         {
-            platformerPlayer.RemoveInteractable(this);
-            platformerPlayer = null;
+            player.RemoveInteractable(this);
+            player = null;
             Selected = false;
         }
     }

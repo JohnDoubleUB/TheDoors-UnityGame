@@ -5,19 +5,37 @@ using UnityEngine;
 public class SaveData
 {
     public string SaveName;
+    public string LevelName;
     public int Level;
     public Vector3 PlayerPosition;
     public List<DoorName> CompletedDoors;
     public List<string> Flags;
     public List<string> ActionQueue;
+    public List<LevelSaveData> LevelData;
 
-    public SaveData(string saveName, int level, Vector3 playerPosition, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue) 
+    public SaveData(string saveName, string levelName, int level, Vector3 playerPosition, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<LevelSaveData> levelData) 
     {
         SaveName = saveName;
+        LevelName = levelName;
         Level = level;
         PlayerPosition = playerPosition;
         CompletedDoors = completedDoors;
         Flags = flags;
         ActionQueue = actionQueue;
+        LevelData = levelData;
+    }
+}
+
+public class LevelSaveData 
+{
+    public string LevelName;
+    public int Level;
+    public Vector3 PlayerPosition;
+
+    public LevelSaveData(string levelName, int level, Vector3 playerPosition) 
+    {
+        LevelName = levelName;
+        Level = level;
+        PlayerPosition = playerPosition;
     }
 }
