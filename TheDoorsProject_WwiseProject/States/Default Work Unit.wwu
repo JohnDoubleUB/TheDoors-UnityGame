@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WwiseDocument Type="WorkUnit" ID="{F9ACD0B3-CD1B-4C63-A77B-6D831630D423}" SchemaVersion="97">
 	<States>
-		<WorkUnit Name="Default Work Unit" ID="{F9ACD0B3-CD1B-4C63-A77B-6D831630D423}" PersistMode="Standalone"/>
+		<WorkUnit Name="Default Work Unit" ID="{F9ACD0B3-CD1B-4C63-A77B-6D831630D423}" PersistMode="Standalone">
+			<ChildrenList>
+				<StateGroup Name="Movement" ID="{E0B3C675-5D7F-4D7B-93B7-257B76D98BAC}">
+					<ChildrenList>
+						<State Name="None" ID="{B599DC66-239F-438B-9162-AC9205453B7F}"/>
+						<State Name="Hub_World" ID="{1B4308A4-10DB-428D-9221-8488803E9C1A}"/>
+						<State Name="Love" ID="{471B71CA-F68D-40AC-AE9C-009B36146D4D}"/>
+					</ChildrenList>
+				</StateGroup>
+			</ChildrenList>
+		</WorkUnit>
 	</States>
 </WwiseDocument>

@@ -49,7 +49,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: e3557690e8a497439ddeb689e05e8d89
     GuidInternal: 
-    m_lastTime: -8585886355803697491
+    m_lastTime: -8585878542319919761
     List:
     - name: Main
       guid: 5f098b65b32d6d4081a1f89170017006
@@ -68,20 +68,88 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: 05a61447fcee7c4197910aa900824f8a
     GuidInternal: 
-    m_lastTime: -8585886355814912747
+    m_lastTime: -8585878542337273372
     List:
+    - name: Hub_World_Music
+      guid: 06159971f1080142b627fa50b4c1a8ee
+      id: 894932307
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Music
+        ObjectType: 4
+      - ElementName: Hub_World_Music
+        ObjectType: 3
+      Path: Default Work Unit\Music\Hub_World_Music
+      maxAttenuation: 0
+      maxDuration: 264
+      minDuration: 264
+    - name: Jump
+      guid: e0cfb9f4255acb43bab7c5ef9b7090c2
+      id: 3833651337
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 4
+      - ElementName: Jump
+        ObjectType: 3
+      Path: Default Work Unit\Movement\Jump
+      maxAttenuation: 0
+      maxDuration: 2
+      minDuration: 2
+    - name: Movement
+      guid: c0960b4005295e459a926afc219695c0
+      id: 2129636626
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 4
+      Path: Default Work Unit\Movement
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
+    - name: Music
+      guid: e96b574823876f4f9cfdf43583b0f727
+      id: 3991942870
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Music
+        ObjectType: 4
+      Path: Default Work Unit\Music
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Test_Event
       guid: d37f01c44922764685615e2c7367d4e3
       id: 4258653052
       PathAndIcons:
       - ElementName: Default Work Unit
         ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 4
       - ElementName: Test_Event
         ObjectType: 3
-      Path: Default Work Unit\Test_Event
+      Path: Default Work Unit\Movement\Test_Event
       maxAttenuation: 0
       maxDuration: 278
       minDuration: 278
+    - name: Walk_Cycle
+      guid: 37d821d514227444b1e702111862fffb
+      id: 1871152661
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 4
+      - ElementName: Walk_Cycle
+        ObjectType: 3
+      Path: Default Work Unit\Movement\Walk_Cycle
+      maxAttenuation: 0
+      maxDuration: 2
+      minDuration: 2
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     PathAndIcons:
@@ -90,8 +158,17 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: fb20fd2fc614ca4da0d3dd5e2dd4fa39
     GuidInternal: 
-    m_lastTime: -8585886355814912747
-    List: []
+    m_lastTime: -8585878542337263116
+    List:
+    - name: Hub_World_Reverb
+      guid: 7cb1299ddc7c794f99a811a6360563bd
+      id: 2410832690
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Hub_World_Reverb
+        ObjectType: 13
+      Path: Default Work Unit\Hub_World_Reverb
   StateWwu:
   - PhysicalPath: States\Default Work Unit.wwu
     PathAndIcons:
@@ -100,8 +177,39 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: b3d0acf91bcd634ca77b6d831630d423
     GuidInternal: 
-    m_lastTime: -8585886355803687526
-    List: []
+    m_lastTime: -8585878542319919761
+    List:
+    - name: Movement
+      guid: 75c6b3e07f5d7b4d93b7257b76d98bac
+      id: 2129636626
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 9
+      Path: Default Work Unit\Movement
+      values:
+      - name: Hub_World
+        guid: a408431bdb108d4292218488803e9c1a
+        id: 864555211
+        PathAndIcons:
+        - ElementName: Hub_World
+          ObjectType: 8
+      - name: Love
+        guid: ca711b478df6ac40ae9c009b36146d4d
+        id: 271565449
+        PathAndIcons:
+        - ElementName: Love
+          ObjectType: 8
+      - name: None
+        guid: 66dc99b59f238b439162ac9205453b7f
+        id: 748895195
+        PathAndIcons:
+        - ElementName: None
+          ObjectType: 8
+      ValueGuids: []
+      ValueIcons: []
+      valuesInternal: []
   SwitchWwu:
   - PhysicalPath: Switches\Default Work Unit.wwu
     PathAndIcons:
@@ -122,7 +230,6 @@ MonoBehaviour:
     GuidInternal: 
     m_lastTime: -8585886355803637652
     List: []
-  ExpandedItems:
-  - /TheDoorsProject_WwiseProject
+  ExpandedItems: []
   autoPopulateEnabled: 1
   CurrentPluginConfig: 

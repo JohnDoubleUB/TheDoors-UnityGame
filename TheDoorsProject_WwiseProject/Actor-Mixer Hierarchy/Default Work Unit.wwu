@@ -47,6 +47,200 @@
 						<ActiveSource Name="1_ Out of the Dark" ID="{C5846CFC-A6F3-421F-8D81-088229900159}" Platform="Linked"/>
 					</ActiveSourceList>
 				</Sound>
+				<Folder Name="Movement" ID="{8716C3E1-F167-4F0D-8FD5-43495E2A53EA}" ShortID="920614796">
+					<ChildrenList>
+						<RandomSequenceContainer Name="Walk_Cycle_1" ID="{8940431E-E6EC-4422-BF19-FDD3A83FB291}" ShortID="740749050">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+								</Reference>
+								<Reference Name="Effect0" PluginName="Wwise Matrix Reverb" CompanyID="0" PluginID="115" PluginType="3">
+									<ObjectRef Name="Big_Garage1" ID="{172402A8-22F4-40FC-BE1D-5269594CB633}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<Sound Name="Footstep 1" ID="{4AB8CCFA-B8E7-401C-AEE6-1152794686FB}" ShortID="731083509">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Footstep 1" ID="{A81F7EB3-16A1-406F-859E-7AFCE0E28600}">
+											<Language>SFX</Language>
+											<AudioFile>Footstep 1.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="238116662"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Footstep 1" ID="{A81F7EB3-16A1-406F-859E-7AFCE0E28600}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Footstep 2" ID="{59F854C4-1E43-478D-B3ED-2F97406D643A}" ShortID="416707606">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Footstep 2" ID="{35EEC226-F2CE-4932-B829-66E6B7536FBE}">
+											<Language>SFX</Language>
+											<AudioFile>Footstep 2.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="837351131"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Footstep 2" ID="{35EEC226-F2CE-4932-B829-66E6B7536FBE}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+								<Sound Name="Footstep 3" ID="{162F89A7-6D9F-42BB-9C65-48A5A1971E88}" ShortID="306576249">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="Footstep 3" ID="{FBA99911-D158-4F8D-A025-2E2B1CF2F8F5}">
+											<Language>SFX</Language>
+											<AudioFile>Footstep 3.wav</AudioFile>
+											<MediaIDList>
+												<MediaID ID="98654734"/>
+											</MediaIDList>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="Footstep 3" ID="{FBA99911-D158-4F8D-A025-2E2B1CF2F8F5}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
+							</ChildrenList>
+							<StateInfo>
+								<StatePropertyList>
+									<Property Name="BypassEffect"/>
+									<Property Name="Highpass"/>
+									<Property Name="Lowpass"/>
+									<Property Name="MakeUpGain"/>
+									<Property Name="Pitch"/>
+									<Property Name="Volume"/>
+								</StatePropertyList>
+								<StateGroupList>
+									<StateGroupInfo>
+										<StateGroupRef Name="Movement" ID="{E0B3C675-5D7F-4D7B-93B7-257B76D98BAC}"/>
+									</StateGroupInfo>
+								</StateGroupList>
+								<CustomStateList>
+									<CustomState>
+										<StateRef Name="Love" ID="{471B71CA-F68D-40AC-AE9C-009B36146D4D}"/>
+										<CustomState Name="" ID="{04397A99-619E-4CF2-B8FF-EF0150E4A002}" ShortID="530283308">
+											<PropertyList>
+												<Property Name="BypassEffect" Type="bool" Value="True"/>
+											</PropertyList>
+										</CustomState>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="Hub_World" ID="{1B4308A4-10DB-428D-9221-8488803E9C1A}"/>
+										<CustomState Name="" ID="{1931F5CD-1D3E-4A7C-81D0-054CEC1D624F}" ShortID="281153683"/>
+									</CustomState>
+								</CustomStateList>
+							</StateInfo>
+						</RandomSequenceContainer>
+						<Sound Name="Jump" ID="{C120ABF5-A1CD-4C7D-862F-C726CFF57083}" ShortID="975244755">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+								</Reference>
+								<Reference Name="Effect0" PluginName="Wwise Matrix Reverb" CompanyID="0" PluginID="115" PluginType="3">
+									<ObjectRef Name="Big_Garage1" ID="{172402A8-22F4-40FC-BE1D-5269594CB633}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="Footstep 4" ID="{2A70DB01-B19C-4673-A3C3-B96DD626D0FE}">
+									<Language>SFX</Language>
+									<AudioFile>Footstep 4.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="1057420875"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<StateInfo>
+								<StatePropertyList>
+									<Property Name="BypassEffect"/>
+									<Property Name="Highpass"/>
+									<Property Name="Lowpass"/>
+									<Property Name="MakeUpGain"/>
+									<Property Name="Pitch"/>
+									<Property Name="Volume"/>
+								</StatePropertyList>
+								<StateGroupList>
+									<StateGroupInfo>
+										<StateGroupRef Name="Movement" ID="{E0B3C675-5D7F-4D7B-93B7-257B76D98BAC}"/>
+									</StateGroupInfo>
+								</StateGroupList>
+								<CustomStateList>
+									<CustomState>
+										<StateRef Name="Love" ID="{471B71CA-F68D-40AC-AE9C-009B36146D4D}"/>
+										<CustomState Name="" ID="{8B0CF3C0-C882-45AE-8FF3-C2A69FA7D6CF}" ShortID="1014970343">
+											<PropertyList>
+												<Property Name="BypassEffect" Type="bool" Value="True"/>
+											</PropertyList>
+										</CustomState>
+									</CustomState>
+									<CustomState>
+										<StateRef Name="Hub_World" ID="{1B4308A4-10DB-428D-9221-8488803E9C1A}"/>
+										<CustomState Name="" ID="{9DA31A8A-0F58-4634-BCD8-BBBB2BC1B976}" ShortID="146115958"/>
+									</CustomState>
+								</CustomStateList>
+							</StateInfo>
+							<ActiveSourceList>
+								<ActiveSource Name="Footstep 4" ID="{2A70DB01-B19C-4673-A3C3-B96DD626D0FE}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
+				<Folder Name="Music" ID="{B57F042A-225A-438B-9AF7-23594F3D4428}" ShortID="716754193">
+					<ChildrenList>
+						<Sound Name="The Doors Hub World" ID="{E7140CEA-9665-4436-82A3-7FD81B3F8166}" ShortID="439980474">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{15D3E1E7-5593-4B6C-9DD0-29625F4E4F21}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{FB5D2D4D-71FF-4B57-95B8-808499E071DB}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<AudioFileSource Name="The Doors Hub World" ID="{B4B3684C-5003-4F13-8AA6-1D1C583CC1E5}">
+									<Language>SFX</Language>
+									<AudioFile>The Doors Hub World.wav</AudioFile>
+									<MediaIDList>
+										<MediaID ID="829663964"/>
+									</MediaIDList>
+								</AudioFileSource>
+							</ChildrenList>
+							<ActiveSourceList>
+								<ActiveSource Name="The Doors Hub World" ID="{B4B3684C-5003-4F13-8AA6-1D1C583CC1E5}" Platform="Linked"/>
+							</ActiveSourceList>
+						</Sound>
+					</ChildrenList>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>

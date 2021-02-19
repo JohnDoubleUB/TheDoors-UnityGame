@@ -5,6 +5,9 @@
 			<ChildrenList>
 				<SoundBank Name="Main" ID="{658B095F-2DB3-406D-81A1-F89170017006}">
 					<ObjectInclusionList>
+						<ObjectRef Name="Hub_World_Music" ID="{71991506-08F1-4201-B627-FA50B4C1A8EE}" WorkUnitID="{4714A605-EEFC-417C-9791-0AA900824F8A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Jump" ID="{F4B9CFE0-5A25-43CB-BAB7-C5EF9B7090C2}" WorkUnitID="{4714A605-EEFC-417C-9791-0AA900824F8A}" Origin="Manual" Filter="7"/>
+						<ObjectRef Name="Walk_Cycle" ID="{D521D837-2214-4474-B1E7-02111862FFFB}" WorkUnitID="{4714A605-EEFC-417C-9791-0AA900824F8A}" Origin="Manual" Filter="7"/>
 						<ObjectRef Name="Test_Event" ID="{C4017FD3-2249-4676-8561-5E2C7367D4E3}" WorkUnitID="{4714A605-EEFC-417C-9791-0AA900824F8A}" Origin="Manual" Filter="7"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
