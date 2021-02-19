@@ -17,6 +17,3 @@ MonoBehaviour:
   - Name: testdialogue
     RequiredFlags: []
     UnRequiredFlags: []
-  - Name: defeated-all-gods-but-not-sven
-    RequiredFlags: []
-    UnRequiredFlags: []

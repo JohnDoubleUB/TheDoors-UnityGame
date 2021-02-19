@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,8 @@ public class DialogueManager : MonoBehaviour
     private Dialogue loadedDialogue;
     private SpeakerDialogue loadedSpeakerDialogue;
 
-    public Text speakerText;
+    //public Text speakerText;
+    public TMP_Text speakerText;
     public GameObject dialogueBox;
     public GameObject dialogueOptionPrefab;
     public bool includeDialogueOptionNumbers;
@@ -24,6 +26,8 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
+        //speakerTextPro.SetText("Hello");
+        //speakerTextPro.text = "noooooo";
         if (current == null) current = this;
     }
 
@@ -91,14 +95,9 @@ public class DialogueManager : MonoBehaviour
         {
             //Load speaker dialogue and a name
             SpeakerDialogue speaker = filteredDialogue.SpeakerDialogues[speakerDialogueNo];
-            speakerText.text = loadedDialogueObject.GetSpeakerNiceName(speaker.SpeakerId) + ": " + speaker.Text;
-            loadedSpeakerDialogue = speaker;
-
-            //TODO: Remove this, it's just to show that the tags on dialogue work! should this be the other way round? i.e. index as key and effects attached to each one?
-            foreach (KeyValuePair<string, int[]> dialogueEffect in speaker.DialogueEffects) 
-            {
-                Debug.Log(dialogueEffect.Key + " tag indexes: " + string.Join(", ", dialogueEffect.Value));
-            }
+            SetSpeakerText(speaker);
+            //speakerText.text = loadedDialogueObject.GetSpeakerNiceName(speaker.SpeakerId) + ": " + speaker.Text;
+            //loadedSpeakerDialogue = speaker;
         }
         else 
         {
@@ -134,8 +133,8 @@ public class DialogueManager : MonoBehaviour
 
     private void ClearUIDialogue()
     {
-        if (speakerText != null) speakerText.text = "";
-
+        //if (speakerText != null) speakerText.text = "";
+        if (speakerText != null) SetSpeakerText("");
         //clear any existing dialogue options
         for (int j = 0; j < dialogueOptions.Count; j++)
         {
@@ -176,6 +175,8 @@ public class DialogueManager : MonoBehaviour
         //Clear all the things
         loadedDialogueObject = null;
         loadedDialogueTree = null;
+        loadedSpeakerDialogue = null;
+        loadedDialogue = null;
 
         //Set the Dialogue context to not be active (i.e. hide the dialogue ui because dialogue has ended)
         if (UIManager.current != null) UIManager.current.SetContextsActive(false, UIContextType.Dialogue);
@@ -253,5 +254,23 @@ public class DialogueManager : MonoBehaviour
         }
 
         return dialogueToFilter;
+    }
+
+    private void SetSpeakerText(string speakerDialogueText)
+    {
+        speakerText.SetText(speakerDialogueText);
+    }
+
+    private void SetSpeakerText(SpeakerDialogue speakerDialogue) 
+    {
+        speakerText.SetText(loadedDialogueObject.GetSpeakerNiceName(speakerDialogue.SpeakerId) + ": " + speakerDialogue.Text);
+        loadedSpeakerDialogue = speakerDialogue;
+
+
+        //TODO: Remove this, it's just to show that the tags on dialogue work! should this be the other way round? i.e. index as key and effects attached to each one?
+        foreach (KeyValuePair<string, int[]> dialogueEffect in speakerDialogue.DialogueEffects)
+        {
+            Debug.Log(dialogueEffect.Key + " tag indexes: " + string.Join(", ", dialogueEffect.Value));
+        }
     }
 }
