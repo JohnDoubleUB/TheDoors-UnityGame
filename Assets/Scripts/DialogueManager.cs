@@ -21,6 +21,9 @@ public class DialogueManager : MonoBehaviour
     public GameObject dialogueOptionPrefab;
     public bool includeDialogueOptionNumbers;
 
+    public GameObject dialogueMenuObject; //This is used to parent the frame to
+    public GameObject dialogueMenuFrame;
+
     private List<DialogueOptionText> dialogueOptions = new List<DialogueOptionText>();
 
     private int speakerDialogueNo = 0; // Used to allow separate lines to be displayed separately instead of together joined.
@@ -28,6 +31,13 @@ public class DialogueManager : MonoBehaviour
     private void Awake()
     {
         if (current == null) current = this;
+        
+        if (dialogueMenuFrame != null && dialogueMenuObject != null) 
+        {
+            GameObject dialogueFrame = Instantiate(dialogueMenuFrame, dialogueMenuObject.transform);
+            dialogueFrame.transform.SetAsFirstSibling();
+        }
+
     }
 
     public void LoadDialogueTree(string dialogueObjectName, string treeName)
