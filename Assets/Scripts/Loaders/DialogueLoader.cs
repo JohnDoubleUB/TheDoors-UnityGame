@@ -123,7 +123,7 @@ public static class DialogueLoader
                     //Filter here? Hopefully this doesn't go horribly wrong yeah?
                     TagFilteredDialogue tagFilteredDialogue = ExtractTags(sDialogue.InnerXml);
 
-                    return new SpeakerDialogue(tagFilteredDialogue.UntaggedString, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags, tagFilteredDialogue.StringTags);
+                    return new SpeakerDialogue(tagFilteredDialogue.UntaggedString, GetSpeakerId(sDialogue), sDialogue.Name == "speaker-end", sDialogueReqFlags, sDialogueUnReqFlags, tagFilteredDialogue.IndexedTags);
                 })
                 .ToArray();
 
@@ -221,7 +221,7 @@ public static class DialogueLoader
         //Used to check likely hood of tag quickly
         char[] tagStartingCharacters = reservedTags.Select(x => x[0]).ToArray();
 
-        Dictionary<string, List<int>> stringTags = new Dictionary<string, List<int>>();
+        Dictionary<int, string[]> indexedTags = new Dictionary<int, string[]>();
 
         for (int i = 0; i < taggedString.Length; i++)
         {
@@ -249,8 +249,6 @@ public static class DialogueLoader
                                 if (isClosingTag) currentTags.Remove(match);
                                 else currentTags.Add(match);
 
-                                if (!stringTags.ContainsKey(match)) stringTags.Add(match, new List<int>());
-
                                 i = nextCharIndex + reservedTag.Length + 1;
                                 break;
                             }
@@ -269,14 +267,14 @@ public static class DialogueLoader
                 {
                     untaggedString += taggedString[i];
                     int currentNewIndex = untaggedString.Length - 1;
-                    foreach (string t in currentTags) stringTags[t].Add(currentNewIndex);
+                    if (currentTags.Any() && taggedString[i] != ' ') indexedTags.Add(currentNewIndex, currentTags.ToArray());
                 }
             }
         }
 
         return new TagFilteredDialogue(
             untaggedString,
-            stringTags.ToDictionary(x => x.Key, x => x.Value.ToArray())
+            indexedTags
             );
     }
 
@@ -284,11 +282,11 @@ public static class DialogueLoader
     private struct TagFilteredDialogue
     {
         public string UntaggedString;
-        public Dictionary<string, int[]> StringTags;
-        public TagFilteredDialogue(string untaggedString, Dictionary<string, int[]> stringTags)
+        public Dictionary<int, string[]> IndexedTags;
+        public TagFilteredDialogue(string untaggedString, Dictionary<int, string[]> indexedTags)
         {
             UntaggedString = untaggedString;
-            StringTags = stringTags;
+            IndexedTags = indexedTags;
         }
     }
 
@@ -438,7 +436,7 @@ public class SpeakerDialogue
     public string Text;
     public int SpeakerId;
     public bool EndsConversation;
-    public Dictionary<string, int[]> DialogueEffects;
+    public Dictionary<int, string[]> DialogueEffects;
 
     /* 
      * --:NOTES ON FLAGS FOR SPEAKER DIALOGUE:--
@@ -457,7 +455,7 @@ public class SpeakerDialogue
     //    RequiredFlags = requiredFlags;
     //    UnRequiredFlags = unRequiredFlags;
     //}
-    public SpeakerDialogue(string text, int speakerId, bool endsConversation, string[] requiredFlags, string[] unRequiredFlags, Dictionary<string, int[]> dialogueEffects = null)
+    public SpeakerDialogue(string text, int speakerId, bool endsConversation, string[] requiredFlags, string[] unRequiredFlags, Dictionary<int, string[]> dialogueEffects = null)
     {
         Text = text;
         SpeakerId = speakerId;

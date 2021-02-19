@@ -16,6 +16,7 @@ public class DialogueManager : MonoBehaviour
 
     //public Text speakerText;
     public TMP_Text speakerText;
+    public DialogueTextMesh speakerTextMesh;
     public GameObject dialogueBox;
     public GameObject dialogueOptionPrefab;
     public bool includeDialogueOptionNumbers;
@@ -26,8 +27,6 @@ public class DialogueManager : MonoBehaviour
 
     private void Awake()
     {
-        //speakerTextPro.SetText("Hello");
-        //speakerTextPro.text = "noooooo";
         if (current == null) current = this;
     }
 
@@ -258,19 +257,20 @@ public class DialogueManager : MonoBehaviour
 
     private void SetSpeakerText(string speakerDialogueText)
     {
-        speakerText.SetText(speakerDialogueText);
+        //speakerText.SetText(speakerDialogueText);
+        speakerTextMesh.SetText(speakerDialogueText);
     }
 
     private void SetSpeakerText(SpeakerDialogue speakerDialogue) 
     {
-        speakerText.SetText(loadedDialogueObject.GetSpeakerNiceName(speakerDialogue.SpeakerId) + ": " + speakerDialogue.Text);
+        //speakerText.SetText(loadedDialogueObject.GetSpeakerNiceName(speakerDialogue.SpeakerId) + ": " + speakerDialogue.Text);
+        speakerTextMesh.SetText(speakerDialogue.Text, loadedDialogueObject.GetSpeakerNiceName(speakerDialogue.SpeakerId) + ": ", speakerDialogue.DialogueEffects);
         loadedSpeakerDialogue = speakerDialogue;
 
-
         //TODO: Remove this, it's just to show that the tags on dialogue work! should this be the other way round? i.e. index as key and effects attached to each one?
-        foreach (KeyValuePair<string, int[]> dialogueEffect in speakerDialogue.DialogueEffects)
+        foreach (KeyValuePair<int, string[]> dialogueEffect in speakerDialogue.DialogueEffects)
         {
-            Debug.Log(dialogueEffect.Key + " tag indexes: " + string.Join(", ", dialogueEffect.Value));
+            Debug.Log(dialogueEffect.Key + " index has tags: " + string.Join(", ", dialogueEffect.Value));
         }
     }
 }

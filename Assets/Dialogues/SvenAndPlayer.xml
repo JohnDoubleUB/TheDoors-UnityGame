@@ -642,8 +642,10 @@
 		
 		<dialogue id="2">
 			<speaker-end reqflags="test-non-existent">Yeah lets end this.</speaker-end>
+			<speaker><w>Wavy</w>, <s>Shaky</s> and <f>Floaty</f></speaker>
+			<speaker><f><s><w>ALL AT ONCE!</w></s></f></speaker>
 			<speaker>Hi <w>there</w> newbie</speaker>
-			<speaker>Welcome to the game</speaker>
+			<speaker><f><s><w>Welcome to the game!</w></s></f></speaker>
 			<speaker reqflags="test-isnt-new" unreqflags="test-weird-alternate">Oh wait, haven't I just?.. Eh whatever, you're still green</speaker>
 			<speaker unreqflags="test-isnt-new">Yeah you're totally green</speaker>
 			<speaker reqflags="test-weird-alternate">...</speaker>
