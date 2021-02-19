@@ -482,6 +482,8 @@ MonoBehaviour:
   primarySpriteRenderer: {fileID: 54731582296638566}
   light2D: {fileID: 4582355227235938581}
   doorName: 0
+  doorSceneRootingObj: {fileID: 11400000, guid: c599318a5a936f24ea4d0f7f3f73a958,
+    type: 2}
 --- !u!61 &1212555594
 BoxCollider2D:
   m_ObjectHideFlags: 0

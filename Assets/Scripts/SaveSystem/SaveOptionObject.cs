@@ -35,7 +35,8 @@ public class SaveOptionObject : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.current != null) GameManager.current.AddSaveOptionObject(this); //Works now :)
+        //I want this gone!
+        //if (GameManager.current != null) GameManager.current.AddSaveOptionObject(this); //Works now :)
     }
 
     public void SetContent(string content = null) 

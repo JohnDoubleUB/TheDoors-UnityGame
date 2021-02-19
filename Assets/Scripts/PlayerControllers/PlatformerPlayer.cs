@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlatformerPlayer : MonoBehaviour
+public class PlatformerPlayer : Player
 {
     //Note: This class will be slightly different for the different type of game controllers, it might be worth making a parent class or interface so that some of the class structure is consistent throughout.
     [Header("Movement")]
@@ -23,11 +23,6 @@ public class PlatformerPlayer : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Animator animator;
-
-    [HideInInspector]
-    public bool Crouch;
-    [HideInInspector]
-    public bool JumpHold;
 
     //State variables
     private bool isClimbing;
@@ -61,42 +56,21 @@ public class PlatformerPlayer : MonoBehaviour
 
     public int currentJumpCount; //To keep track of the amount of jumps since last standing on the ground
 
-    private List<Interactable> interactables = new List<Interactable>();
-    public Interactable closestInteractable;
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
-
-    private void Start()
+    protected new void Update()
     {
-        if (GameManager.current != null)
-        {
-            GameManager.current.player = this;
-        }
-    }
-
-    void Update()
-    {
+        base.Update();
         JumpGravityScript();
         CheckForLadder();
-        
-        if (Crouch && !IsClimbing)
-        {
-            isCrouching = true;
-        }
-        else 
-        {
-            isCrouching = false;
-        }
-
-        if (interactables.Any()) SelectClosestInteractable();
+        isCrouching = Crouch && !IsClimbing;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         UpdateAnimator();
     }
@@ -119,32 +93,6 @@ public class PlatformerPlayer : MonoBehaviour
         }
     }
 
-    private void SelectClosestInteractable() 
-    {
-        Interactable closestInteractable = null;
-        float shortestDistance = float.MaxValue;
-        float tempDistance;
-
-        foreach (Interactable interObj in interactables)
-        {
-            interObj.Selected = false;
-
-            tempDistance = Vector2.Distance(
-                new Vector2(interObj.transform.position.x, interObj.transform.position.y),
-                new Vector2(transform.position.x, transform.position.y)
-                );
-
-            if (tempDistance < shortestDistance)
-            {
-                shortestDistance = tempDistance;
-                closestInteractable = interObj;
-            }
-        }
-
-        closestInteractable.Selected = true;
-        this.closestInteractable = closestInteractable;
-    }
-
     private void CheckForLadder()
     {
         RaycastHit2D hitInfo = Physics2D.Raycast(ladderRaycastTarget.position, Vector2.up, raycastDistance, ladderLayerMask);
@@ -165,7 +113,7 @@ public class PlatformerPlayer : MonoBehaviour
         }
     }
 
-    public void Jump() 
+    public override void Jump() 
     {
         //trigger jumping but only when the player can jump I.e. has not reached the max jumps
         if (currentJumpCount < maxJumpCount && !IsClimbing)
@@ -175,19 +123,16 @@ public class PlatformerPlayer : MonoBehaviour
             isJumping = true;
             
             //Test!!! 
-            //TODO: Remove this because the sound is annoying!
-            AkSoundEngine.PostEvent("Jump", gameObject);
-
-          
+            //AkSoundEngine.PostEvent("Test_Event", gameObject);
         }
     }
 
-    public void Interact() 
+    public override void Interact() 
     {
         if (closestInteractable != null) closestInteractable.Interact();
     }
 
-    public void Move(Vector2 movement) 
+    public override void Move(Vector2 movement) 
     {
         //Do the movement thing
         Vector2 targetVelocity = movement * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
@@ -205,16 +150,4 @@ public class PlatformerPlayer : MonoBehaviour
 
         rb.velocity = IsClimbing ? targetVelocity : new Vector2 (targetVelocity.x, rb.velocity.y);
     }
-
-    public void AddInteractable(Interactable interactable) 
-    {
-        if (!interactables.Contains(interactable)) interactables.Add(interactable);
-    }
-
-    public void RemoveInteractable(Interactable interactable)
-    {
-        if (interactables.Contains(interactable)) interactables.Remove(interactable);
-        if (!interactables.Any()) closestInteractable = null;
-    }
-
 }
