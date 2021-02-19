@@ -35,8 +35,8 @@
 
 
 		<dialogue id="1">
-			<speaker>*Sigh* Welcome Chosen One, I’m glad you have arrived safely.</speaker>
-			<speaker speaker-index="0">You have been brough here by the grace of the Gods to free them from their imprisonment.</speaker>
+			<speaker>*sigh* Welcome Chosen One, I’m glad you have arrived safely.</speaker>
+			<speaker speaker-index="0">You have been brought here by the grace of the Gods to free them from their imprisonment.</speaker>
 			<speaker>Through these doors you will find each God, simply end their lives and they will be freed blah blah blah.</speaker>
 			<option dialogue-id="2">What? What are you talking about where am i?</option>
 			<option dialogue-id="3">You don't sound very enthusiastic about all this.</option>
@@ -642,7 +642,7 @@
 		
 		<dialogue id="2">
 			<speaker-end reqflags="test-non-existent">Yeah lets end this.</speaker-end>
-			<speaker><w>Wavy</w>, <s>Shaky</s> and <f>Floaty</f></speaker>
+			<speaker><r><w>Wavy</w></r>, <g><s>Shaky</s></g> and <b><f>Floaty</f></b>. also <y><c>Creepy!</c></y></speaker>
 			<speaker><f><s><w>ALL AT ONCE!</w></s></f></speaker>
 			<speaker>Hi <w>there</w> newbie</speaker>
 			<speaker><f><s><w>Welcome to the game!</w></s></f></speaker>

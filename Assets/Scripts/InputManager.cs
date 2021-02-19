@@ -73,6 +73,7 @@ public class InputManager : MonoBehaviour
             {
                 if (!keyDownRegistered && Input.GetKeyDown(key))
                 {
+                    AnyKeyDown();
                     InputMappingKeyDown(control.Key);
                     keyDownRegistered = true;
                 }
@@ -168,6 +169,14 @@ public class InputManager : MonoBehaviour
                     && GameManager.current != null
                     && GameManager.current.Player != null) GameManager.current.Player.Interact();
                 break;
+        }
+    }
+
+    private void AnyKeyDown() 
+    {
+        if (DialogueManager.current != null) 
+        {
+            DialogueManager.current.SkipDialogueTextEffect();
         }
     }
 

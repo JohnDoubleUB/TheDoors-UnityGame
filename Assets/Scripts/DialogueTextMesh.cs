@@ -5,13 +5,17 @@ using TMPro;
 
 public class DialogueTextMesh : MonoBehaviour
 {
+    public float textAppearSpeed = 1f;
+
     private TMP_Text textMesh;
     private Mesh mesh;
     private Vector3[] vertices;
     private Color[] colors;
     private Dictionary<int, string[]> characterEffects;
     private string speaker = "";
+    
     private int visibleIndexes = 0;
+    private float currentTime = 0f;
 
 
     private void Awake()
@@ -28,6 +32,36 @@ public class DialogueTextMesh : MonoBehaviour
             mesh = textMesh.mesh;
             vertices = mesh.vertices;
             colors = mesh.colors;
+
+            //Visible stuff magic
+            if (visibleIndexes != textMesh.textInfo.characterCount) 
+            {
+                if (currentTime >= 1f) 
+                {
+                    visibleIndexes++;
+                    currentTime = 0f;
+                }
+                
+                currentTime += (textAppearSpeed * 100f) * Time.deltaTime;
+
+                TMP_CharacterInfo c;
+                int vertexIndex; 
+
+                for (int i = speaker.Length; i < textMesh.textInfo.characterCount; i++) 
+                {
+                    c = textMesh.textInfo.characterInfo[i];
+                    vertexIndex = c.vertexIndex;
+                    if (c.character == ' ') continue;
+
+                    for (int j = 0; j < 4; j++)
+                    {
+                        Color currentColor = colors[vertexIndex + j];
+                        colors[vertexIndex + j] = new Color(currentColor.r, currentColor.g, currentColor.b, i < visibleIndexes ? 1f : 0f);
+                    }
+
+                }
+            }
+
 
             foreach (KeyValuePair<int, string[]> characterWithEffect in characterEffects) AddCharacterEffects(characterWithEffect);
 
@@ -65,6 +99,7 @@ public class DialogueTextMesh : MonoBehaviour
         foreach (string effectToAdd in characterWithEffect.Value)
         {
             //Do thing with each effect
+            //is this ok?
             switch (effectToAdd)
             {
                 case "w":
@@ -73,9 +108,7 @@ public class DialogueTextMesh : MonoBehaviour
                     for (int j = 0; j < 4; j++)
                     {
                         vertices[vertexIndex + j] += offset;
-                        //colors[index + j] = Color.yellow;
                     }
-
                     break;
 
                 case "f":
@@ -85,7 +118,6 @@ public class DialogueTextMesh : MonoBehaviour
                     {
                         vertices[vertexIndex + j] += offset;
                     }
-
                     break;
 
                 case "s":
@@ -95,7 +127,42 @@ public class DialogueTextMesh : MonoBehaviour
                     {
                         vertices[vertexIndex + j] += offset;
                     }
+                    break;
 
+                case "c":
+                    for (int j = 0; j < 4; j++)
+                    {
+                        offset = Shaky(2f);
+                        vertices[vertexIndex + j] += offset;
+                    }
+                    break;
+
+                case "r":
+                    for (int j = 0; j < 4; j++)
+                    {
+                        colors[vertexIndex + j] = new Color(1, 0, 0, colors[vertexIndex + j].a);
+                    }
+                    break;
+
+                case "g":
+                    for (int j = 0; j < 4; j++)
+                    {
+                        colors[vertexIndex + j] = new Color(0, 1, 0, colors[vertexIndex + j].a);
+                    }
+                    break;
+
+                case "b":
+                    for (int j = 0; j < 4; j++)
+                    {
+                        colors[vertexIndex + j] = new Color(0, 0, 1, colors[vertexIndex + j].a);
+                    }
+                    break;
+                
+                case "y":
+                    for (int j = 0; j < 4; j++)
+                    {
+                        colors[vertexIndex + j] = new Color(1f, 0.92f, 0.016f, colors[vertexIndex + j].a);
+                    }
                     break;
             }
         }
@@ -106,6 +173,8 @@ public class DialogueTextMesh : MonoBehaviour
         textMesh.text = speaker + text;
         this.speaker = speaker;
         characterEffects = null;
+        visibleIndexes = speaker.Length;
+        currentTime = 1f;
     }
 
     public void SetText(string text, string speaker, Dictionary<int, string[]> characterEffects) 
@@ -113,6 +182,36 @@ public class DialogueTextMesh : MonoBehaviour
         textMesh.text = speaker + text;
         this.speaker = speaker;
         this.characterEffects = characterEffects;
+        visibleIndexes = speaker.Length;
+        currentTime = 1f;
+        
+        if (!string.IsNullOrEmpty(textMesh.text))
+        {
+            textMesh.ForceMeshUpdate();
+            mesh = textMesh.mesh;
+            colors = mesh.colors;
+
+            for (int i = speaker.Length; i < textMesh.textInfo.characterCount; i++)
+            {
+                TMP_CharacterInfo c = textMesh.textInfo.characterInfo[i];
+                if (c.character == ' ') continue;
+                int vertexIndex = c.vertexIndex;
+                for (int j = 0; j < 4; j++)
+                {
+                    Color currentColor = colors[vertexIndex + j];
+                    colors[vertexIndex + j] = new Color(currentColor.r, currentColor.g, currentColor.b, 0f);
+                }
+            }
+
+
+            mesh.colors = colors;
+            textMesh.canvasRenderer.SetMesh(mesh);
+        }
+    }
+
+    public void SetAllTextVisible() 
+    {
+        visibleIndexes = textMesh.textInfo.characterCount;
     }
 
 }
