@@ -10,6 +10,8 @@ public class GameManager : FlagManager
 
     //Platformer related
     private Player player;
+    
+    [HideInInspector]
     public VerticalPlatform verticalPlatform;
 
     public List<Door> doors; //make private?

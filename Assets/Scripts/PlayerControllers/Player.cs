@@ -16,6 +16,7 @@ public abstract class Player : MonoBehaviour
     public abstract void Jump();
     public abstract void Interact();
     public abstract void Move(Vector2 movement);
+    public virtual void OnFootFall() { }
 
     protected void Update()
     {
