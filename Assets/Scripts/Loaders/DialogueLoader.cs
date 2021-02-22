@@ -8,7 +8,7 @@ using System.Linq;
 public static class DialogueLoader
 {
     private static string[] reservedTags = { "w", "f", "s", "c", "r", "g", "b", "y" };
-    private static string DialoguePath = Application.dataPath + "/Dialogues/";
+    private static string DialoguePath = Application.streamingAssetsPath + "/Dialogues/";
     private static string DialogueFileExtension = "xml";
     private static List<string> allAddedFlags = new List<string>();
     private static string dialogueStartId = "1"; //This is essentially the default entrypoint to a given dialogue tree

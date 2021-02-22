@@ -669,4 +669,18 @@
 		</dialogue>
 	</dialogue-tree>
 
+	<dialogue-tree id="15" name="testdialogue2">
+		<dialogue id="1">
+			<speaker>Hello!</speaker>
+			<option dialogue-id="response1">Fuck off</option>
+			<option dialogue-id="1">No thanks</option>
+		</dialogue>
+		
+		<dialogue id="response1">
+			<speaker-end>OK then</speaker-end>
+		</dialogue>
+
+	</dialogue-tree>
+
+
 </dialogue-object>

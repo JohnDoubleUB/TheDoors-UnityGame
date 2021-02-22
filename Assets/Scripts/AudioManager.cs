@@ -25,6 +25,7 @@ public class AudioManager : MonoBehaviour
     void Update()
     {
         //PlaySoundEvent("Jump", gameObject);
+        //AkSoundEngine.GetPlayingIDsFromGameObject(gameObject,);
     }
 
     public uint PlaySoundEvent(string eventName, GameObject playSoundOn) 
@@ -50,6 +51,7 @@ public class AudioManager : MonoBehaviour
             case "Hubworld":
                 AkSoundEngine.StopAll();
                 AkSoundEngine.PostEvent("Hub_World_Music", gameObject);
+                //Check if event is playing using GetPlayingIDsFromGameObject https://www.audiokinetic.com/qa/5379/check-if-a-event-is-playing . Or is there a way to loop some other way?
                 AkSoundEngine.SetState("Movement", "Hub_World");
                 break;
             
@@ -61,7 +63,7 @@ public class AudioManager : MonoBehaviour
             default:
                 AkSoundEngine.StopAll();
                 AkSoundEngine.PostEvent("Test_Event", gameObject);
-                AkSoundEngine.SetState("Movement", "Love");
+                AkSoundEngine.SetState("Movement", "None");
                 break;
         }
     }

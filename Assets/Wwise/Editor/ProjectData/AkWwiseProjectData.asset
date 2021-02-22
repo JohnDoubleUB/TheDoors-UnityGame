@@ -234,8 +234,9 @@ MonoBehaviour:
   - /TheDoorsProject_WwiseProject
   - /TheDoorsProject_WwiseProject/Events
   - /TheDoorsProject_WwiseProject/Events/Default Work Unit
+  - /TheDoorsProject_WwiseProject/Events/Default Work Unit/Movement
+  - /TheDoorsProject_WwiseProject/Events/Default Work Unit/Music
   - /TheDoorsProject_WwiseProject/States
   - /TheDoorsProject_WwiseProject/States/Default Work Unit
-  - /TheDoorsProject_WwiseProject/States/Default Work Unit/Movement
   autoPopulateEnabled: 1
   CurrentPluginConfig: 

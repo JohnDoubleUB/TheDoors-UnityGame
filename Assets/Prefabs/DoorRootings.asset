@@ -15,3 +15,5 @@ MonoBehaviour:
   doorSceneRootings:
   - doorName: 2
     sceneName: Hubworld_SaveDifferationTest
+  - doorName: 4
+    sceneName: Loveworld
