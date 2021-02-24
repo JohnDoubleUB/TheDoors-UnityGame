@@ -20,7 +20,7 @@ public class GameManager : FlagManager
     //The action queue is used to store actions for when they can happen
     public List<string> actionQueue = new List<string>(); //TODO: Implement what happens to these actions!
 
-    private string saveName = "SaveSlot";
+    //private string saveName = "SaveSlot";
 
     private int selectedSavefile = 0;
 
@@ -70,7 +70,7 @@ public class GameManager : FlagManager
     {
         if (player != null && selectedSavefile != 0)
         {
-            SaveData savedData = SaveSystem.LoadGame(saveName + selectedSavefile);
+            SaveData savedData = SaveSystem.LoadGame(selectedSavefile);
 
 
             if (savedData != null)
@@ -163,7 +163,7 @@ public class GameManager : FlagManager
 
         //Generate our new save!
         return new SaveData(
-            saveName + selectedSavefile, 
+            selectedSavefile, 
             targetSceneName != null ? targetSceneName : activeScene.name, 
             targetSceneBuildIndex != -1 ? targetSceneBuildIndex : activeScene.buildIndex, 
             player.transform.position, 
@@ -238,7 +238,7 @@ public class GameManager : FlagManager
         {
             foreach (SaveOptionObject so in saveOptionObjects)
             {
-                so.SetContent(SaveSystem.GetSaveLastModifiedDate(saveName + so.saveNumber));
+                so.SetContent(SaveSystem.GetSaveLastModifiedDate(so.saveNumber));
             }
         }
     }
