@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -39,9 +40,20 @@ public class GameManager : FlagManager
         current = this;
         FindKeyComponents();
         LoadSessionData();
+        LoadLevelManager();
         //We can add flags here now for testing
         //Debug.Log("(SceneManager) Current Level build index!: " + SceneManager.GetActiveScene().buildIndex + ", and level name: " + SceneManager.GetActiveScene().name);
         //Debug.Log("(SaveSystem.SessionSaveData) Session current Level build index!: " + SaveSystem.SessionSaveData.Level + ", and level name: " + SaveSystem.SessionSaveData.LevelName);
+    }
+
+    private void LoadLevelManager()
+    {
+        switch (SceneManager.GetActiveScene().name) 
+        {
+            case "Loveworld":
+                gameObject.AddComponent<LoveLevelManager>();
+                break;
+        }
     }
 
     public void SetSelectedSaveOption(int optionNo)

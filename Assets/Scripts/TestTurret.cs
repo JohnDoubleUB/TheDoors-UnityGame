@@ -30,6 +30,7 @@ public class TestTurret : MonoBehaviour
             obj.gravityScale = Random.Range(2f, 4f);
             Vector3 Vo = CalculateVelocity(testTarget.position, shootPoint.position, Random.Range(time, time * 1.2f), obj.gravityScale);
             obj.velocity = Vo;
+            obj.angularVelocity += 500;
         }
     }
 
@@ -61,36 +62,5 @@ public class TestTurret : MonoBehaviour
         result.y = Vy;
         return result;
 
-    }
-
-    private Vector2 CalculateVelocity2(Vector2 target, Vector2 origin, float time)
-    {
-        //define the distance x and y first
-
-        Vector2 distance = target - origin;
-        Vector2 distanceNormalized = distance;
-        distanceNormalized.Normalize();
-        distanceNormalized.y = 0;
-
-        //creating a float that represents our distance
-        float sy = distance.y;
-        float sx = distance.magnitude;
-
-        //calculating initial x velocity
-        //Vx = x / t
-
-        float Vxz = sx / time;
-        ////calculating initial y velocity
-
-        //Vy0 = y/t + 1/2 * g * t
-
-        float Vy = sy / time + 0.5f * Mathf.Abs(Physics2D.gravity.y) * time;
-
-        Vector2 result = distanceNormalized * Vxz;
-
-        result.y = Vy;
-
-        Debug.Log(result);
-        return result;
     }
 }
