@@ -32,7 +32,7 @@ public class LoveLevelManager : MonoBehaviour
         StartCoroutine(StartNewPhaseAfter(5f));
         //StartCoroutine(robot2);
 
-
+        
         Debug.Log("Start!");
     }
 
