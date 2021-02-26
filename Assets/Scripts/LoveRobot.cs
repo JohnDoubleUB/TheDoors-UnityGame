@@ -4,34 +4,62 @@ using UnityEngine;
 
 public class LoveRobot : MonoBehaviour
 {
-    public float distance = 0.2f;
+    public float distance = 0.3f;
+    public float fastMovementMultiplier = 20f;
     public float floatSpeed = 1f;
-    public Vector3 location;
-    public Vector3 target;
+    public float projectileAirTime = 1.2f;
+    public float projectileRecoilAmount = -0.5f;
 
-    public Rigidbody2D bulletPrefab;
-    public Transform testTarget;
-    public Transform shootPoint;
-    public float time = 1.2f;
+    public Rigidbody2D projectilePrefab;
+    //public Transform testTarget; //TODO: Remove this
+    public Transform projectileSpawnPoint;
 
+    //These are just the parts that we need to have access to
     public Transform propeller;
     public Animator animator;
 
-    public Transform[] destinations;
-
-    private Transform currentDestination;
-
-    private float transition = 0f;
-    private float recoilTransistion = 0f;
-
+    private Vector3 currentLocation;
+    private Vector3 targetLocation;
+    private float transition = 1f;
     private float recoil = 0f;
-    //public Vector2
-    // Start is called before the first frame update
+
+    private bool fastMovement = false;
+    private bool isAtTarget = true;
+    private float randomFloatSeed = 0f;
+    private int randomIntSeed = 0;
+
+    public bool BodyIsOpen
+    {
+        get { return animator.GetCurrentAnimatorStateInfo(0).IsTag("open"); }
+    }
+
+    public bool BodyIsClosed
+    {
+        get { return animator.GetCurrentAnimatorStateInfo(0).IsTag("closed"); }
+    }
+
+    public bool BodyIsInTransition 
+    {
+        get { return animator.GetCurrentAnimatorStateInfo(0).IsTag("transtition"); } 
+    }
+
+    public bool IsAtTarget 
+    {
+        get { return isAtTarget; } 
+    }
+
+    public Vector3 TargetLocation 
+    {
+        get { return targetLocation; } 
+    }
 
     private void Awake()
     {
-        location = transform.position;
-        target = location;
+        currentLocation = transform.position;
+        targetLocation = currentLocation;
+
+        randomFloatSeed = Random.Range(1f, 3f);
+        randomIntSeed = Random.Range(0, 100);
     }
 
     void Start()
@@ -39,59 +67,91 @@ public class LoveRobot : MonoBehaviour
         //target = destination.position;
 
 
-        animator.SetBool("bodyOpen", true);
-      
+        //animator.SetBool("bodyOpen", true);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Vector2 insideCircle = Random.insideUnitCircle * distance;
-        Vector2 floatyFloat = Floaty(Time.time * distance);
-        floatyFloat += Wavy(Time.time * distance, floatSpeed);
+        //Generate our floaty effect!
+        Vector2 floatValue = GenerateFloat((Time.time + randomIntSeed) * distance, floatSpeed);
 
-        if (LaunchProjectile()) 
+        //TODO: Remove the mouse button trigger stuff
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    LaunchProjectileAtTarget(testTarget.position);
+        //}
+
+        //Move towards target if target isn't the current location
+        float distanceToTarget = Vector3.Distance(currentLocation, targetLocation);
+        isAtTarget = distanceToTarget > 0.1f;
+        
+        if (isAtTarget)
         {
-            //Debug.Log("thing");
-            recoil = -0.5f;
-            //floatyFloat += new Vector2(0, -20);
+            currentLocation = Vector3.Lerp(currentLocation, targetLocation, transition);
+            transition += (Time.deltaTime * (fastMovement ? 0.005f * fastMovementMultiplier : 0.005f) / distanceToTarget);
         }
-
-
-        transform.position = new Vector3(location.x + floatyFloat.x, location.y + floatyFloat.y + recoil, 0);//Vector3.up * Mathf.Sin(Time.time * 0.01f + 100 * Time.time);
-        transform.rotation = Quaternion.Euler(0, 0, 4 * floatyFloat.x);
-
-        if(propeller != null) propeller.rotation = Quaternion.Euler(0, 0, 10 * floatyFloat.x);
-
-        if (Vector3.Distance(location, target) > 0.1f)
-        {
-            location = Vector3.Lerp(location, target, transition);
-            transition += (Time.deltaTime * 0.001f);
-        }
-        else
+        else if (transition != 0f)
         {
             transition = 0f;
+            fastMovement = false;
         }
 
+        //Set location and rotation of the body
+        transform.position = new Vector3(currentLocation.x + floatValue.x, currentLocation.y + floatValue.y + recoil, 0);//Vector3.up * Mathf.Sin(Time.time * 0.01f + 100 * Time.time);
+        transform.rotation = Quaternion.Euler(0, 0, 4 * floatValue.x);
+
+        //Set rotation of the propeller
+        if (propeller != null) propeller.rotation = Quaternion.Euler(0, 0, 10 * floatValue.x);
+
+        //Set recoil up
         if (recoil < 0f)
         {
             recoil += Time.deltaTime * 5;
         }
-        else 
+        else
         {
             recoil = 0f;
         }
+    }
 
-        //if (animator.GetCurrentAnimatorStateInfo(0).IsTag("open"))
-        //{
-        //    Debug.Log("Open");
-        //}
+    public void LaunchProjectileAtTarget(Vector3 target)
+    {
+        Rigidbody2D obj = Instantiate(projectilePrefab, projectileSpawnPoint.position, Quaternion.identity);
+        obj.gravityScale = Random.Range(2f, 4f);
+        Vector3 Vo = CalculateVelocity(target, projectileSpawnPoint.position, Random.Range(projectileAirTime, projectileAirTime * 1.2f), obj.gravityScale);
+        obj.velocity = Vo;
+        obj.angularVelocity += Vo.x > 0 ? -500 : 500;
+        //Add recoil when firing projectiles
+        recoil = projectileRecoilAmount;
+    }
 
+    public void SetNewDestination(Vector3 destination, bool fastMovement = false) 
+    {
+        this.fastMovement = fastMovement;
+        targetLocation = destination;
+    }
+
+    public void SetOpenBody(bool open) 
+    {
+        animator.SetBool("bodyOpen", open);
+    }
+
+    private Vector2 GenerateFloat(float time, float floatSpeed) 
+    {
+        //Add floatyness
+        Vector2 generatedFloat = Floaty(time);
+
+        //Add wavyness
+        generatedFloat += Wavy(time, floatSpeed);
+
+        return generatedFloat;
     }
 
     private Vector2 Floaty(float time)
     {
-        return new Vector2(Mathf.Sin(time * 3.3f), Mathf.Cos(time * 2.5f));
+        return new Vector2(Mathf.Sin(time * 3.3f * randomFloatSeed), Mathf.Cos(time * 2.5f));
     }
 
     private Vector2 Wavy(float time, float speed = 10)
@@ -127,23 +187,6 @@ public class LoveRobot : MonoBehaviour
         result.y = Vy;
         return result;
 
-    }
-
-    private bool LaunchProjectile()
-    {
-
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Rigidbody2D obj = Instantiate(bulletPrefab, shootPoint.position, Quaternion.identity);
-            obj.gravityScale = Random.Range(2f, 4f);
-            Vector3 Vo = CalculateVelocity(testTarget.position, shootPoint.position, Random.Range(time, time * 1.2f), obj.gravityScale);
-            obj.velocity = Vo;
-            obj.angularVelocity += 500;
-            return true;
-        }
-
-        return false;
     }
 
 }

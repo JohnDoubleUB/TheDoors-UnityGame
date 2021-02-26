@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2144420052292496813}
   m_Layer: 0
-  m_Name: ShootPoint
+  m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,7 +100,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 4
   m_Sprite: {fileID: -690111415583415934, guid: 1297f1359f5ffed418b75eca59ed05ef,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -179,17 +179,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance: 0.3
+  fastMovementMultiplier: 10
   floatSpeed: 4
-  location: {x: 0, y: 0, z: 0}
-  target: {x: 0, y: 0, z: 0}
-  bulletPrefab: {fileID: 168862806595554883, guid: 649c280a74712034d89c951bb2f52e5f,
+  projectileAirTime: 1.2
+  projectileRecoilAmount: -0.5
+  projectilePrefab: {fileID: 168862806595554883, guid: 649c280a74712034d89c951bb2f52e5f,
     type: 3}
-  testTarget: {fileID: 0}
-  shootPoint: {fileID: 2144420052292496813}
-  time: 1.2
+  projectileSpawnPoint: {fileID: 2144420052292496813}
   propeller: {fileID: 2144420052577819147}
   animator: {fileID: 2144420054240496071}
-  destinations: []
 --- !u!1 &2144420054240496088
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,7 +258,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 5
   m_Sprite: {fileID: -8005980010119798270, guid: d4b30ea06610e2c429bb88e3a0245da0,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

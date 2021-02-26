@@ -40,7 +40,7 @@ public class GameManager : FlagManager
         current = this;
         FindKeyComponents();
         LoadSessionData();
-        LoadLevelManager();
+        //LoadLevelManager();
         //We can add flags here now for testing
         //Debug.Log("(SceneManager) Current Level build index!: " + SceneManager.GetActiveScene().buildIndex + ", and level name: " + SceneManager.GetActiveScene().name);
         //Debug.Log("(SaveSystem.SessionSaveData) Session current Level build index!: " + SaveSystem.SessionSaveData.Level + ", and level name: " + SaveSystem.SessionSaveData.LevelName);

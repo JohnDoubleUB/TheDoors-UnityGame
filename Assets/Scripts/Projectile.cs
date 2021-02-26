@@ -16,7 +16,7 @@ public class Projectile : MonoBehaviour
 
     private void Update()
     {
-        if (sprite.sortingOrder != 4) 
+        if (sprite.sortingOrder != 6) 
         {
             if (currentTime < timeDelay)
             {
@@ -24,7 +24,7 @@ public class Projectile : MonoBehaviour
             }
             else 
             {
-                sprite.sortingOrder = 5;
+                sprite.sortingOrder = 6;
             }
         }
     }
