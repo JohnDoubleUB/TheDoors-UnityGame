@@ -13,10 +13,11 @@ public abstract class Player : MonoBehaviour
     protected List<Interactable> interactables = new List<Interactable>();
     protected Interactable closestInteractable;
 
-    public abstract void Jump();
-    public abstract void Interact();
-    public abstract void Move(Vector2 movement);
+    public virtual void Jump() { }
+    public virtual void Interact() { }
+    public virtual void Move(Vector2 movement) { }
     public virtual void OnFootFall() { }
+    public virtual void MoveOnceInDirection(InputMapping input) { }
 
     protected void Update()
     {

@@ -144,6 +144,7 @@ public class PlatformerPlayer : Player
 
     public override void Move(Vector2 movement) 
     {
+        //if(movement.x != 0f) Debug.Log("move");
         //Do the movement thing
         Vector2 targetVelocity = movement * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
 

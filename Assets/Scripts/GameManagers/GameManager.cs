@@ -10,7 +10,7 @@ public class GameManager : FlagManager
     public static GameManager current;
 
     //Platformer related
-    private Player player;
+    public Player player;
     
     [HideInInspector]
     public VerticalPlatform verticalPlatform;
@@ -123,8 +123,8 @@ public class GameManager : FlagManager
         GameObject[] scenePlayer = GameObject.FindGameObjectsWithTag("Player");
         if (scenePlayer != null && scenePlayer.Any()) 
         {
-            PlatformerPlayer pPlayer = scenePlayer[0].GetComponent<PlatformerPlayer>();
-            if (pPlayer != null) player = pPlayer;
+            Player currentPlayer = scenePlayer[0].GetComponent<Player>();
+            if (currentPlayer != null) player = currentPlayer;
         }
 
         //Get the save slots!

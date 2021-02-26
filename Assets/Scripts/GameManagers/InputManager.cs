@@ -139,24 +139,19 @@ public class InputManager : MonoBehaviour
     //This will need a slight rearrange when we implement other player types/genres
     private void InputMappingKeyDown(InputMapping inputMapping) 
     {
+        bool playerCanMove = UIManager.current.UIState == UIState.None && GameManager.current != null && GameManager.current.Player != null;
+
         switch (inputMapping) 
         {
             case InputMapping.Left:
-                break;
-
             case InputMapping.Right:
-                break;
-
             case InputMapping.Up:
-                break;
-
             case InputMapping.Down:
+                if (playerCanMove) GameManager.current.Player.MoveOnceInDirection(inputMapping);
                 break;
 
             case InputMapping.Jump:
-                if(UIManager.current.UIState == UIState.None 
-                    && GameManager.current != null 
-                    && GameManager.current.Player != null) GameManager.current.Player.Jump();
+                if(playerCanMove) GameManager.current.Player.Jump();
 
                 break;
 
@@ -165,9 +160,7 @@ public class InputManager : MonoBehaviour
                 break;
 
             case InputMapping.Interact:
-                if (UIManager.current.UIState == UIState.None
-                    && GameManager.current != null
-                    && GameManager.current.Player != null) GameManager.current.Player.Interact();
+                if (playerCanMove) GameManager.current.Player.Interact();
                 break;
         }
     }
