@@ -10,6 +10,7 @@ public class LoveLevelManager : MonoBehaviour
     public Transform[] loveRobotSpawnLocations;
     public Transform[] loveRobotMovementPoints;
     public LovePlatform[] platforms;
+    public ParticleSystem heartSmashParticleEffect;
 
     //Hide in inspector?
     public List<Transform> platformPoints = new List<Transform>();
@@ -69,6 +70,15 @@ public class LoveLevelManager : MonoBehaviour
         else playerPointPositionIndex = newPosition;
 
         return platformPoints[playerPointPositionIndex];
+    }
+
+    public void SpawnParticleEffectAtPosition(Vector3 position) 
+    {
+        if (heartSmashParticleEffect != null) 
+        {
+            heartSmashParticleEffect.gameObject.transform.position = position;
+            heartSmashParticleEffect.Play();
+        }
     }
 
     // Update is called once per frame
