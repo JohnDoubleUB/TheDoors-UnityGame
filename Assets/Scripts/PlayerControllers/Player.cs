@@ -18,7 +18,7 @@ public abstract class Player : MonoBehaviour
     public virtual void Move(Vector2 movement) { }
     public virtual void OnFootFall() { }
     public virtual void MoveOnceInDirection(InputMapping input) { }
-
+    public virtual void TakeDamage() { }
     protected void Update()
     {
         if (interactables.Any()) SelectClosestInteractable();

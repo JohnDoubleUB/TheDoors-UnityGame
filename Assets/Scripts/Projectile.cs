@@ -17,7 +17,7 @@ public class Projectile : MonoBehaviour
         {
             if (Vector3.Distance(GameManager.current.player.transform.position, transform.position) <= 3f) 
             {
-                Debug.Log("Player has been hit!");
+                GameManager.current.player.TakeDamage();
             }
             
         }

@@ -15,6 +15,7 @@ public class LovePlayer : Player
     private Vector3 oldPosition;
     private Vector3 archPosition;
     private Transform newPositionTransform;
+    private float lightUpTimer = 1f;
     public override void MoveOnceInDirection(InputMapping input)
     {
         switch (input) 
@@ -44,9 +45,26 @@ public class LovePlayer : Player
         movingSound = true;
     }
 
+    public override void TakeDamage()
+    {
+        playerSprite.color = Color.red;
+        lightUpTimer = 0f;
+        //Debug.Log("ouch!");
+    }
+
     protected new void Update()
     {
         base.Update();
+
+        if (lightUpTimer < 1f)
+        {
+            lightUpTimer += Time.deltaTime * 10f;
+        }
+        else if (playerSprite.color != Color.white)
+        {
+            playerSprite.color = Color.white;
+        }
+
 
         if (moving) 
         {
@@ -56,7 +74,7 @@ public class LovePlayer : Player
                 count += 1.0f * (Time.deltaTime * speedMultiplier);
 
                 Vector3 m1 = Vector3.Lerp(oldPosition, archPosition, count);
-                Vector3 m2 = Vector3.Lerp(archPosition, newPositionTransform.position/*newPosition*/, count);
+                Vector3 m2 = Vector3.Lerp(archPosition, newPositionTransform.position, count);
                 transform.position = Vector3.Lerp(m1, m2, count);
             }
             else
