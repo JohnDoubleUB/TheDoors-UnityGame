@@ -139,7 +139,7 @@ MonoBehaviour:
   - {x: -2.98, y: 1.5, z: 0}
   m_ShapePathHash: 0
   m_Mesh: {fileID: 0}
-  m_InstanceId: -1572
+  m_InstanceId: -1684
 --- !u!114 &1486120265873101018
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,6 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetLeft: {fileID: 1486120266981697492}
   TargetRight: {fileID: 1486120267130187999}
+  recoilStrength: -0.5
+  rotationRecoilStrength: 1.5
 --- !u!1 &1486120266981697495
 GameObject:
   m_ObjectHideFlags: 0

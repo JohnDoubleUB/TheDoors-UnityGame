@@ -45,7 +45,7 @@ public class LoveLevelManager : MonoBehaviour
 
         //Set the position of the player
         currentPlayer.gameObject.transform.position = platformPoints[playerPointPositionIndex].position;
-
+        currentPlayer.gameObject.transform.parent = platformPoints[playerPointPositionIndex];
 
 
         //LoveRobot test = CreateLoveRobot();
@@ -57,7 +57,7 @@ public class LoveLevelManager : MonoBehaviour
         //StartCoroutine(StartNewPhaseAfter(5f));
         //StartCoroutine(robot2);
 
-        
+
         Debug.Log("Start!");
         StartPhase(0);
     }
@@ -79,6 +79,14 @@ public class LoveLevelManager : MonoBehaviour
             heartSmashParticleEffect.gameObject.transform.position = position;
             heartSmashParticleEffect.Play();
         }
+
+        //Hit platform
+        LovePlatform closestPlatform = platforms.OrderBy(x => Vector3.Distance(x.transform.position, position)).First();
+        if (closestPlatform != null) 
+        {
+            closestPlatform.TakeHit(position);
+        }
+
     }
 
     // Update is called once per frame

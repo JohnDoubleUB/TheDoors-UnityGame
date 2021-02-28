@@ -7,7 +7,6 @@ public class LovePlayer : Player
     public float speedMultiplier = 2f;
     public float jumpArchHeight = 2.5f;
 
-
     public SpriteRenderer playerSprite;
 
     private float count = 0.0f;
@@ -15,7 +14,7 @@ public class LovePlayer : Player
     private bool movingSound;
     private Vector3 oldPosition;
     private Vector3 archPosition;
-    private Vector3 newPosition;
+    private Transform newPositionTransform;
     public override void MoveOnceInDirection(InputMapping input)
     {
         switch (input) 
@@ -34,9 +33,12 @@ public class LovePlayer : Player
 
     private void MoveToNewPoint(int pointChange) 
     {
+        transform.rotation = Quaternion.identity;
+        transform.parent = null;
+        
         oldPosition = transform.position;
-        newPosition = LoveLevelManager.current.MovePlayerToNewPositionPoint(pointChange).position;
-        archPosition = oldPosition + (newPosition - oldPosition) / 2 + Vector3.up * jumpArchHeight;
+        newPositionTransform = LoveLevelManager.current.MovePlayerToNewPositionPoint(pointChange);
+        archPosition = oldPosition + (newPositionTransform.position - oldPosition) / 2 + Vector3.up * jumpArchHeight;
         count = 0.0f;
         moving = true;
         movingSound = true;
@@ -50,14 +52,16 @@ public class LovePlayer : Player
         {
             if (count < 1.0f)
             {
+                
                 count += 1.0f * (Time.deltaTime * speedMultiplier);
 
                 Vector3 m1 = Vector3.Lerp(oldPosition, archPosition, count);
-                Vector3 m2 = Vector3.Lerp(archPosition, newPosition, count);
+                Vector3 m2 = Vector3.Lerp(archPosition, newPositionTransform.position/*newPosition*/, count);
                 transform.position = Vector3.Lerp(m1, m2, count);
             }
             else
             {
+                if (newPositionTransform != null && transform.parent != newPositionTransform) transform.parent = newPositionTransform;
                 moving = false;
             }
 
