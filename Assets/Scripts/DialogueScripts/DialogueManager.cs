@@ -198,15 +198,15 @@ public class DialogueManager : MonoBehaviour
     private void LoadFlags(Dialogue dialogue)
     {
         //Load all flags
-        LoadFlags(dialogue.ProgressFlags, dialogue.ActionFlags);
+        LoadFlags(dialogue.ProgressFlags, dialogue.ActionFlags, dialogue.TemporaryActionFlags);
     }
 
     private void LoadFlags(DialogueOption dialogueOption)
     {
-        LoadFlags(dialogueOption.ProgressFlags, dialogueOption.ActionFlags);
+        LoadFlags(dialogueOption.ProgressFlags, dialogueOption.ActionFlags, dialogueOption.TemporaryActionFlags);
     }
 
-    private void LoadFlags(string[] progressFlags, string[] actionFlags)
+    private void LoadFlags(string[] progressFlags, string[] actionFlags, string[] temporaryActionFlags)
     {
         if (progressFlags != null)
         {
@@ -215,6 +215,10 @@ public class DialogueManager : MonoBehaviour
         if (actionFlags != null)
         {
             GameManager.current.AddActionFlags(actionFlags);
+        }
+        if (temporaryActionFlags != null) 
+        {
+            GameManager.current.AddTemporaryActionFlags(temporaryActionFlags);
         }
     }
 

@@ -135,16 +135,20 @@ public static class DialogueLoader
                 options
                 .Select(dOption =>
                 {
-                    //Retreive all the requiredflags, progressflags and actionflags "reqflags", "progflags" and "actflags" for dialogue options
+                    //Retreive all the requiredflags, progressflags, actionflags, unrequiredflags and temporaryactionflags; "reqflags", "progflags" and "actflags", "unreqflags" and "tempactflags" for dialogue options
                     XmlNode dOptionReqFlagsNode = dOption.Attributes["reqflags"];
                     XmlNode dOptionProgFlagsNode = dOption.Attributes["progflags"];
                     XmlNode dOptionActFlagsNode = dOption.Attributes["actflags"];
                     XmlNode dOptionUnReqFlagsNode = dOption.Attributes["unreqflags"];
+                    //TemporaryActionFlags
+                    XmlNode dOptionTempActFlagsNode = dOption.Attributes["tempactflags"];
 
                     string[] dOptionReqFlags = dOptionReqFlagsNode != null ? dOptionReqFlagsNode.InnerText.Split(' ') : null;
                     string[] dOptionActFlags = dOptionActFlagsNode != null ? dOptionActFlagsNode.InnerText.Split(' ') : null;
                     string[] dOptionProgFlags = dOptionProgFlagsNode != null ? dOptionProgFlagsNode.InnerText.Split(' ') : null;
                     string[] dOptionUnReqFlags = dOptionUnReqFlagsNode != null ? dOptionUnReqFlagsNode.InnerText.Split(' ') : null;
+                    //TemporaryActionFlags
+                    string[] dOptionTempActFlags = dOptionTempActFlagsNode != null ? dOptionTempActFlagsNode.InnerText.Split(' ') : null;
 
                     AddDistinctAddedFlagsToList(dOptionReqFlags, dOptionActFlags, dOptionProgFlags, dOptionUnReqFlags);
 
@@ -162,17 +166,22 @@ public static class DialogueLoader
                         dOptionReqFlags,
                         dOptionProgFlags,
                         dOptionActFlags,
-                        dOptionUnReqFlags
+                        dOptionUnReqFlags,
+                        dOptionTempActFlags
                         );
                 })
                 .ToArray();
 
-            //Retreive all the progressflags and actionflags "progflags" and "actflags" for dialogues
+            //Retreive all the progressflags, actionflags and tempactflags "progflags", "actflags" and "tempactflags" for dialogues
             XmlNode dialogueProgFlagsNode = xmlDialogue.Attributes["progflags"];
             XmlNode dialogueActFlagsNode = xmlDialogue.Attributes["actflags"];
+            //TemporaryActionFlags
+            XmlNode dialogueTempActFlagsNode = xmlDialogue.Attributes["tempactflags"];
 
             string[] dialogueActFlags = dialogueActFlagsNode != null ? dialogueActFlagsNode.InnerText.Split(' ') : null;
             string[] dialogueProgFlags = dialogueProgFlagsNode != null ? dialogueProgFlagsNode.InnerText.Split(' ') : null;
+            //TemporaryActionFlags
+            string[] dialogueTempActFlags = dialogueTempActFlagsNode != null ? dialogueTempActFlagsNode.InnerText.Split(' ') : null;
 
             AddDistinctAddedFlagsToList(dialogueActFlags, dialogueProgFlags);
 
@@ -183,7 +192,8 @@ public static class DialogueLoader
                     endsConversation,
                     dialogueOptions,
                     dialogueProgFlags,
-                    dialogueActFlags
+                    dialogueActFlags,
+                    dialogueTempActFlags
                     )
                 :
                 new Dialogue(
@@ -191,7 +201,8 @@ public static class DialogueLoader
                     speakerDialogues,
                     endsConversation,
                     dialogueProgFlags,
-                    dialogueActFlags
+                    dialogueActFlags,
+                    dialogueTempActFlags
                     )
                 );
         }
@@ -345,10 +356,12 @@ public class Dialogue
      * --:NOTES ON FLAGS FOR DIALOGUES:--
      * ActionFlags - These activate after this dialogue is left
      * ProgressFlags - Just stores this flag in your save, it might be useful later, who knows? its for progress tracking mostly but in particular related to conversations
+     * TemporaryActionFlags - Like action flags, except that they are never stored as flags an instead are just triggers
      */
 
     public string[] ProgressFlags;
     public string[] ActionFlags;
+    public string[] TemporaryActionFlags;
 
     public Dialogue(Dialogue dialogue, DialogueOption[] dialogueOptions) 
     {
@@ -358,6 +371,7 @@ public class Dialogue
         DialogueOptions = dialogueOptions;
         ProgressFlags = dialogue.ProgressFlags;
         ActionFlags = dialogue.ActionFlags;
+        TemporaryActionFlags = dialogue.TemporaryActionFlags;
     }
 
     public Dialogue(Dialogue dialogue, SpeakerDialogue[] speakerDialogues) 
@@ -368,6 +382,7 @@ public class Dialogue
         DialogueOptions = dialogue.DialogueOptions;
         ProgressFlags = dialogue.ProgressFlags;
         ActionFlags = dialogue.ActionFlags;
+        TemporaryActionFlags = dialogue.TemporaryActionFlags;
     }
 
     public Dialogue(Dialogue dialogue, SpeakerDialogue[] speakerDialogues, DialogueOption[] dialogueOptions)
@@ -378,9 +393,10 @@ public class Dialogue
         DialogueOptions = dialogueOptions;
         ProgressFlags = dialogue.ProgressFlags;
         ActionFlags = dialogue.ActionFlags;
+        TemporaryActionFlags = dialogue.TemporaryActionFlags;
     }
 
-    public Dialogue(string id, SpeakerDialogue[] speakerDialogues, bool endsConversation, DialogueOption[] dialogueOptions, string[] progFlags, string[] actFlags)
+    public Dialogue(string id, SpeakerDialogue[] speakerDialogues, bool endsConversation, DialogueOption[] dialogueOptions, string[] progFlags, string[] actFlags, string[] tempActFlags)
     {
         Id = id;
         EndsConversation = endsConversation;
@@ -388,15 +404,17 @@ public class Dialogue
         DialogueOptions = dialogueOptions;
         ProgressFlags = progFlags;
         ActionFlags = actFlags;
+        TemporaryActionFlags = tempActFlags;
     }
 
-    public Dialogue(string id, SpeakerDialogue[] speakerDialogues, bool endsConversation, string[] progFlags, string[] actFlags)
+    public Dialogue(string id, SpeakerDialogue[] speakerDialogues, bool endsConversation, string[] progFlags, string[] actFlags, string[] tempActFlags)
     {
         Id = id;
         SpeakerDialogues = speakerDialogues;
         EndsConversation = endsConversation;
         ProgressFlags = progFlags;
         ActionFlags = actFlags;
+        TemporaryActionFlags = tempActFlags;
     }
 }
 
@@ -412,14 +430,16 @@ public class DialogueOption
      * ProgressFlags - Just stores this flag in your save, it might be useful later, who knows? its for progress tracking mostly but in particular related to conversations
      * RequiredFlags - This is unique to dialogue options, if there is a required flag then this flag must be present in the players flags in order to allow this option to appear
      * UnRequiredFlags - Unique to dialogue options, if one of these flags is present then this option will not appear
+     * TemporaryActionFlags - Like action flags, except that they are never stored as flags an instead are just triggers
      */
 
     public string[] RequiredFlags;
     public string[] ProgressFlags;
     public string[] ActionFlags;
     public string[] UnRequiredFlags;
+    public string[] TemporaryActionFlags;
 
-    public DialogueOption(string optionText, bool endsConversation, string dialogueId, string[] requiredFlags, string[] progressFlags, string[] actionFlags, string[] unRequiredFlags)
+    public DialogueOption(string optionText, bool endsConversation, string dialogueId, string[] requiredFlags, string[] progressFlags, string[] actionFlags, string[] unRequiredFlags, string[] temporaryActionFlags)
     {
         OptionText = optionText;
         EndsConversation = endsConversation;
@@ -428,6 +448,7 @@ public class DialogueOption
         ProgressFlags = progressFlags;
         ActionFlags = actionFlags;
         UnRequiredFlags = unRequiredFlags;
+        TemporaryActionFlags = temporaryActionFlags;
     }
 }
 

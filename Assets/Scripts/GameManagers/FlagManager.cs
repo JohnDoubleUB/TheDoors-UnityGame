@@ -51,6 +51,11 @@ public abstract class FlagManager : MonoBehaviour
         QueueActions(flag);
     }
 
+    public void AddTemporaryActionFlag(string flag) 
+    {
+        QueueActions(flag);
+    }
+
     public void AddFlags(string[] flags, FlagType flagType = FlagType.Progress)
     {
         foreach (string flag in flags)
@@ -75,6 +80,11 @@ public abstract class FlagManager : MonoBehaviour
     public void AddActionFlags(string[] flags)
     {
         AddFlags(flags);
+        QueueActions(flags);
+    }
+
+    public void AddTemporaryActionFlags(string[] flags) 
+    {
         QueueActions(flags);
     }
 
