@@ -33,7 +33,7 @@ public class NonPlayerCharacter : Interactable
 
             foreach (DialogueTreeRooting dialogueTreeRooting in NpcDataObject.DialogueRootings)
             {
-                if (GameManager.current.HasFlag(dialogueTreeRooting.Name)) continue; //if this dialogue has already been had skip past it
+                if (GameManager.current.HasFlag(dialogueTreeRooting.Name, FlagType.DialogueName)) continue; //if this dialogue has already been had skip past it
 
                 //Check we meet all the flag requirements
                 bool meetsRequiredFlags = dialogueTreeRooting.RequiredFlags.Any() ? GameManager.current.HasAllFlags(dialogueTreeRooting.RequiredFlags) : true;

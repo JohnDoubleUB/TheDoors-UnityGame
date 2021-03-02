@@ -17,7 +17,7 @@ public static class DialogueLoader
     private static readonly DialogueObject[] dialogueObjects = LoadAllDialogueObjects();  //Load all dialogue intially
 
     //Attributes: id, tree-name, dialogue-id
-    //NOTE: DialogueObject Name are considered to be flags! Make sure they don't match anywhere they shouldn't!
+    //NOTE: DialogueObject Name are now considered to be DialogueTreeFlags! Separate from flags!
     public static DialogueObject[] DialogueObjects //This is where we intially load in all the dialogue for the game
     {
         get { return dialogueObjects; }

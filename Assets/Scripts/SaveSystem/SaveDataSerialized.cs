@@ -18,7 +18,7 @@ public class SaveDataSerialized
     public string[] DialogueTreeFlags;
     public LevelSaveDataSerialized[] LevelData;
 
-    public SaveDataSerialized(string levelName, int level, int saveNumber, Vector3 position, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<LevelSaveData> levelData) 
+    public SaveDataSerialized(string levelName, int level, int saveNumber, Vector3 position, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<string> dialogueTreeFlags, List<LevelSaveData> levelData) 
     {
         Level = level;
         SaveNumber = saveNumber;
@@ -32,6 +32,7 @@ public class SaveDataSerialized
         CompletedDoors = completedDoors.Distinct().Select(dn => (int)dn).ToArray();
         Flags = flags.ToArray();
         ActionQueue = actionQueue.ToArray();
+        DialogueTreeFlags = dialogueTreeFlags.ToArray();
         LevelName = levelName;
         LevelData = levelData.Select(x => (LevelSaveDataSerialized)x).ToArray();
     }
@@ -48,6 +49,7 @@ public class SaveDataSerialized
             saveData.CompletedDoors,
             saveData.Flags,
             saveData.ActionQueue,
+            saveData.DialogueTreeFlags,
             saveData.LevelData
             );
     }
@@ -64,6 +66,7 @@ public class SaveDataSerialized
             saveData.CompletedDoors.Select(dn => (DoorName)dn).ToList(),
             saveData.Flags.ToList(),
             saveData.ActionQueue.ToList(),
+            saveData.DialogueTreeFlags.ToList(),
             saveData.LevelData.Select(x => (LevelSaveData)x).ToList()
             );
     }

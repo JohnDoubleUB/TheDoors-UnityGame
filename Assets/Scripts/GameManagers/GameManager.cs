@@ -181,7 +181,8 @@ public class GameManager : FlagManager
             player.transform.position, 
             disabledDoors, 
             Flags, 
-            actionQueue, 
+            actionQueue,
+            DialogueTreeFlags,
             levelData
             );
     }
@@ -196,11 +197,23 @@ public class GameManager : FlagManager
         UpdateSessionData(GenerateSaveData(targetSceneName, targetSceneBuildIndex));
     }
 
-    protected override void UpdateSessionFlags(string[] updatedFlags)
+    protected override void UpdateSessionFlags(string[] updatedFlags, FlagType flagType = FlagType.Progress)
     {
         if (SaveSystem.SessionSaveData != null)
         {
-            SaveSystem.SessionSaveData.Flags = updatedFlags;
+            switch (flagType) 
+            {
+                case FlagType.Progress:
+                    SaveSystem.SessionSaveData.Flags = updatedFlags;
+                    break;
+
+                case FlagType.DialogueName:
+                    SaveSystem.SessionSaveData.DialogueTreeFlags = updatedFlags;
+                    break;
+            }
+            //SaveSystem.SessionSaveData.DialogueTreeFlags = updatedFlags;
+            //SaveSystem.SessionSaveData.Flags = updatedFlags;
+
             if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
         }
     }
@@ -241,7 +254,7 @@ public class GameManager : FlagManager
         LoadFlags(savedData.Flags);
 
         //DialogueTreeFlags
-        //LoadDialogueTreeFlags(savedData.DialogueTreeFlags);
+        LoadDialogueTreeFlags(savedData.DialogueTreeFlags);
 
         //Queued Actions
         actionQueue = savedData.ActionQueue;

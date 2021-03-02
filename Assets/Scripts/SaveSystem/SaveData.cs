@@ -14,7 +14,7 @@ public class SaveData
     public List<string> DialogueTreeFlags;
     public List<LevelSaveData> LevelData;
 
-    public SaveData(int saveNumber, string levelName, int level, Vector3 playerPosition, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<LevelSaveData> levelData) 
+    public SaveData(int saveNumber, string levelName, int level, Vector3 playerPosition, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<string> dialogueTreeFlags, List<LevelSaveData> levelData) 
     {
         SaveNumber = saveNumber;
         LevelName = levelName;
@@ -24,6 +24,7 @@ public class SaveData
         Flags = flags;
         ActionQueue = actionQueue;
         LevelData = levelData;
+        DialogueTreeFlags = dialogueTreeFlags;
     }
 }
 

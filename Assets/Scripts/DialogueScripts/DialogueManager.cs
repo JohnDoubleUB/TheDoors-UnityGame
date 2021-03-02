@@ -182,7 +182,7 @@ public class DialogueManager : MonoBehaviour
         ClearUIDialogue();
 
         //Add flag to indicate this dialogue has taken place
-        GameManager.current.AddFlag(loadedDialogueTree.Name);
+        GameManager.current.AddFlag(loadedDialogueTree.Name, FlagType.DialogueName);
 
         //Clear all the things
         loadedDialogueObject = null;
