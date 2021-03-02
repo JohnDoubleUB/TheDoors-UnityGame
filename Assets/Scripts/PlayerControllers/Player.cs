@@ -10,6 +10,8 @@ public abstract class Player : MonoBehaviour
     [HideInInspector]
     public bool JumpHold;
 
+    public int PlayerHealth = 3;
+
     protected List<Interactable> interactables = new List<Interactable>();
     protected Interactable closestInteractable;
 
