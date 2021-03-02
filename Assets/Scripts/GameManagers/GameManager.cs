@@ -240,6 +240,9 @@ public class GameManager : FlagManager
         //Flags
         LoadFlags(savedData.Flags);
 
+        //DialogueTreeFlags
+        //LoadDialogueTreeFlags(savedData.DialogueTreeFlags);
+
         //Queued Actions
         actionQueue = savedData.ActionQueue;
     }

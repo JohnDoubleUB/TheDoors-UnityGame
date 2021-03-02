@@ -15,6 +15,7 @@ public class SaveDataSerialized
     public int[] CompletedDoors;
     public string[] Flags;
     public string[] ActionQueue;
+    public string[] DialogueTreeFlags;
     public LevelSaveDataSerialized[] LevelData;
 
     public SaveDataSerialized(string levelName, int level, int saveNumber, Vector3 position, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<LevelSaveData> levelData) 

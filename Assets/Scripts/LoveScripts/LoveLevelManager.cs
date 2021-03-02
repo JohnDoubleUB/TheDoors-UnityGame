@@ -47,17 +47,6 @@ public class LoveLevelManager : MonoBehaviour
         currentPlayer.gameObject.transform.position = platformPoints[playerPointPositionIndex].position;
         currentPlayer.gameObject.transform.parent = platformPoints[playerPointPositionIndex];
 
-
-        //LoveRobot test = CreateLoveRobot();
-        //IEnumerator robot1 = CreateRobotAfterTime(0.1f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position);
-        //IEnumerator robot2 = CreateRobotAfterTime(0.3f, loveRobotSpawnLocations[loveRobotSpawnLocations.Length - 1].position);
-
-        //StartCoroutine(CreateRobotAfterTime(0.1f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position));
-        ////StartCoroutine(CreateRobotAfterTime(0.2f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position));
-        //StartCoroutine(StartNewPhaseAfter(5f));
-        //StartCoroutine(robot2);
-
-
         Debug.Log("Start!");
         StartPhase(0);
     }
@@ -99,12 +88,6 @@ public class LoveLevelManager : MonoBehaviour
         }
 
         UpdatePhase(phase);
-
-        //if (phase == 1 && queuedShots < 2) 
-        //{
-        //    queuedShots++;
-        //    StartCoroutine(FireAfterDelay(2f * (queuedShots * 0.5f)));
-        //}
     }
 
     private void StartPhase(int phase)
@@ -138,23 +121,22 @@ public class LoveLevelManager : MonoBehaviour
                 break;
             case 5:
                 Debug.Log("Entering phase 5!");
-                StartCoroutine(CompletePhaseAfterSeconds(5f));
+                StartCoroutine(CompletePhaseAfterSeconds(10f));
                 break;
             case 6:
-                Debug.Log("Entering phase 6!");
-                StartCoroutine(CompletePhaseAfterSeconds(5f));
+                Debug.Log("Entering phase 6");
+                StartCoroutine(CompletePhaseAfterSeconds(10f));
                 break;
         }
     }
 
     private void UpdatePhase(int phase) 
     {
-        float phaseShotSpeedMultiplier = phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
+        float phaseShotSpeedMultiplier = shotSpeed; //phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
         
         switch (phase) 
         {
             case 2:
-            case 3:
                 if (currentShotTime >= 1.0f)
                 {
                     FireAtTarget(platformPoints[playerPointPositionIndex].position);
@@ -165,8 +147,7 @@ public class LoveLevelManager : MonoBehaviour
                     currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
-            case 4:
-            case 5:
+            case 3:
                 if (currentShotTime >= 1.0f)
                 {
                     FireAtTarget(platformPoints[playerPointPositionIndex].position);
@@ -182,7 +163,7 @@ public class LoveLevelManager : MonoBehaviour
                     currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
-            case 6:
+            case 4:
                 if (currentShotTime >= 1.0f)
                 {
                     FireAtTarget(platformPoints[playerPointPositionIndex].position);
@@ -224,8 +205,8 @@ public class LoveLevelManager : MonoBehaviour
                     currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
-            case 7:
-                if (currentShotTime >= 3.0f)
+            case 5:
+                if (currentShotTime >= 1.0f)
                 {
                     float fireDelay = 0.3f;
                     Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
@@ -247,7 +228,51 @@ public class LoveLevelManager : MonoBehaviour
                 }
                 else
                 {
-                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
+                    currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier / 3f);
+                }
+                break;
+            case 6:
+                if (currentShotTime >= 1.0f)
+                {
+                    float fireDelay = 0.3f;
+                    Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
+                    
+                    for (int i = 0; i < (platformPositions.Length / 2) + 1; i++) 
+                    {
+                        StartCoroutine(FireAtTargetAfterDelay(platformPositions[i], fireDelay));
+                        fireDelay += 0.3f;
+                    }
+
+                    fireDelay = 0.3f;
+
+                    for (int i = platformPositions.Length - 1; i > (platformPositions.Length / 2); i--)
+                    {
+                        StartCoroutine(FireAtTargetAfterDelay(platformPositions[i], fireDelay));
+                        fireDelay += 0.3f;
+                    }
+
+                    currentShotTime = 0f;
+                }
+                else
+                {
+                    currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier / 2f);
+                }
+                break;
+            case 7:
+                if (currentShotTime >= 1.0f)
+                {
+                    float fireDelay = 0.3f;
+                    Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
+
+                    FireAtTarget(platformPositions[playerPointPositionIndex]);
+                    StartCoroutine(FireAtTargetAfterDelay(platformPositions[Random.Range(0, platformPositions.Length)], 0.1f));
+                    StartCoroutine(FireAtTargetAfterDelay(platformPositions[Random.Range(0, platformPositions.Length)], 0.2f));
+
+                    currentShotTime = 0f;
+                }
+                else
+                {
+                    currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier);
                 }
                 break;
 
@@ -280,6 +305,8 @@ public class LoveLevelManager : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         phase++;
         phaseCompleted = true;
+        currentShotTime = 0f;
+        //currentShotTime = 1f;
     }
 
     private IEnumerator MoveToPhaseAfterSeconds(int phase, float waitTime) 

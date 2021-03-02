@@ -7,7 +7,11 @@ public abstract class FlagManager : MonoBehaviour
 {
     public List<string> flags = new List<string>();
 
+    public List<string> dialogueTreeFlags = new List<string>();
+
     public List<string> Flags { get { return flags; } }
+
+    public List<string> DialogueTreeFlags { get { return dialogueTreeFlags; } }
 
     protected abstract void UpdateSessionFlags(string[] updatedFlags);
 
@@ -16,6 +20,11 @@ public abstract class FlagManager : MonoBehaviour
     protected void LoadFlags(List<string> activeFlags)
     {
         flags = activeFlags;
+    }
+
+    protected void LoadDialogueTreeFlags(List<string> activeDialogueTreeFlags) 
+    {
+        dialogueTreeFlags = activeDialogueTreeFlags;
     }
 
     public void AddFlag(string flag)

@@ -49,7 +49,6 @@ public class LovePlayer : Player
     {
         playerSprite.color = Color.red;
         lightUpTimer = 0f;
-        //Debug.Log("ouch!");
     }
 
     protected new void Update()
