@@ -6,6 +6,7 @@ public class LovePlayer : Player
 {
     public float speedMultiplier = 2f;
     public float jumpArchHeight = 2.5f;
+    public float dashAmount = 2;
 
     public SpriteRenderer playerSprite;
 
@@ -13,6 +14,7 @@ public class LovePlayer : Player
     private bool moving;
     private bool movingSound;
     private bool inTransition;
+    private int currentDashCount;
 
     private Vector3 oldPosition;
     private Vector3 archPosition;
@@ -20,7 +22,7 @@ public class LovePlayer : Player
     private float lightUpTimer = 1f;
     public override void MoveOnceInDirection(InputMapping input)
     {
-        if (!inTransition)
+        if (currentDashCount < dashAmount)
         {
             switch (input)
             {
@@ -49,6 +51,7 @@ public class LovePlayer : Player
         moving = true;
         movingSound = true;
         inTransition = true;
+        currentDashCount++;
     }
 
     public override void TakeDamage()
@@ -95,7 +98,7 @@ public class LovePlayer : Player
                 movingSound = false;
             }
 
-            if (inTransition && count > 0.65f) inTransition = false;
+            if (currentDashCount != 0 && count > 0.65f) currentDashCount = 0;
         }
     }
 }
