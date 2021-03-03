@@ -15,6 +15,8 @@ public class LoveLevelManager : MonoBehaviour
     //Hide in inspector?
     public List<Transform> platformPoints = new List<Transform>();
 
+    //Each phases time
+    public float[] phaseTimings = { 5, 2, 5, 5, 5, 15, 10, 6 };
 
     public float shotSpeed = 0.5f;
     private float currentShotTime = 0f;
@@ -76,7 +78,7 @@ public class LoveLevelManager : MonoBehaviour
 
         //Hit platform
         LovePlatform closestPlatform = platforms.OrderBy(x => Vector3.Distance(x.transform.position, position)).First();
-        
+
         if (closestPlatform != null)
         {
             closestPlatform.TakeHit(position);
@@ -87,7 +89,7 @@ public class LoveLevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!phaseTransition) 
+        if (!phaseTransition)
         {
             if (phaseCompleted)
             {
@@ -101,11 +103,11 @@ public class LoveLevelManager : MonoBehaviour
 
     private void StartPhase(int phase)
     {
+        //Set specific phase properties
         switch (phase)
         {
             case 0:
                 CreateRobotAfterTime(0.1f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position);
-                CompletePhaseAfterSeconds(5f);
                 break;
             case 1:
                 //Start patrol and Open head
@@ -113,30 +115,11 @@ public class LoveLevelManager : MonoBehaviour
                 {
                     lR.SetOpenBody(true);
                 }
-                CompletePhaseAfterSeconds(2f);
-                //MoveToPhaseAfterSeconds(5, 2f);
-                break;
-            case 2:
-                Debug.Log("Phase2!");
-                CompletePhaseAfterSeconds(5f);
-                break;
-            case 3:
-                Debug.Log("Phase3!");
-                CompletePhaseAfterSeconds(5f);
-                break;
-            case 4:
-                Debug.Log("Entering phase 4!");
-                CompletePhaseAfterSeconds(5f);
-                break;
-            case 5:
-                Debug.Log("Entering phase 5!");
-                CompletePhaseAfterSeconds(15f);
-                break;
-            case 6:
-                Debug.Log("Entering phase 6");
-                CompletePhaseAfterSeconds(10f);
                 break;
         }
+
+        //Set timings to change the phase!
+        if(phase < phaseTimings.Length) CompletePhaseAfterSeconds(phaseTimings[phase]);
     }
 
     private void UpdatePhase(int phase)
@@ -218,7 +201,7 @@ public class LoveLevelManager : MonoBehaviour
                 break;
 
             case 5:
-                
+
                 if (currentShotTime >= 1.0f)
                 {
                     float fireDelay = 0.3f;
@@ -282,7 +265,7 @@ public class LoveLevelManager : MonoBehaviour
                 }
                 break;
             case 8:
-                
+
                 break;
 
         }
@@ -309,22 +292,22 @@ public class LoveLevelManager : MonoBehaviour
 
     //Phase changers
 
-    private Task CompletePhaseAfterSeconds(float waitTime, bool waitForNoActiveFiringTasks = false, float transitionTime = 1f)
+    private Task CompletePhaseAfterSeconds(float waitTime, float transitionTime = 1f)
     {
-        IEnumerator completeAfterSecondsCoroutine() 
+        IEnumerator completeAfterSecondsCoroutine()
         {
             yield return new WaitForSeconds(waitTime);
-            ClearAllFiringCoroutines();
+
             phaseTransition = true;
+            ClearAllFiringCoroutines();
             PhaseTransitionTime(transitionTime);
         }
 
         return new Task(completeAfterSecondsCoroutine());
     }
-
     private Task MoveToPhaseAfterSeconds(int phase, float waitTime)
     {
-        IEnumerator moveAfterSecondsCoroutine() 
+        IEnumerator moveAfterSecondsCoroutine()
         {
             yield return new WaitForSeconds(waitTime);
             this.phase = phase;
@@ -334,15 +317,16 @@ public class LoveLevelManager : MonoBehaviour
         return new Task(moveAfterSecondsCoroutine());
     }
 
-    private Task PhaseTransitionTime(float waitTime) 
+    private Task PhaseTransitionTime(float waitTime)
     {
-        IEnumerator phaseTransitionCoroutine() 
+        IEnumerator phaseTransitionCoroutine()
         {
             yield return new WaitForSeconds(waitTime);
             phase++;
             phaseTransition = false;
             currentShotTime = 1f;
             phaseCompleted = true;
+            Debug.Log("Phase " + phase + "!" );
         }
 
         return new Task(phaseTransitionCoroutine());
@@ -351,7 +335,7 @@ public class LoveLevelManager : MonoBehaviour
     //Robot Coroutines
     private Task CreateRobotAfterTime(float waitTime, Vector3 spawnLocation)
     {
-        IEnumerator createRobotAfterTimeCoroutine() 
+        IEnumerator createRobotAfterTimeCoroutine()
         {
             yield return new WaitForSeconds(waitTime);
             LoveRobot createdRobot = CreateLoveRobot(spawnLocation);
@@ -369,7 +353,7 @@ public class LoveLevelManager : MonoBehaviour
 
     private Task MoveRobotAfterTimeToLocation(float waitTime, LoveRobot loveRobot, Vector3 location, bool fastSpeed = false)
     {
-        IEnumerator moveRobotCoroutine() 
+        IEnumerator moveRobotCoroutine()
         {
             yield return new WaitForSeconds(waitTime);
             loveRobot.SetNewDestination(location, fastSpeed);
@@ -377,9 +361,9 @@ public class LoveLevelManager : MonoBehaviour
         return new Task(moveRobotCoroutine());
     }
 
-    private void ClearAllFiringCoroutines() 
+    private void ClearAllFiringCoroutines()
     {
-        foreach (Task firingTask in activeFiringCoroutines) 
+        foreach (Task firingTask in activeFiringCoroutines)
         {
             if (!firingTask.Running) continue;
             firingTask.Stop();

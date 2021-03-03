@@ -12,23 +12,28 @@ public class LovePlayer : Player
     private float count = 0.0f;
     private bool moving;
     private bool movingSound;
+    private bool inTransition;
+
     private Vector3 oldPosition;
     private Vector3 archPosition;
     private Transform newPositionTransform;
     private float lightUpTimer = 1f;
     public override void MoveOnceInDirection(InputMapping input)
     {
-        switch (input) 
+        if (!inTransition)
         {
-            case InputMapping.Left:
-                MoveToNewPoint(-1);
-                if (playerSprite != null) playerSprite.flipX = true;
+            switch (input)
+            {
+                case InputMapping.Left:
+                    MoveToNewPoint(-1);
+                    if (playerSprite != null) playerSprite.flipX = true;
 
-                break;
-            case InputMapping.Right:
-                MoveToNewPoint(1);
-                if (playerSprite != null) playerSprite.flipX = false;
-                break;
+                    break;
+                case InputMapping.Right:
+                    MoveToNewPoint(1);
+                    if (playerSprite != null) playerSprite.flipX = false;
+                    break;
+            }
         }
     }
 
@@ -43,6 +48,7 @@ public class LovePlayer : Player
         count = 0.0f;
         moving = true;
         movingSound = true;
+        inTransition = true;
     }
 
     public override void TakeDamage()
@@ -83,11 +89,13 @@ public class LovePlayer : Player
                 moving = false;
             }
 
-            if (count > 0.85f && movingSound) 
+            if (movingSound && count > 0.85f) 
             {
                 AudioManager.current.PlaySoundEvent("Walk_Cycle", gameObject);
                 movingSound = false;
             }
+
+            if (inTransition && count > 0.65f) inTransition = false;
         }
     }
 }
