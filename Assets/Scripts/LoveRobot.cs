@@ -62,26 +62,11 @@ public class LoveRobot : MonoBehaviour
         randomIntSeed = Random.Range(0, 100);
     }
 
-    void Start()
-    {
-        //target = destination.position;
-
-
-        //animator.SetBool("bodyOpen", true);
-
-    }
-
     // Update is called once per frame
     void Update()
     {
         //Generate our floaty effect!
         Vector2 floatValue = GenerateFloat((Time.time + randomIntSeed) * distance, floatSpeed);
-
-        //TODO: Remove the mouse button trigger stuff
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    LaunchProjectileAtTarget(testTarget.position);
-        //}
 
         //Move towards target if target isn't the current location
         float distanceToTarget = Vector3.Distance(currentLocation, targetLocation);

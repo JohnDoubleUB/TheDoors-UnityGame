@@ -49,7 +49,7 @@ public class LovePlayer : Player
     {
         playerSprite.color = Color.red;
         lightUpTimer = 0f;
-        PlayerHealth--;
+        PlayerHealth--; //TODO: Something needs to happen after this
     }
 
     protected new void Update()

@@ -25,10 +25,15 @@ public class LoveLevelManager : MonoBehaviour
     public List<LoveRobot> loveRobots = new List<LoveRobot>();
 
     private bool phaseCompleted = false;
+    private bool phaseTransition = false;
+    private bool alternator = false;
     public int phase = 0;
     public int playerPointPositionIndex;
 
     // Start is called before the first frame update
+
+    private List<Task> activeFiringCoroutines = new List<Task>();
+
 
     private void Awake()
     {
@@ -61,9 +66,9 @@ public class LoveLevelManager : MonoBehaviour
         return platformPoints[playerPointPositionIndex];
     }
 
-    public void SpawnParticleEffectAtPosition(Vector3 position) 
+    public void SpawnParticleEffectAtPosition(Vector3 position)
     {
-        if (heartSmashParticleEffect != null) 
+        if (heartSmashParticleEffect != null)
         {
             heartSmashParticleEffect.gameObject.transform.position = position;
             heartSmashParticleEffect.Play();
@@ -71,7 +76,8 @@ public class LoveLevelManager : MonoBehaviour
 
         //Hit platform
         LovePlatform closestPlatform = platforms.OrderBy(x => Vector3.Distance(x.transform.position, position)).First();
-        if (closestPlatform != null) 
+        
+        if (closestPlatform != null)
         {
             closestPlatform.TakeHit(position);
         }
@@ -81,60 +87,63 @@ public class LoveLevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (phaseCompleted)
+        if (!phaseTransition) 
         {
-            StartPhase(phase);
-            phaseCompleted = false;
-        }
+            if (phaseCompleted)
+            {
+                StartPhase(phase);
+                phaseCompleted = false;
+            }
 
-        UpdatePhase(phase);
+            UpdatePhase(phase);
+        }
     }
 
     private void StartPhase(int phase)
     {
-        switch (phase) 
+        switch (phase)
         {
             case 0:
-                StartCoroutine(CreateRobotAfterTime(0.1f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position));
-                StartCoroutine(CompletePhaseAfterSeconds(5f));
+                CreateRobotAfterTime(0.1f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position);
+                CompletePhaseAfterSeconds(5f);
                 break;
             case 1:
                 //Start patrol and Open head
-                foreach (LoveRobot lR in loveRobots) 
+                foreach (LoveRobot lR in loveRobots)
                 {
                     lR.SetOpenBody(true);
                 }
-                StartCoroutine(CompletePhaseAfterSeconds(2f));
-                //StartCoroutine(MoveToPhaseAfterSeconds(7, 2f));
+                CompletePhaseAfterSeconds(2f);
+                //MoveToPhaseAfterSeconds(5, 2f);
                 break;
             case 2:
                 Debug.Log("Phase2!");
-                StartCoroutine(CompletePhaseAfterSeconds(5f));
+                CompletePhaseAfterSeconds(5f);
                 break;
             case 3:
                 Debug.Log("Phase3!");
-                StartCoroutine(CompletePhaseAfterSeconds(5f));
+                CompletePhaseAfterSeconds(5f);
                 break;
             case 4:
                 Debug.Log("Entering phase 4!");
-                StartCoroutine(CompletePhaseAfterSeconds(5f));
+                CompletePhaseAfterSeconds(5f);
                 break;
             case 5:
                 Debug.Log("Entering phase 5!");
-                StartCoroutine(CompletePhaseAfterSeconds(10f));
+                CompletePhaseAfterSeconds(15f);
                 break;
             case 6:
                 Debug.Log("Entering phase 6");
-                StartCoroutine(CompletePhaseAfterSeconds(10f));
+                CompletePhaseAfterSeconds(10f);
                 break;
         }
     }
 
-    private void UpdatePhase(int phase) 
+    private void UpdatePhase(int phase)
     {
         float phaseShotSpeedMultiplier = shotSpeed; //phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
-        
-        switch (phase) 
+
+        switch (phase)
         {
             case 2:
                 if (currentShotTime >= 1.0f)
@@ -142,19 +151,20 @@ public class LoveLevelManager : MonoBehaviour
                     FireAtTarget(platformPoints[playerPointPositionIndex].position);
                     currentShotTime = 0f;
                 }
-                else 
+                else
                 {
                     currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
+
             case 3:
                 if (currentShotTime >= 1.0f)
                 {
                     FireAtTarget(platformPoints[playerPointPositionIndex].position);
-                    
+
                     //Hit the other point on that platform
                     int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
-                    StartCoroutine(FireAtTargetAfterDelay(platformPoints[nextPosition].position, 0.1f));
+                    FireAtTarget(platformPoints[nextPosition].position, 0.1f);
 
                     currentShotTime = 0f;
                 }
@@ -163,6 +173,7 @@ public class LoveLevelManager : MonoBehaviour
                     currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
+
             case 4:
                 if (currentShotTime >= 1.0f)
                 {
@@ -170,7 +181,7 @@ public class LoveLevelManager : MonoBehaviour
 
                     //Hit the other point on that platform
                     int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
-                    StartCoroutine(FireAtTargetAfterDelay(platformPoints[nextPosition].position, 0.1f));
+                    FireAtTarget(platformPoints[nextPosition].position, 0.1f);
 
                     int position3;
                     int position4;
@@ -180,14 +191,14 @@ public class LoveLevelManager : MonoBehaviour
                         position3 = platformPoints.Count - 3;
                         position4 = position3 - 1;
                     }
-                    else 
+                    else
                     {
                         if (Random.Range(0, 2) == 0)
                         {
                             position3 = platformPoints.Count - 1;
                             position4 = position3 - 1;
                         }
-                        else 
+                        else
                         {
                             position3 = 0;
                             position4 = position3 + 1;
@@ -195,8 +206,8 @@ public class LoveLevelManager : MonoBehaviour
                     }
 
                     //TODO: Delays might need to have transform arguments rather than positional later
-                    StartCoroutine(FireAtTargetAfterDelay(platformPoints[position3].position, 0.2f));
-                    StartCoroutine(FireAtTargetAfterDelay(platformPoints[position4].position, 0.3f));
+                    FireAtTarget(platformPoints[position3].position, 0.2f);
+                    FireAtTarget(platformPoints[position4].position, 0.3f);
 
                     currentShotTime = 0f;
                 }
@@ -205,30 +216,25 @@ public class LoveLevelManager : MonoBehaviour
                     currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
+
             case 5:
+                
                 if (currentShotTime >= 1.0f)
                 {
                     float fireDelay = 0.3f;
                     Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-                    foreach (Vector3 target in platformPositions) 
+                    foreach (Vector3 target in alternator ? platformPositions : platformPositions.Reverse())
                     {
-                        StartCoroutine(FireAtTargetAfterDelay(target, fireDelay));
+                        FireAtTarget(target, fireDelay);
                         fireDelay += 0.3f;
                     }
 
-                    fireDelay += 1;
-
-                    foreach (Vector3 target in platformPositions.Reverse()) 
-                    {
-                        StartCoroutine(FireAtTargetAfterDelay(target, fireDelay));
-                        fireDelay += 0.3f;
-                    }
-
+                    alternator = !alternator;
                     currentShotTime = 0f;
                 }
                 else
                 {
-                    currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier / 3f);
+                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
                 break;
             case 6:
@@ -236,10 +242,11 @@ public class LoveLevelManager : MonoBehaviour
                 {
                     float fireDelay = 0.3f;
                     Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-                    
-                    for (int i = 0; i < (platformPositions.Length / 2) + 1; i++) 
+
+                    for (int i = 0; i < (platformPositions.Length / 2) + 1; i++)
                     {
-                        StartCoroutine(FireAtTargetAfterDelay(platformPositions[i], fireDelay));
+
+                        FireAtTarget(platformPositions[i], fireDelay);
                         fireDelay += 0.3f;
                     }
 
@@ -247,7 +254,7 @@ public class LoveLevelManager : MonoBehaviour
 
                     for (int i = platformPositions.Length - 1; i > (platformPositions.Length / 2); i--)
                     {
-                        StartCoroutine(FireAtTargetAfterDelay(platformPositions[i], fireDelay));
+                        FireAtTarget(platformPositions[i], fireDelay);
                         fireDelay += 0.3f;
                     }
 
@@ -261,19 +268,21 @@ public class LoveLevelManager : MonoBehaviour
             case 7:
                 if (currentShotTime >= 1.0f)
                 {
-                    float fireDelay = 0.3f;
                     Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
 
                     FireAtTarget(platformPositions[playerPointPositionIndex]);
-                    StartCoroutine(FireAtTargetAfterDelay(platformPositions[Random.Range(0, platformPositions.Length)], 0.1f));
-                    StartCoroutine(FireAtTargetAfterDelay(platformPositions[Random.Range(0, platformPositions.Length)], 0.2f));
+                    FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.1f);
+                    FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.2f);
 
                     currentShotTime = 0f;
                 }
                 else
                 {
-                    currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier);
+                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
                 }
+                break;
+            case 8:
+                
                 break;
 
         }
@@ -298,63 +307,109 @@ public class LoveLevelManager : MonoBehaviour
     }
 
 
-    //Start new phase
+    //Phase changers
 
-    private IEnumerator CompletePhaseAfterSeconds(float waitTime) 
+    private Task CompletePhaseAfterSeconds(float waitTime, bool waitForNoActiveFiringTasks = false, float transitionTime = 1f)
     {
-        yield return new WaitForSeconds(waitTime);
-        phase++;
-        phaseCompleted = true;
-        currentShotTime = 0f;
-        //currentShotTime = 1f;
+        IEnumerator completeAfterSecondsCoroutine() 
+        {
+            yield return new WaitForSeconds(waitTime);
+            ClearAllFiringCoroutines();
+            phaseTransition = true;
+            PhaseTransitionTime(transitionTime);
+        }
+
+        return new Task(completeAfterSecondsCoroutine());
     }
 
-    private IEnumerator MoveToPhaseAfterSeconds(int phase, float waitTime) 
+    private Task MoveToPhaseAfterSeconds(int phase, float waitTime)
     {
-        yield return new WaitForSeconds(waitTime);
-        this.phase = phase;
-        phaseCompleted = true;
+        IEnumerator moveAfterSecondsCoroutine() 
+        {
+            yield return new WaitForSeconds(waitTime);
+            this.phase = phase;
+            phaseCompleted = true;
+        }
+
+        return new Task(moveAfterSecondsCoroutine());
     }
 
-    private IEnumerator CompletePhaseAfterMinutes(float waitTime)
+    private Task PhaseTransitionTime(float waitTime) 
     {
-        yield return new WaitForSeconds(60f * waitTime);
-        phase++;
-        phaseCompleted = true;
+        IEnumerator phaseTransitionCoroutine() 
+        {
+            yield return new WaitForSeconds(waitTime);
+            phase++;
+            phaseTransition = false;
+            currentShotTime = 1f;
+            phaseCompleted = true;
+        }
+
+        return new Task(phaseTransitionCoroutine());
     }
 
     //Robot Coroutines
-    private IEnumerator CreateRobotAfterTime(float waitTime, Vector3 spawnLocation)
+    private Task CreateRobotAfterTime(float waitTime, Vector3 spawnLocation)
     {
-        yield return new WaitForSeconds(waitTime);
-        LoveRobot test = CreateLoveRobot(spawnLocation);
-        Debug.Log("CreateRobotAfterTime");
-
-        if (loveRobotMovementPoints != null && loveRobotMovementPoints.Any())
+        IEnumerator createRobotAfterTimeCoroutine() 
         {
-            //Find closest movement point if there is any
-            Vector3 closestMovementPoint = loveRobotMovementPoints.OrderBy(x => Vector3.Distance(x.position, test.transform.position)).Select(x => x.position).FirstOrDefault();
+            yield return new WaitForSeconds(waitTime);
+            LoveRobot createdRobot = CreateLoveRobot(spawnLocation);
 
-            IEnumerator subCoroutine = MoveRobotAfterTimeToLocation(0.1f, test, closestMovementPoint, true);
-            StartCoroutine(subCoroutine);
+            if (loveRobotMovementPoints != null && loveRobotMovementPoints.Any())
+            {
+                //Find closest movement point if there is any
+                Vector3 closestMovementPoint = loveRobotMovementPoints.OrderBy(x => Vector3.Distance(x.position, createdRobot.transform.position)).Select(x => x.position).FirstOrDefault();
+                MoveRobotAfterTimeToLocation(0.1f, createdRobot, closestMovementPoint, true);
+            }
         }
+
+        return new Task(createRobotAfterTimeCoroutine());
     }
 
-    private IEnumerator MoveRobotAfterTimeToLocation(float waitTime, LoveRobot loveRobot, Vector3 location, bool fastSpeed = false) 
+    private Task MoveRobotAfterTimeToLocation(float waitTime, LoveRobot loveRobot, Vector3 location, bool fastSpeed = false)
     {
-        yield return new WaitForSeconds(waitTime);
-        Debug.Log("MoveRobotAfterTimeToLocation");
-        loveRobot.SetNewDestination(location, fastSpeed);
+        IEnumerator moveRobotCoroutine() 
+        {
+            yield return new WaitForSeconds(waitTime);
+            loveRobot.SetNewDestination(location, fastSpeed);
+        }
+        return new Task(moveRobotCoroutine());
     }
 
-    private IEnumerator FireAtTargetAfterDelay(Vector3 target, float waitTime)
+    private void ClearAllFiringCoroutines() 
     {
-        yield return new WaitForSeconds(waitTime);
-        FireAtTarget(target);
+        foreach (Task firingTask in activeFiringCoroutines) 
+        {
+            if (!firingTask.Running) continue;
+            firingTask.Stop();
+        }
+
+        activeFiringCoroutines.Clear();
     }
 
     private void FireAtTarget(Vector3 target)
     {
         loveRobots[Random.Range(0, loveRobots.Count)].LaunchProjectileAtTarget(target);
+    }
+
+    private Task FireAtTarget(Vector3 target, float fireDelay)
+    {
+        IEnumerator fireAfterDelayCoroutine()
+        {
+            yield return new WaitForSeconds(fireDelay);
+            FireAtTarget(target);
+        }
+
+        Task delayedFire = new Task(fireAfterDelayCoroutine());
+
+        activeFiringCoroutines.Add(delayedFire);
+
+        if (activeFiringCoroutines.Count > 10)
+        {
+            activeFiringCoroutines = activeFiringCoroutines.Where(x => x.Running).ToList();
+        }
+
+        return delayedFire;
     }
 }

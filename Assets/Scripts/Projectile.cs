@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     public float timeDelay = 1f;
     public float damageRadius = 1.5f;
     private float currentTime = 0f;
-
+    //TODO: This should probably be called LoveProjectile because it relies on the LoveLevelManager!
     private void OnCollisionEnter2D(Collision2D collision)
     {
         AudioManager.current.PlaySoundEvent("Jump", gameObject);
