@@ -3,16 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager current;
 
-    private List<KeyValuePair<UIContextType, UIContextObject>> uiContextObjects = new List<KeyValuePair<UIContextType, UIContextObject>>();
+    private int currentHealth;
+
+    private List<KeyValuePair<UIContextType, UIContext>> uiContexts = new List<KeyValuePair<UIContextType, UIContext>>();
     private Dictionary<UIContextType, bool> activeContextElements = new Dictionary<UIContextType, bool>();
 
     private bool activeContextsInitiated;
-    private UIContextType[] InitiallyEnabledContexts; //= { UIContextType.Dialogue }; //This is mostly for testing
+    private UIContextType[] InitiallyEnabledContexts = { UIContextType.HealthDisplay }; //This is mostly for testing
 
     private UIState uiState = UIState.None;
     public UIState UIState 
@@ -46,10 +49,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void AssignObjectContext(UIContextObject uiContextObject) 
+    public void AssignObjectContext(UIContext uiContext) 
     {
-        uiContextObjects.Add(new KeyValuePair<UIContextType, UIContextObject>(uiContextObject.type, uiContextObject));
-        if (activeContextsInitiated) uiContextObject.gameObject.SetActive(activeContextElements[uiContextObject.type]);
+        uiContexts.Add(new KeyValuePair<UIContextType, UIContext>(uiContext.type, uiContext));
+        if (activeContextsInitiated) uiContext.gameObject.SetActive(activeContextElements[uiContext.type]);
     }
 
     public void SetContextsActive(bool active, params UIContextType[] uiContexts) 
@@ -58,7 +61,7 @@ public class UIManager : MonoBehaviour
         foreach (UIContextType context in uiContexts) activeContextElements[context] = active;
 
         //Update all required objects
-        foreach (GameObject gObj in uiContextObjects
+        foreach (GameObject gObj in this.uiContexts
             .Where(x => uiContexts.Contains(x.Value.type))
             .Select(x => x.Value.gameObject)) 
         {
@@ -74,7 +77,7 @@ public class UIManager : MonoBehaviour
         foreach (UIContextType context in uiContexts) activeContextElements[context] = !activeContextElements[context];
 
         //Update all required objects
-        foreach (UIContextObject contextObj in uiContextObjects
+        foreach (UIContextObject contextObj in this.uiContexts
             .Where(x => uiContexts.Contains(x.Value.type))
             .Select(x => x.Value))
         {
@@ -87,7 +90,7 @@ public class UIManager : MonoBehaviour
 
     private void UpdateActiveContexts() 
     {
-        foreach (KeyValuePair<UIContextType, UIContextObject> uiContextObj in uiContextObjects) 
+        foreach (KeyValuePair<UIContextType, UIContext> uiContextObj in uiContexts) 
         {
             uiContextObj.Value.gameObject.SetActive(activeContextElements[uiContextObj.Value.type]);
         }
@@ -100,7 +103,11 @@ public class UIManager : MonoBehaviour
     private void UpdateUIState() 
     {
         //Debug.Log("state change");
-        if (activeContextElements[UIContextType.PauseMenu]) 
+        if (activeContextElements[UIContextType.GameOverMenu]) 
+        {
+            uiState = UIState.GameOver;
+        }
+        else if (activeContextElements[UIContextType.PauseMenu]) 
         {
             uiState = UIState.Pause;
         }
@@ -113,6 +120,18 @@ public class UIManager : MonoBehaviour
             uiState = UIState.None;
         }
     }
+
+    public void UpdatePlayerHealth(int playerCurrentHealth) 
+    {
+        currentHealth = playerCurrentHealth;
+        foreach (KeyValuePair<UIContextType, UIContext> uiContext in uiContexts) 
+        {
+            if (uiContext.Key == UIContextType.HealthDisplay)
+            {
+                ((UIHealthContext)uiContext.Value).SetHealth(playerCurrentHealth); 
+            }
+        }
+    }
 }
 
 public enum UIContextType 
@@ -122,12 +141,15 @@ public enum UIContextType
     SaveMenu,
     LoadMenu,
     SaveSelection,
-    Dialogue
+    Dialogue,
+    HealthDisplay,
+    GameOverMenu
 }
 
 public enum UIState 
 {
     None,
     Pause,
-    Dialogue
+    Dialogue,
+    GameOver
 }

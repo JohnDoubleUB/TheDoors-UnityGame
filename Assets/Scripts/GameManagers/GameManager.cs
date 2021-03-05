@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : FlagManager
 {
     public static GameManager current;
+    public bool AllowPausing = true;
 
     //Platformer related
     public Player player;
@@ -24,6 +25,12 @@ public class GameManager : FlagManager
     //private string saveName = "SaveSlot";
 
     private int selectedSavefile = 0;
+    private bool firstUpdate = true;
+
+
+    private SaveDataSerialized startOfLevelSessionData;
+    private bool gameIsOver;
+    private bool isMainMenu;
 
     private List<DoorName> CurrentlyDisabledDoors {
         get
@@ -32,27 +39,47 @@ public class GameManager : FlagManager
         }
     }
 
+    public SaveDataSerialized StartOfLevelSessionData 
+    {
+        get { return startOfLevelSessionData; }
+    }
+
+    public bool GameIsOver
+    {
+        get { return gameIsOver; }
+    }
+
     public Player Player {get { return player; }}
 
     private void Awake()
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
+        
+        isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
         FindKeyComponents();
-        LoadSessionData();
-        //LoadLevelManager();
-        //We can add flags here now for testing
-        //Debug.Log("(SceneManager) Current Level build index!: " + SceneManager.GetActiveScene().buildIndex + ", and level name: " + SceneManager.GetActiveScene().name);
-        //Debug.Log("(SaveSystem.SessionSaveData) Session current Level build index!: " + SaveSystem.SessionSaveData.Level + ", and level name: " + SaveSystem.SessionSaveData.LevelName);
+
+        if (!isMainMenu) LoadSessionData();
     }
 
-    private void LoadLevelManager()
+    private void Start()
     {
-        switch (SceneManager.GetActiveScene().name) 
+        if (isMainMenu) 
         {
-            case "Loveworld":
-                gameObject.AddComponent<LoveLevelManager>();
-                break;
+            SetSelectedSaveOption(0);
+            UIManager.current.ToggleContexts(UIContextType.PauseMenu);
+            UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
+            UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu, UIContextType.SaveSelection);
+        }
+    }
+
+    private void Update()
+    {
+        if (firstUpdate && !isMainMenu) 
+        {
+            UpdateHealth(player.CurrentHealth);
+            
+            firstUpdate = false;
         }
     }
 
@@ -80,7 +107,7 @@ public class GameManager : FlagManager
 
     public void InitiateLoad()
     {
-        if (player != null && selectedSavefile != 0)
+        if (/*player != null &&*/ selectedSavefile != 0)
         {
             SaveData savedData = SaveSystem.LoadGame(selectedSavefile);
 
@@ -104,8 +131,11 @@ public class GameManager : FlagManager
             UpdateSessionData(); //This way we always have a current savedata
         }
 
+        //So we have a point where we can retry a level from
+        startOfLevelSessionData = SaveSystem.SessionSaveData;
+
         //Debug text!
-        if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+        //if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
     }
 
     private void FindKeyComponents() //Find things like doors and the player etc,
@@ -124,7 +154,10 @@ public class GameManager : FlagManager
         if (scenePlayer != null && scenePlayer.Any()) 
         {
             Player currentPlayer = scenePlayer[0].GetComponent<Player>();
-            if (currentPlayer != null) player = currentPlayer;
+            if (currentPlayer != null) 
+            { 
+                player = currentPlayer;
+            }
         }
 
         //Get the save slots!
@@ -214,7 +247,7 @@ public class GameManager : FlagManager
             //SaveSystem.SessionSaveData.DialogueTreeFlags = updatedFlags;
             //SaveSystem.SessionSaveData.Flags = updatedFlags;
 
-            if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+            //if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
         }
     }
 
@@ -296,6 +329,22 @@ public class GameManager : FlagManager
         {
             UpdateSessionData_WithTargetScene(levelName, sceneToLoad.buildIndex);
             SceneManager.LoadScene(levelName);
+        }
+    }
+
+    public void UpdateHealth(int playerCurrentHealth) 
+    {
+        if (UIManager.current != null) UIManager.current.UpdatePlayerHealth(playerCurrentHealth);
+
+        //Check if the player is dead
+        if (playerCurrentHealth <= 0)
+        {
+            gameIsOver = true;
+
+            //Set all the UIContexts
+            UIManager.current.SetContextsActive(false, UIContextType.Dialogue, UIContextType.PauseMain, UIContextType.PauseMenu, UIContextType.SaveMenu, UIContextType.SaveSelection, UIContextType.LoadMenu);
+            UIManager.current.SetContextsActive(true, UIContextType.GameOverMenu);
+            //Debug.Log("Player is dead");
         }
     }
 }

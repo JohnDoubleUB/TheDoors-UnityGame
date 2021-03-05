@@ -7,7 +7,7 @@ public class PauseMenu : MonoBehaviour
 {
     public void StartGame() 
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene("Hubworld");
     }
 
     public void QuitGame() 
@@ -24,7 +24,6 @@ public class PauseMenu : MonoBehaviour
 
     public void SaveGameMenu() 
     {
-
         if (UIManager.current != null)
         {
             UIManager.current.SetContextsActive(false, UIContextType.PauseMain, UIContextType.LoadMenu);
@@ -35,7 +34,6 @@ public class PauseMenu : MonoBehaviour
 
     public void LoadGameMenu()
     {
-
         if (UIManager.current != null)
         {
             UIManager.current.SetContextsActive(false, UIContextType.PauseMain, UIContextType.SaveMenu);
@@ -61,5 +59,19 @@ public class PauseMenu : MonoBehaviour
             UIManager.current.SetContextsActive(false, UIContextType.SaveMenu, UIContextType.LoadMenu, UIContextType.SaveSelection);
             UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
         }
+    }
+
+    public void LoadMostRecentSave()
+    {
+        SaveData mostRecentSave = SaveSystem.LoadMostRecentSaveGame();
+        if (mostRecentSave != null) SaveSystem.SessionSaveData = mostRecentSave;
+        SceneManager.LoadScene(mostRecentSave.Level);
+    }
+
+    public void RetryLevel()
+    {
+        //This is to make sure that we completely reload from the beginning of the level when the player choses to do so after dying.
+        if (GameManager.current != null && GameManager.current.StartOfLevelSessionData != null) SaveSystem.SessionSaveData = GameManager.current.StartOfLevelSessionData;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -176,7 +176,7 @@ public class InputManager : MonoBehaviour
     private void PauseGame()
     {
         //Set UI and stuff
-        if (UIManager.current != null && GameManager.current != null)
+        if (UIManager.current != null && GameManager.current != null && (UIManager.current.UIState == UIState.None | UIManager.current.UIState == UIState.Pause) && GameManager.current.AllowPausing)
         {
             GameManager.current.SetSelectedSaveOption(0);
             UIManager.current.ToggleContexts(UIContextType.PauseMenu);

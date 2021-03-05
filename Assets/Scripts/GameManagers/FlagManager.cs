@@ -40,8 +40,6 @@ public abstract class FlagManager : MonoBehaviour
                 break;
         }
 
-       //if (!flags.Contains(flag)) flags.Add(flag);
-
         UpdateSessionFlags(Flags.ToArray(), flagType);
     }
 
@@ -70,8 +68,6 @@ public abstract class FlagManager : MonoBehaviour
                     if (!dialogueTreeFlags.Contains(flag)) dialogueTreeFlags.Add(flag);
                     break;
             }
-            
-            //if (!this.flags.Contains(flag)) this.flags.Add(flag);
         }
 
         UpdateSessionFlags(Flags.ToArray(), flagType);
@@ -100,7 +96,6 @@ public abstract class FlagManager : MonoBehaviour
                 if (dialogueTreeFlags.Contains(flag)) dialogueTreeFlags.Remove(flag);
                 break;
         }
-        //if (flags.Contains(flag)) flags.Remove(flag);
 
         UpdateSessionFlags(Flags.ToArray(), flagType);
     }
@@ -119,7 +114,6 @@ public abstract class FlagManager : MonoBehaviour
                     if (dialogueTreeFlags.Contains(flag)) dialogueTreeFlags.Remove(flag);
                     break;
             }
-            //if (this.flags.Contains(flag)) this.flags.Remove(flag);
         }
             
 
@@ -140,8 +134,6 @@ public abstract class FlagManager : MonoBehaviour
                 else dialogueTreeFlags.Add(flag);
                 break;
         }
-        //if (flags.Contains(flag)) flags.Remove(flag);
-        //else flags.Add(flag);
 
         UpdateSessionFlags(Flags.ToArray(), flagType);
     }
@@ -157,7 +149,6 @@ public abstract class FlagManager : MonoBehaviour
             default:
                 return flags.Contains(flag);
         }
-        //return flags.Contains(flag);
     }
 
     public bool[] HasFlags(string[] flags, FlagType flagType = FlagType.Progress)

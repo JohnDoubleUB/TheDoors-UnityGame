@@ -34,11 +34,6 @@ public class AudioManager : MonoBehaviour
         return result;
     }
 
-    //public void StopSoundEventImmediate(uint event, GameObject soundPlayingOn) 
-    //{
-    //    AkSoundEngine.StopPlayingID()
-    //}
-
     public void PlayMusicTrack() //Assumed to be played on itself
     {
 

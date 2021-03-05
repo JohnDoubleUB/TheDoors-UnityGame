@@ -322,11 +322,14 @@ public class LoveLevelManager : MonoBehaviour
         IEnumerator phaseTransitionCoroutine()
         {
             yield return new WaitForSeconds(waitTime);
-            phase++;
-            phaseTransition = false;
-            currentShotTime = 1f;
-            phaseCompleted = true;
-            Debug.Log("Phase " + phase + "!" );
+            if (!GameManager.current.GameIsOver)
+            {
+                phase++;
+                phaseTransition = false;
+                currentShotTime = 1f;
+                phaseCompleted = true;
+                Debug.Log("Phase " + phase + "!");
+            }
         }
 
         return new Task(phaseTransitionCoroutine());

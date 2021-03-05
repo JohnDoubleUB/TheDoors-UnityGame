@@ -62,8 +62,9 @@ public class PlatformerPlayer : Player
 
     public int currentJumpCount; //To keep track of the amount of jumps since last standing on the ground
 
-    void Awake()
+    protected new void Awake()
     {
+        base.Awake();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();

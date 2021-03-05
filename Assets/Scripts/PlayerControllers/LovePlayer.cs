@@ -13,7 +13,6 @@ public class LovePlayer : Player
     private float count = 0.0f;
     private bool moving;
     private bool movingSound;
-    private bool inTransition;
     private int currentDashCount;
 
     private Vector3 oldPosition;
@@ -50,15 +49,14 @@ public class LovePlayer : Player
         count = 0.0f;
         moving = true;
         movingSound = true;
-        inTransition = true;
         currentDashCount++;
     }
 
-    public override void TakeDamage()
+    public override void TakeDamage(int damageAmount = 1)
     {
+        base.TakeDamage(damageAmount);
         playerSprite.color = Color.red;
         lightUpTimer = 0f;
-        PlayerHealth--; //TODO: Something needs to happen after this
     }
 
     protected new void Update()

@@ -10,7 +10,15 @@ public abstract class Player : MonoBehaviour
     [HideInInspector]
     public bool JumpHold;
 
-    public int PlayerHealth = 3;
+    public int maxHealth = 3;
+    
+    private int currentHealth = -1;
+
+    public int CurrentHealth 
+    {
+        get { return currentHealth < 0 ? maxHealth : currentHealth; } 
+    }
+
 
     protected List<Interactable> interactables = new List<Interactable>();
     protected Interactable closestInteractable;
@@ -20,10 +28,30 @@ public abstract class Player : MonoBehaviour
     public virtual void Move(Vector2 movement) { }
     public virtual void OnFootFall() { }
     public virtual void MoveOnceInDirection(InputMapping input) { }
-    public virtual void TakeDamage() { }
+    public virtual void TakeDamage(int damageAmount = 1) 
+    {
+        //Ensure that the number is actually positive (we don't want to add health with take damage)
+        int damageAmountAbs = Mathf.Abs(damageAmount);
+        
+        if (currentHealth - damageAmountAbs < 0) 
+        { 
+            currentHealth = 0; 
+        }
+        else 
+        {
+            currentHealth -= damageAmountAbs;
+        }
+
+        GameManager.current.UpdateHealth(currentHealth);
+    }
     protected void Update()
     {
         if (interactables.Any()) SelectClosestInteractable();
+    }
+
+    protected void Awake()
+    {
+        currentHealth = maxHealth;
     }
 
     private void SelectClosestInteractable()
