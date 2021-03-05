@@ -9,6 +9,7 @@ public class GameManager : FlagManager
 {
     public static GameManager current;
     public bool AllowPausing = true;
+    public bool CameraFollowsPlayer = true;
 
     //Platformer related
     public Player player;
@@ -244,10 +245,6 @@ public class GameManager : FlagManager
                     SaveSystem.SessionSaveData.DialogueTreeFlags = updatedFlags;
                     break;
             }
-            //SaveSystem.SessionSaveData.DialogueTreeFlags = updatedFlags;
-            //SaveSystem.SessionSaveData.Flags = updatedFlags;
-
-            //if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
         }
     }
 
@@ -276,8 +273,9 @@ public class GameManager : FlagManager
             //Player position
             player.transform.position = currentLevelSaveData.PlayerPosition;
 
+            //TODO: I think camera position should probably be saved in the save file
             //Move camera
-            if (Camera.main) Camera.main.transform.position = new Vector3(currentLevelSaveData.PlayerPosition.x, currentLevelSaveData.PlayerPosition.y, Camera.main.transform.position.z);
+            if (CameraFollowsPlayer && Camera.main) Camera.main.transform.position = new Vector3(currentLevelSaveData.PlayerPosition.x, currentLevelSaveData.PlayerPosition.y, Camera.main.transform.position.z);
         }
 
         //Door states
@@ -344,7 +342,6 @@ public class GameManager : FlagManager
             //Set all the UIContexts
             UIManager.current.SetContextsActive(false, UIContextType.Dialogue, UIContextType.PauseMain, UIContextType.PauseMenu, UIContextType.SaveMenu, UIContextType.SaveSelection, UIContextType.LoadMenu);
             UIManager.current.SetContextsActive(true, UIContextType.GameOverMenu);
-            //Debug.Log("Player is dead");
         }
     }
 }

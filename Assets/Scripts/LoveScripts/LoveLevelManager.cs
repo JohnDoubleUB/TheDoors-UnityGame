@@ -89,7 +89,17 @@ public class LoveLevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!phaseTransition)
+        if (GameManager.current.GameIsOver) 
+        {
+            if (activeFiringCoroutines.Any()) 
+            {
+                foreach (Task firingTask in activeFiringCoroutines) 
+                    if (firingTask.Running) firingTask.Stop();
+                
+                activeFiringCoroutines.Clear();
+            }
+        }
+        else if (!phaseTransition)
         {
             if (phaseCompleted)
             {
