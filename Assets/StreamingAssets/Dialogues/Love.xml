@@ -4,9 +4,10 @@
 <!-- 
 		FILE NOTES:-
 		flags to be aware of: 
-		love-fight - flag given for fighting love
-        player-damage - tempflag used to inflict damage to player
-        love-damage - temp flag used to inflic damage to love?
+		love-fight - tempflag given for fighting love
+        damage-player - tempflag used to inflict damage to player
+        love-defeated - flag given for defeating love
+        dialogue-continue - tempflag that allows dialogue to trigger continuation of level events
 	-->
 
     <dialogue-tree id="1" name="love-intro">
@@ -31,81 +32,85 @@
         <dialogue id="3">
             <speaker><w><r>A mortal?</r></w> Fascinating, we have not had a mortal here since… well since Sven.</speaker>
             <speaker>What is your business here, trying to achieve the same goal as <f>dear Sven?</f></speaker>
+            <option dialogue-id="5">I'm here to defeat you.</option>
+            <option dialogue-id="6">I was kidnapped and told to defeat the Gods.</option>
         </dialogue>
 
         <dialogue id="4">
             <speaker>Playing hard to get will get you nowhere with me, <w><r>dear.</r></w> Now tell me what you want.</speaker>
+            <option dialogue-id="5">I'm here to defeat you.</option>
+            <option dialogue-id="6">I was kidnapped and told to defeat the Gods.</option>
         </dialogue>
 
-        <dialogue id="5" actflags="love-fight">
+        <dialogue id="5" tempactflags="love-fight">
             <speaker-end><w>Well, let's get down to it then.</w></speaker-end>
         </dialogue>
         
         <dialogue id="6">
             <speaker>You <w><r>poor</r></w> thing, although that doesn’t change the fact you’re here with ill intentions now, does it?</speaker>
-            <option-end actflags="love-fight">No, it doesn't.</option-end>
+            <option-end tempactflags="love-fight">No, it doesn't.</option-end>
             <option dialogue-id="7">That's a very cruel outlook.</option>
         </dialogue>
 
-        <dialogue id="7" actflags="love-fight">
+        <dialogue id="7" tempactflags="love-fight">
             <speaker-end>It's all in the name baby.</speaker-end>
         </dialogue>
 
     </dialogue-tree>
 
     <dialogue-tree id="2" name="love-attack1">
-        <dialogue id="1">
+        <dialogue id="1" tempactflags="dialogue-continue">
             <speaker>How do you feel about me?</speaker>
-            <option-end tempactflags="player-damage">I think I'm in love.</option-end>
-            <option-end tempactflags="player-damage">I'd do anything for you.</option-end>
+            <option-end tempactflags="damage-player">I think I'm in love.</option-end>
+            <option-end tempactflags="damage-player">I'd do anything for you.</option-end>
             <option-end>You might be the most repolsive thing I've ever seen</option-end>
         </dialogue>
     </dialogue-tree>
 
     <dialogue-tree id="3" name="love-attack2">
-        <dialogue id="1">
+        <dialogue id="1" tempactflags="dialogue-continue">
             <speaker>How would you describe me?</speaker>
-            <option-end tempactflags="player-damage">Beautiful.</option-end>
-            <option-end tempactflags="player-damage">Shall I compare thee to a summer’s day?</option-end>
+            <option-end tempactflags="damage-player">Beautiful.</option-end>
+            <option-end tempactflags="damage-player">Shall I compare thee to a summer’s day?</option-end>
             <option-end>Nightmare fuel.</option-end>
         </dialogue>
     </dialogue-tree>
 
     <dialogue-tree id="4" name="love-attack3">
-        <dialogue id="1">
+        <dialogue id="1" tempactflags="dialogue-continue">
             <speaker>What do you say we meet up later?</speaker>
-            <option-end tempactflags="player-damage">Anywhere, any time.</option-end>
-            <option-end tempactflags="player-damage">For real? I’d be honoured.</option-end>
+            <option-end tempactflags="damage-player">Anywhere, any time.</option-end>
+            <option-end tempactflags="damage-player">For real? I’d be honoured.</option-end>
             <option-end>Sorry, I have better things to do.</option-end>
         </dialogue>
     </dialogue-tree>
 
     <dialogue-tree id="5" name="love-attack4">
-        <dialogue id="1">
+        <dialogue id="1" tempactflags="dialogue-continue">
             <speaker>Ugh, <s>come on!</s></speaker>
             <speaker>No one can resist my charm!</speaker>
-            <option-end tempactflags="player-damage">You’re right, I can’t!</option-end>
-            <option-end tempactflags="player-damage">Please don’t be mad!</option-end>
+            <option-end tempactflags="damage-player">You’re right, I can’t!</option-end>
+            <option-end tempactflags="damage-player">Please don’t be mad!</option-end>
             <option-end>you really do think a lot of yourself, don’t you?</option-end>
         </dialogue>
     </dialogue-tree>
 
     <dialogue-tree id="5" name="love-attack5">
-        <dialogue id="1">
+        <dialogue id="1" tempactflags="dialogue-continue">
             <speaker>Why isn’t this working?</speaker>
-            <option-end tempactflags="player-damage">It must be something wrong with me!</option-end>
-            <option-end tempactflags="player-damage">We can work this out!</option-end>
+            <option-end tempactflags="damage-player">It must be something wrong with me!</option-end>
+            <option-end tempactflags="damage-player">We can work this out!</option-end>
             <option-end>Why isn’t what working?</option-end>
         </dialogue>
     </dialogue-tree>
 
-    <dialogue-tree id="5" name="love-attack6">
-        <dialogue id="1">
+    <dialogue-tree id="5" name="love-attack6" actflags="love-defeated">
+        <dialogue id="1" tempactflags="dialogue-continue">
             <speaker><w>...</w></speaker>
             <speaker>My power...</speaker>
             <speaker><f><s><w>I can control anyone I like!</w></s></f></speaker>
-            <option-end tempactflags="player-damage">You sure can!</option-end>
-            <option-end tempactflags="player-damage">I’ll try harder!</option-end>
+            <option-end tempactflags="damage-player">You sure can!</option-end>
+            <option-end tempactflags="damage-player">I’ll try harder!</option-end>
             <option-end>You’re really just not my type.</option-end>
         </dialogue>
     </dialogue-tree>

@@ -1536,7 +1536,7 @@ MonoBehaviour:
     type: 3}
   includeDialogueOptionNumbers: 0
   dialogueMenuObject: {fileID: 5424651584356225600}
-  dialogueMenuFrame: {fileID: 1771475832863380379, guid: 64245cb3555cd18419fb11c6bcd7c43c,
+  dialogueMenuFrame: {fileID: 6902521603774573639, guid: 09a45f90d8a34344081cac996949cc0e,
     type: 3}
 --- !u!1 &5424651583861869269
 GameObject:

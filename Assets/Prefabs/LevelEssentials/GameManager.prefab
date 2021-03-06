@@ -46,9 +46,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flags: []
+  dialogueTreeFlags: []
+  AllowPausing: 1
+  CameraFollowsPlayer: 1
+  player: {fileID: 0}
   verticalPlatform: {fileID: 0}
   doors: []
   saveOptionObjects: []
+  actionTypeDefinitions: {fileID: 11400000, guid: add57d723e3f70a4a93b496fc6316529,
+    type: 2}
   actionQueue: []
 --- !u!114 &1068525885870764317
 MonoBehaviour:

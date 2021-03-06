@@ -12,11 +12,15 @@ public class LoveLevelManager : MonoBehaviour
     public LovePlatform[] platforms;
     public ParticleSystem heartSmashParticleEffect;
 
+    public LightController2D mainLight;
+    public LightController2D secondaryLight;
+    public LightController2D globalLight;
+
+    public NPCDataObject loveNpcData;
+    private int npcConvoCount = 0;
+
     //Hide in inspector?
     public List<Transform> platformPoints = new List<Transform>();
-
-    //Each phases time
-    public float[] phaseTimings = { 5, 2, 5, 5, 5, 15, 10, 6 };
 
     public float shotSpeed = 0.5f;
     private float currentShotTime = 0f;
@@ -29,6 +33,7 @@ public class LoveLevelManager : MonoBehaviour
     private bool phaseCompleted = false;
     private bool phaseTransition = false;
     private bool alternator = false;
+    
     public int phase = 0;
     public int playerPointPositionIndex;
 
@@ -55,7 +60,7 @@ public class LoveLevelManager : MonoBehaviour
         currentPlayer.gameObject.transform.parent = platformPoints[playerPointPositionIndex];
 
         Debug.Log("Start!");
-        StartPhase(0);
+        InitiateAtPhase(-2);
     }
 
     public Transform MovePlayerToNewPositionPoint(int positionChange)
@@ -111,13 +116,48 @@ public class LoveLevelManager : MonoBehaviour
         }
     }
 
+    private void IntiateLoveConversation() 
+    {
+        if (npcConvoCount < loveNpcData.DialogueRootings.Count) 
+        {
+            DialogueManager.current.LoadDialogueTree(loveNpcData.DialogueObjectName, loveNpcData.DialogueRootings[npcConvoCount].Name);
+            npcConvoCount++;
+        }
+    }
+
+    private void InitiateAtPhase(int phase) 
+    {
+        this.phase = phase;
+        StartPhase(phase);
+    }
+
     private void StartPhase(int phase)
     {
-        //Set specific phase properties
+        //Set specific phase properties { 5, 2, 5, 5, 5, 15, 10, 6 };
         switch (phase)
         {
+            case -5:
+                CompletePhaseAfterSeconds(2);
+                break;
+
+            case -4:
+                //Turn on all the lights for the platforms
+                break;
+
+            case -3:
+                //Turn on all the other lights
+                break;
+
+            case -2:
+                CompletePhaseAfterSeconds(2);
+                break;
+
+            case -1:
+                if (loveNpcData != null) IntiateLoveConversation(); 
+                break;
             case 0:
                 CreateRobotAfterTime(0.1f, loveRobotSpawnLocations[Random.Range(0, loveRobotSpawnLocations.Length)].position);
+                CompletePhaseAfterSeconds(5);
                 break;
             case 1:
                 //Start patrol and Open head
@@ -125,161 +165,232 @@ public class LoveLevelManager : MonoBehaviour
                 {
                     lR.SetOpenBody(true);
                 }
+                CompletePhaseAfterSeconds(2);
                 break;
-        }
 
-        //Set timings to change the phase!
-        if(phase < phaseTimings.Length) CompletePhaseAfterSeconds(phaseTimings[phase]);
+            case 2:
+                CompletePhaseAfterSeconds(5);
+                break;
+
+            case 3:
+                CompletePhaseAfterSeconds(5);
+                break;
+
+            case 4:
+                CompletePhaseAfterSeconds(5);
+                break;
+
+            case 5:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
+
+            case 6:
+                CompletePhaseAfterSeconds(15);
+                break;
+
+            case 7:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
+
+            case 8:
+                CompletePhaseAfterSeconds(10);
+                break;
+
+            case 9:
+                CompletePhaseAfterSeconds(6);
+                break;
+            
+            case 10:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
+
+        }
     }
 
     private void UpdatePhase(int phase)
     {
         float phaseShotSpeedMultiplier = shotSpeed; //phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
-
         switch (phase)
         {
             case 2:
-                if (currentShotTime >= 1.0f)
-                {
-                    FireAtTarget(platformPoints[playerPointPositionIndex].position);
-                    currentShotTime = 0f;
-                }
-                else
-                {
-                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-                }
+                FiringPattern_PlayerPosition(phaseShotSpeedMultiplier);
                 break;
 
             case 3:
-                if (currentShotTime >= 1.0f)
-                {
-                    FireAtTarget(platformPoints[playerPointPositionIndex].position);
-
-                    //Hit the other point on that platform
-                    int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
-                    FireAtTarget(platformPoints[nextPosition].position, 0.1f);
-
-                    currentShotTime = 0f;
-                }
-                else
-                {
-                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-                }
+                FiringPattern_PlayerPlatform(phaseShotSpeedMultiplier);
                 break;
 
             case 4:
-                if (currentShotTime >= 1.0f)
-                {
-                    FireAtTarget(platformPoints[playerPointPositionIndex].position);
-
-                    //Hit the other point on that platform
-                    int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
-                    FireAtTarget(platformPoints[nextPosition].position, 0.1f);
-
-                    int position3;
-                    int position4;
-
-                    if (nextPosition == platformPoints.Count - 1 || playerPointPositionIndex == platformPoints.Count - 1 || nextPosition == 0 || playerPointPositionIndex == 0)
-                    {
-                        position3 = platformPoints.Count - 3;
-                        position4 = position3 - 1;
-                    }
-                    else
-                    {
-                        if (Random.Range(0, 2) == 0)
-                        {
-                            position3 = platformPoints.Count - 1;
-                            position4 = position3 - 1;
-                        }
-                        else
-                        {
-                            position3 = 0;
-                            position4 = position3 + 1;
-                        }
-                    }
-
-                    //TODO: Delays might need to have transform arguments rather than positional later
-                    FireAtTarget(platformPoints[position3].position, 0.2f);
-                    FireAtTarget(platformPoints[position4].position, 0.3f);
-
-                    currentShotTime = 0f;
-                }
-                else
-                {
-                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-                }
+                FiringPattern_PlayerPlatformAndAdjacent(phaseShotSpeedMultiplier);
                 break;
 
-            case 5:
-
-                if (currentShotTime >= 1.0f)
-                {
-                    float fireDelay = 0.3f;
-                    Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-                    foreach (Vector3 target in alternator ? platformPositions : platformPositions.Reverse())
-                    {
-                        FireAtTarget(target, fireDelay);
-                        fireDelay += 0.3f;
-                    }
-
-                    alternator = !alternator;
-                    currentShotTime = 0f;
-                }
-                else
-                {
-                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-                }
-                break;
             case 6:
-                if (currentShotTime >= 1.0f)
-                {
-                    float fireDelay = 0.3f;
-                    Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-
-                    for (int i = 0; i < (platformPositions.Length / 2) + 1; i++)
-                    {
-
-                        FireAtTarget(platformPositions[i], fireDelay);
-                        fireDelay += 0.3f;
-                    }
-
-                    fireDelay = 0.3f;
-
-                    for (int i = platformPositions.Length - 1; i > (platformPositions.Length / 2); i--)
-                    {
-                        FireAtTarget(platformPositions[i], fireDelay);
-                        fireDelay += 0.3f;
-                    }
-
-                    currentShotTime = 0f;
-                }
-                else
-                {
-                    currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier / 2f);
-                }
+                FiringPattern_PointsBackAndForth(phaseShotSpeedMultiplier);
                 break;
-            case 7:
-                if (currentShotTime >= 1.0f)
-                {
-                    Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
 
-                    FireAtTarget(platformPositions[playerPointPositionIndex]);
-                    FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.1f);
-                    FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.2f);
-
-                    currentShotTime = 0f;
-                }
-                else
-                {
-                    currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-                }
-                break;
             case 8:
+                FiringPattern_PointsInwardAndOutward(phaseShotSpeedMultiplier);
+                break;
+
+            case 9:
+                FiringPattern_PlayerPositionAndTwoRandom(phaseShotSpeedMultiplier);
+                break;
+
+            case 10:
 
                 break;
 
         }
     }
+
+
+    //Firing Patterns
+
+    private void FiringPattern_PlayerPosition(float phaseShotSpeedMultiplier) 
+    {
+        if (currentShotTime >= 1.0f)
+        {
+            FireAtTarget(platformPoints[playerPointPositionIndex].position);
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
+        }
+    }
+
+    private void FiringPattern_PlayerPlatform(float phaseShotSpeedMultiplier) 
+    {
+        if (currentShotTime >= 1.0f)
+        {
+            FireAtTarget(platformPoints[playerPointPositionIndex].position);
+
+            //Hit the other point on that platform
+            int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
+            FireAtTarget(platformPoints[nextPosition].position, 0.1f);
+
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
+        }
+    }
+
+    private void FiringPattern_PlayerPlatformAndAdjacent(float phaseShotSpeedMultiplier) 
+    {
+        if (currentShotTime >= 1.0f)
+        {
+            FireAtTarget(platformPoints[playerPointPositionIndex].position);
+
+            //Hit the other point on that platform
+            int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
+            FireAtTarget(platformPoints[nextPosition].position, 0.1f);
+
+            int position3;
+            int position4;
+
+            if (nextPosition == platformPoints.Count - 1 || playerPointPositionIndex == platformPoints.Count - 1 || nextPosition == 0 || playerPointPositionIndex == 0)
+            {
+                position3 = platformPoints.Count - 3;
+                position4 = position3 - 1;
+            }
+            else
+            {
+                if (Random.Range(0, 2) == 0)
+                {
+                    position3 = platformPoints.Count - 1;
+                    position4 = position3 - 1;
+                }
+                else
+                {
+                    position3 = 0;
+                    position4 = position3 + 1;
+                }
+            }
+
+            //TODO: Delays might need to have transform arguments rather than positional later
+            FireAtTarget(platformPoints[position3].position, 0.2f);
+            FireAtTarget(platformPoints[position4].position, 0.3f);
+
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
+        }
+    }
+
+    private void FiringPattern_PointsBackAndForth(float phaseShotSpeedMultiplier) 
+    {
+        if (currentShotTime >= 1.0f)
+        {
+            float fireDelay = 0.3f;
+            Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
+            foreach (Vector3 target in alternator ? platformPositions : platformPositions.Reverse())
+            {
+                FireAtTarget(target, fireDelay);
+                fireDelay += 0.3f;
+            }
+
+            alternator = !alternator;
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
+        }
+    }
+
+    private void FiringPattern_PointsInwardAndOutward(float phaseShotSpeedMultiplier) 
+    {
+        if (currentShotTime >= 1.0f)
+        {
+            float fireDelay = 0.3f;
+            Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
+
+            for (int i = 0; i < (platformPositions.Length / 2) + 1; i++)
+            {
+
+                FireAtTarget(platformPositions[i], fireDelay);
+                fireDelay += 0.3f;
+            }
+
+            fireDelay = 0.3f;
+
+            for (int i = platformPositions.Length - 1; i > (platformPositions.Length / 2); i--)
+            {
+                FireAtTarget(platformPositions[i], fireDelay);
+                fireDelay += 0.3f;
+            }
+
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier / 2f);
+        }
+    }
+
+    private void FiringPattern_PlayerPositionAndTwoRandom(float phaseShotSpeedMultiplier) 
+    {
+        if (currentShotTime >= 1.0f)
+        {
+            Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
+
+            FireAtTarget(platformPositions[playerPointPositionIndex]);
+            FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.1f);
+            FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.2f);
+
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
+        }
+    }
+
+    //
 
     private LoveRobot CreateLoveRobot(Vector3 spawnLocation)
     {
@@ -300,9 +411,10 @@ public class LoveLevelManager : MonoBehaviour
     }
 
 
+
     //Phase changers
 
-    private Task CompletePhaseAfterSeconds(float waitTime, float transitionTime = 1f)
+    public Task CompletePhaseAfterSeconds(float waitTime, float transitionTime = 1f)
     {
         IEnumerator completeAfterSecondsCoroutine()
         {

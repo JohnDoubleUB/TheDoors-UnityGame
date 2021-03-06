@@ -6,6 +6,9 @@ public class LovePlatform : MonoBehaviour
 {
     public Transform TargetLeft;
     public Transform TargetRight;
+    public LightController2D leftCandle;
+    public LightController2D rightCandle;
+
     public float recoilStrength = -1f;
     public float rotationRecoilStrength = 2f;
 

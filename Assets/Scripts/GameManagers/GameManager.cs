@@ -13,16 +13,16 @@ public class GameManager : FlagManager
 
     //Platformer related
     public Player player;
-    
+
     [HideInInspector]
     public VerticalPlatform verticalPlatform;
 
     public List<Door> doors; //make private?
     public List<SaveOptionObject> saveOptionObjects;
+    public ActionTypeObject actionTypeDefinitions;
 
     //The action queue is used to store actions for when they can happen
     public List<string> actionQueue = new List<string>(); //TODO: Implement what happens to these actions!
-
     //private string saveName = "SaveSlot";
 
     private int selectedSavefile = 0;
@@ -40,7 +40,7 @@ public class GameManager : FlagManager
         }
     }
 
-    public SaveDataSerialized StartOfLevelSessionData 
+    public SaveDataSerialized StartOfLevelSessionData
     {
         get { return startOfLevelSessionData; }
     }
@@ -50,13 +50,16 @@ public class GameManager : FlagManager
         get { return gameIsOver; }
     }
 
-    public Player Player {get { return player; }}
+    public Player Player { get { return player; } }
 
     private void Awake()
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
-        
+
+        //Setup the new action queue!
+        //InitiateActionQueue();
+
         isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
         FindKeyComponents();
 
@@ -65,7 +68,7 @@ public class GameManager : FlagManager
 
     private void Start()
     {
-        if (isMainMenu) 
+        if (isMainMenu)
         {
             SetSelectedSaveOption(0);
             UIManager.current.ToggleContexts(UIContextType.PauseMenu);
@@ -76,11 +79,27 @@ public class GameManager : FlagManager
 
     private void Update()
     {
-        if (firstUpdate && !isMainMenu) 
+        if (firstUpdate && !isMainMenu)
         {
             UpdateHealth(player.CurrentHealth);
-            
+
             firstUpdate = false;
+        }
+
+        //Handle any actions in the action queue
+        if (actionQueue.Any())
+        {
+            for (int i = 0; i < actionQueue.Count; i++)
+            {
+                string action = actionQueue[i];
+
+                if ((actionTypeDefinitions != null && actionTypeDefinitions.InstantActions.Contains(action)) || UIManager.current.UIState != UIState.Dialogue)
+                {
+                    TriggerAction(action);
+                    actionQueue.RemoveAt(i);
+                    i--;
+                }
+            }
         }
     }
 
@@ -119,6 +138,11 @@ public class GameManager : FlagManager
                 SceneManager.LoadScene(savedData.Level);
             }
         }
+    }
+
+    private void TriggerAction(string action) 
+    {
+        ActionHandler.HandleAction(action);
     }
 
     private void LoadSessionData() 
@@ -304,8 +328,10 @@ public class GameManager : FlagManager
 
     protected override void QueueActions(params string[] actions)
     {
-        if(actions != null) actionQueue.AddRange(actions);
-        Debug.Log("actions added!" + string.Join(", ", actionQueue));
+        if (actions != null) 
+        { 
+            actionQueue.AddRange(actions); 
+        }
     }
 
     public void ChangeLevel(int buildIndex)
