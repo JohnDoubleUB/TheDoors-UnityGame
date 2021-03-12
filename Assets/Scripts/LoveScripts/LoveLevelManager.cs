@@ -33,7 +33,7 @@ public class LoveLevelManager : MonoBehaviour
     private bool phaseTransition = false;
     private bool alternator = false;
     private bool allCandlesOn = false;
-    
+
     public int phase = 0;
     public int playerPointPositionIndex;
 
@@ -42,10 +42,28 @@ public class LoveLevelManager : MonoBehaviour
     private List<Task> activeFiringCoroutines = new List<Task>();
 
 
+    private float testIndexCounter = 0;
+    private ProjectilePatternHandler testPatternManager;
+
     private void Awake()
     {
         if (current == null) current = this;
         if (platforms != null && platforms.Any()) platformPoints = platforms.Select(x => x.LeftAndRight).SelectMany(x => x).ToList();
+
+        //New pattern manager thing
+        ProjectilePattern testPattern1 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 10f), 3, 2, 1);//new ProjectilePattern(0, 1, 2, 3, 4, 5, 4, 3, 2, 1);
+        ProjectilePattern testPattern2 = new ProjectilePattern(ProjectileTargetType.Player, ProjectileTargetType.Random, ProjectileTargetType.Random, 2);
+
+        testPattern1.DefaultTiming = 2;
+
+        testPatternManager = new ProjectilePatternHandler(
+            platformPoints, 
+            platformPoints[playerPointPositionIndex],
+            testPattern1,
+            testPattern2
+            );
+
+        //testPatternManager.SetNextPatternIndex();
     }
     void Start()
     {
@@ -91,9 +109,46 @@ public class LoveLevelManager : MonoBehaviour
 
     }
 
+    private void FiringTest() 
+    {
+        if (testIndexCounter >= 1.0f)
+        {
+            Transform target = testPatternManager.GetCurrentProjectileTargetTransform();
+
+            //Debug.Log("firing at " + target.gameObject.name + " at location " + target.position.ToString() + ". Delay was " + testPatternManager.CurrentDelay);
+            //Debug.Log("pattern index is " + testPatternManager.CurrentPatternIndex);
+            FireAtTarget(target.position);
+
+            testPatternManager.NextProjectileTarget();
+
+            testIndexCounter = 0f;
+        }
+        else
+        {
+            //Debug.Log(testPatternManager.CurrentDelay);
+            testIndexCounter += Time.deltaTime * testPatternManager.CurrentDelay;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
+        //if (testIndexCounter >= 1.0f)
+        //{
+        //    Transform target = testPatternManager.GetCurrentProjectileTargetTransform();
+
+        //    Debug.Log("firing at " + target.gameObject.name + " at location " + target.position.ToString() + ". Delay was " + testPatternManager.CurrentDelay);
+        //    Debug.Log("pattern index is " + testPatternManager.CurrentPatternIndex);
+        //    testPatternManager.NextProjectileTarget();
+            
+        //    testIndexCounter = 0f;
+        //}
+        //else 
+        //{
+        //    //Debug.Log(testPatternManager.CurrentDelay);
+        //    testIndexCounter += Time.deltaTime * testPatternManager.CurrentDelay;
+        //}
+        
         if (GameManager.current.GameIsOver) 
         {
             if (activeFiringCoroutines.Any()) 
@@ -112,6 +167,14 @@ public class LoveLevelManager : MonoBehaviour
                 phaseCompleted = false;
             }
 
+
+            if (phase > 1) 
+            {
+                FiringTest();
+            }
+
+
+            //if(phase !)
             UpdatePhase(phase);
         }
     }
@@ -173,7 +236,7 @@ public class LoveLevelManager : MonoBehaviour
                 break;
 
             case 2:
-                CompletePhaseAfterSeconds(5);
+                //CompletePhaseAfterSeconds(5);
                 break;
 
             case 3:
@@ -220,33 +283,33 @@ public class LoveLevelManager : MonoBehaviour
                 LightPattern_CandlesOn();
                 break;
 
-            case 2:
-                FiringPattern_PlayerPosition(phaseShotSpeedMultiplier);
-                break;
+            //case 2:
+            //    FiringPattern_PlayerPosition(phaseShotSpeedMultiplier);
+            //    break;
 
-            case 3:
-                FiringPattern_PlayerPlatform(phaseShotSpeedMultiplier);
-                break;
+            //case 3:
+            //    FiringPattern_PlayerPlatform(phaseShotSpeedMultiplier);
+            //    break;
 
-            case 4:
-                FiringPattern_PlayerPlatformAndAdjacent(phaseShotSpeedMultiplier);
-                break;
+            //case 4:
+            //    FiringPattern_PlayerPlatformAndAdjacent(phaseShotSpeedMultiplier);
+            //    break;
 
-            case 6:
-                FiringPattern_PointsBackAndForth(phaseShotSpeedMultiplier);
-                break;
+            //case 6:
+            //    FiringPattern_PointsBackAndForth(phaseShotSpeedMultiplier);
+            //    break;
 
-            case 8:
-                FiringPattern_PointsInwardAndOutward(phaseShotSpeedMultiplier);
-                break;
+            //case 8:
+            //    FiringPattern_PointsInwardAndOutward(phaseShotSpeedMultiplier);
+            //    break;
 
-            case 9:
-                FiringPattern_PlayerPositionAndTwoRandom(phaseShotSpeedMultiplier);
-                break;
+            //case 9:
+            //    FiringPattern_PlayerPositionAndTwoRandom(phaseShotSpeedMultiplier);
+            //    break;
 
-            case 10:
+            //case 10:
 
-                break;
+            //    break;
 
         }
     }
