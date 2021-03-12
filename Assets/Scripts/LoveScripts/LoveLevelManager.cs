@@ -12,9 +12,7 @@ public class LoveLevelManager : MonoBehaviour
     public LovePlatform[] platforms;
     public ParticleSystem heartSmashParticleEffect;
 
-    public LightController2D mainLight;
-    public LightController2D secondaryLight;
-    public LightController2D globalLight;
+    public LightController2D[] globalLights;
 
     public NPCDataObject loveNpcData;
     private int npcConvoCount = 0;
@@ -24,6 +22,7 @@ public class LoveLevelManager : MonoBehaviour
 
     public float shotSpeed = 0.5f;
     private float currentShotTime = 0f;
+    private float lightDelayMultiplier = 1f;
     //public Transform[] playerMovementPoints
 
     public LoveRobot loveRobotPrefab;
@@ -33,6 +32,7 @@ public class LoveLevelManager : MonoBehaviour
     private bool phaseCompleted = false;
     private bool phaseTransition = false;
     private bool alternator = false;
+    private bool allCandlesOn = false;
     
     public int phase = 0;
     public int playerPointPositionIndex;
@@ -60,7 +60,7 @@ public class LoveLevelManager : MonoBehaviour
         currentPlayer.gameObject.transform.parent = platformPoints[playerPointPositionIndex];
 
         Debug.Log("Start!");
-        InitiateAtPhase(-2);
+        InitiateAtPhase(-5);
     }
 
     public Transform MovePlayerToNewPositionPoint(int positionChange)
@@ -137,15 +137,19 @@ public class LoveLevelManager : MonoBehaviour
         switch (phase)
         {
             case -5:
-                CompletePhaseAfterSeconds(2);
+                //Initial Delay
+                CompletePhaseAfterSeconds(1);
                 break;
 
             case -4:
-                //Turn on all the lights for the platforms
+                //Turning on the candles
+                CompletePhaseAfterSeconds(2f);
                 break;
 
             case -3:
                 //Turn on all the other lights
+                foreach (LightController2D globalLight in globalLights) globalLight.lightOn = true;
+                CompletePhaseAfterSeconds(2f);
                 break;
 
             case -2:
@@ -212,6 +216,10 @@ public class LoveLevelManager : MonoBehaviour
         float phaseShotSpeedMultiplier = shotSpeed; //phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
         switch (phase)
         {
+            case -4:
+                LightPattern_CandlesOn();
+                break;
+
             case 2:
                 FiringPattern_PlayerPosition(phaseShotSpeedMultiplier);
                 break;
@@ -242,6 +250,58 @@ public class LoveLevelManager : MonoBehaviour
 
         }
     }
+
+    //Lighting
+
+    public void LightPattern_CandlesOn() 
+    {
+        if (allCandlesOn) return;
+
+        LovePlatform leftMostPlatform = platforms[0];
+        LovePlatform rightMostPlatform = platforms[platforms.Length - 1];
+
+        if (currentShotTime >= 1.0f)
+        {
+            if (!leftMostPlatform.leftCandle.lightOn || !rightMostPlatform.rightCandle.lightOn)
+            {
+                leftMostPlatform.leftCandle.lightOn = true;
+                rightMostPlatform.rightCandle.lightOn = true;
+                lightDelayMultiplier *= 2f;
+            }
+            else if (!leftMostPlatform.rightCandle.lightOn || !rightMostPlatform.leftCandle.lightOn)
+            {
+                leftMostPlatform.rightCandle.lightOn = true;
+                rightMostPlatform.leftCandle.lightOn = true;
+                lightDelayMultiplier *= 2f;
+            }
+            else 
+            {
+                LovePlatform middlePlatform = platforms[platforms.Length / 2];
+
+                if (!middlePlatform.leftCandle.lightOn)
+                {
+                    middlePlatform.leftCandle.lightOn = true;
+                }
+                else if (!middlePlatform.rightCandle.lightOn)
+                {
+                    middlePlatform.rightCandle.lightOn = true;
+                }
+                else 
+                {
+                    allCandlesOn = true;
+                }
+
+                lightDelayMultiplier *= 2f;
+            }
+
+            currentShotTime = 0f;
+        }
+        else
+        {
+            currentShotTime += Time.deltaTime * lightDelayMultiplier;
+        }
+    }
+
 
 
     //Firing Patterns
