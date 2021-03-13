@@ -12,12 +12,18 @@ public class ProjectilePattern
     {
         PatternTargets = patternTargets;
     }
+
+    public ProjectilePattern SetDefaultTiming(float defaultTiming) 
+    {
+        DefaultTiming = defaultTiming;
+        return this;
+    }
 }
 
 public class ProjectilePatternHandler
 {
     public ProjectilePattern[] ProjectilePatterns;
-    public Transform[] PlatformTargets;
+    public List<Transform> PlatformTargets;
     public Transform PlayerTarget;
     
     private ProjectilePattern currentPattern;
@@ -42,20 +48,33 @@ public class ProjectilePatternHandler
         get { return currentDelay; }
     }
 
+    private Transform ClosestPlatformPointToPlayer 
+    {
+        get
+        {
+            if (PlatformTargets.Any())
+            {
+                return PlatformTargets.OrderBy(x => Vector3.Distance(x.position, PlayerTarget.position)).FirstOrDefault();
+            }
+            else 
+            {
+                return PlayerTarget;
+            }
+        }
+    }
+
     public int CurrentPatternIndex { get { return patternIndex; } }
     public int CurrentProjectileIndex { get { return projectileIndex; } }
 
     public ProjectilePatternHandler(IEnumerable<Transform> platformTargets, Transform playerTarget, params ProjectilePattern[] projectilePatterns)
     {
-        PlatformTargets = platformTargets.ToArray();
+        PlatformTargets = platformTargets.ToList();
         PlayerTarget = playerTarget;
         
         if (projectilePatterns.Any()) 
         {
             ProjectilePatterns = projectilePatterns;
-            currentPattern = ProjectilePatterns[patternIndex];
-            currentProjectile = currentPattern.PatternTargets[projectileIndex];
-            currentDelay = currentProjectile.TimingModifier <= 0 ? currentPattern.DefaultTiming : currentProjectile.TimingModifier;
+            UpdateCurrent();
             Debug.Log("current delay = " + currentDelay + " current pattern default timeing " + currentPattern.DefaultTiming + " current projectile " + currentProjectile.TimingModifier);
         }
     }
@@ -79,19 +98,85 @@ public class ProjectilePatternHandler
         return GetProjectilePatternTargetTransform(currentProjectile);
     }
 
+    private void UpdateCurrent() 
+    {
+        currentPattern = ProjectilePatterns[patternIndex];
+        currentProjectile = currentPattern.PatternTargets[projectileIndex];
+        currentDelay = currentProjectile.TimingModifier <= 0 ? currentPattern.DefaultTiming : currentProjectile.TimingModifier;
+    }
+
     private Transform GetProjectilePatternTargetTransform(ProjectilePatternTarget projectilePatternTarget) 
     {
         switch (projectilePatternTarget.TargetType) 
         {
             case ProjectileTargetType.Target:
-                if (projectilePatternTarget.TargetIndex < PlatformTargets.Length) return PlatformTargets[projectilePatternTarget.TargetIndex];
+                if (projectilePatternTarget.TargetIndex < PlatformTargets.Count) return PlatformTargets[projectilePatternTarget.TargetIndex];
                 break;
 
             case ProjectileTargetType.Random:
-                return PlatformTargets[Random.Range(0, PlatformTargets.Length)];
+                return PlatformTargets[Random.Range(0, PlatformTargets.Count)];
+
+            case ProjectileTargetType.PlayerPlatform:
+                //Get index of closest platform point
+                int playerPointPositionIndex = PlatformTargets.IndexOf(ClosestPlatformPointToPlayer);
+                int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
+                return PlatformTargets[nextPosition];
+
+            case ProjectileTargetType.PlayerClosestAdjacentPlatform1:
+                playerPointPositionIndex = PlatformTargets.IndexOf(ClosestPlatformPointToPlayer);
+
+                //Check if we're on the left or right of a platform
+                if (playerPointPositionIndex % 2 == 0)
+                {
+                    return playerPointPositionIndex == 0 ? PlatformTargets[playerPointPositionIndex + 2] : PlatformTargets[playerPointPositionIndex - 1];
+                }
+                else 
+                {
+                    return playerPointPositionIndex == PlatformTargets.Count - 1 ? PlatformTargets[playerPointPositionIndex - 2] : PlatformTargets[playerPointPositionIndex + 1];
+                }
+
+            case ProjectileTargetType.PlayerClosestAdjacentPlatform2:
+                //Check if we're on the left or right of a platform
+                playerPointPositionIndex = PlatformTargets.IndexOf(ClosestPlatformPointToPlayer);
+
+                //Check if we're on the left or right of a platform
+                if (playerPointPositionIndex % 2 == 0)
+                {
+                    return playerPointPositionIndex == 0 ? PlatformTargets[playerPointPositionIndex + 3] : PlatformTargets[playerPointPositionIndex - 2];
+                }
+                else
+                {
+                    return playerPointPositionIndex == PlatformTargets.Count - 1 ? PlatformTargets[playerPointPositionIndex - 3] : PlatformTargets[playerPointPositionIndex + 2];
+                }
+
+            case ProjectileTargetType.PlayerClosestAdjacentPlatform3:
+                playerPointPositionIndex = PlatformTargets.IndexOf(ClosestPlatformPointToPlayer);
+
+                //Check if the player is on the left or right side
+                if (playerPointPositionIndex < PlatformTargets.Count / 2)
+                {
+                    return PlatformTargets[PlatformTargets.Count - 2];
+                }
+                else 
+                {
+                    return PlatformTargets[1];
+                }
+
+            case ProjectileTargetType.PlayerClosestAdjacentPlatform4:
+                playerPointPositionIndex = PlatformTargets.IndexOf(ClosestPlatformPointToPlayer);
+                
+                if (playerPointPositionIndex < PlatformTargets.Count / 2)
+                {
+                    return PlatformTargets[PlatformTargets.Count - 1];
+                }
+                else
+                {
+                    return PlatformTargets[0];
+                }
+
         }
 
-        return PlayerTarget;
+        return ClosestPlatformPointToPlayer;
     }
 
     public void SetPatternIndex(int patternIndex) 
@@ -106,6 +191,8 @@ public class ProjectilePatternHandler
         }
 
         projectileIndex = 0;
+
+        UpdateCurrent();
     }
 
     public void SetNextPatternIndex() 
@@ -183,5 +270,10 @@ public enum ProjectileTargetType
 {
     Player,
     Random,
-    Target
+    Target,
+    PlayerPlatform,
+    PlayerClosestAdjacentPlatform1,
+    PlayerClosestAdjacentPlatform2,
+    PlayerClosestAdjacentPlatform3,
+    PlayerClosestAdjacentPlatform4
 }

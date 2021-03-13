@@ -50,23 +50,44 @@ public class LoveLevelManager : MonoBehaviour
         if (current == null) current = this;
         if (platforms != null && platforms.Any()) platformPoints = platforms.Select(x => x.LeftAndRight).SelectMany(x => x).ToList();
 
-        //New pattern manager thing
-        ProjectilePattern testPattern1 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 10f), 3, 2, 1);//new ProjectilePattern(0, 1, 2, 3, 4, 5, 4, 3, 2, 1);
-        ProjectilePattern testPattern2 = new ProjectilePattern(ProjectileTargetType.Player, ProjectileTargetType.Random, ProjectileTargetType.Random, 2);
-
-        testPattern1.DefaultTiming = 2;
-
-        testPatternManager = new ProjectilePatternHandler(
-            platformPoints, 
-            platformPoints[playerPointPositionIndex],
-            testPattern1,
-            testPattern2
-            );
 
         //testPatternManager.SetNextPatternIndex();
     }
     void Start()
     {
+
+        //New pattern manager thing
+        ProjectilePattern testPattern1 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 2f), 3, 2, 1).SetDefaultTiming(2);
+        ProjectilePattern testPattern2 = new ProjectilePattern(ProjectileTargetType.Player, ProjectileTargetType.Random, ProjectileTargetType.Random);
+        ProjectilePattern testPattern3 = new ProjectilePattern(
+            0, new ProjectilePatternTarget(5, 100),
+            1, new ProjectilePatternTarget(4, 100),
+            2, new ProjectilePatternTarget(3, 100),
+            1, new ProjectilePatternTarget(4, 100),
+            0, new ProjectilePatternTarget(5, 100)
+            ).SetDefaultTiming(2.5f);
+
+        ProjectilePattern testPattern4 = new ProjectilePattern(
+            0, new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10),
+            1, new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10),
+            2, new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10),
+            3, new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10),
+            4, new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10),
+            5, new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10)
+            ).SetDefaultTiming(1);
+
+        ProjectilePattern testPattern5 = new ProjectilePattern(new ProjectilePatternTarget(ProjectileTargetType.Player, 0.5f), ProjectileTargetType.PlayerPlatform, ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2).SetDefaultTiming(15f);
+
+        ProjectilePattern testPattern6 = new ProjectilePattern(
+            new ProjectilePatternTarget(ProjectileTargetType.PlayerClosestAdjacentPlatform4, 1f), ProjectileTargetType.PlayerClosestAdjacentPlatform2,
+            new ProjectilePatternTarget(ProjectileTargetType.PlayerClosestAdjacentPlatform3, 7f), ProjectileTargetType.PlayerClosestAdjacentPlatform1,
+            new ProjectilePatternTarget(ProjectileTargetType.Player, 7f), ProjectileTargetType.PlayerPlatform
+            ).SetDefaultTiming(20f);
+
+        ProjectilePattern testPattern7 = new ProjectilePattern(
+            ProjectileTargetType.Player, ProjectileTargetType.PlayerPlatform, ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2
+            ).SetDefaultTiming(3f);
+
         //Get a middle platform point
         playerPointPositionIndex = platformPoints.Count / 2;
 
@@ -77,8 +98,23 @@ public class LoveLevelManager : MonoBehaviour
         currentPlayer.gameObject.transform.position = platformPoints[playerPointPositionIndex].position;
         currentPlayer.gameObject.transform.parent = platformPoints[playerPointPositionIndex];
 
+        testPatternManager = new ProjectilePatternHandler(
+            platformPoints,
+            currentPlayer.transform,
+            testPattern1,
+            testPattern2,
+            testPattern3,
+            testPattern4,
+            testPattern5,
+            testPattern6,
+            testPattern7
+            );
+
+        testPatternManager.SetPatternIndex(6);
+
         Debug.Log("Start!");
-        InitiateAtPhase(-5);
+        //InitiateAtPhase(-5);
+        InitiateAtPhase(0);
     }
 
     public Transform MovePlayerToNewPositionPoint(int positionChange)
