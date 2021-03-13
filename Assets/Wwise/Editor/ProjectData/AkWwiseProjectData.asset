@@ -68,7 +68,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: 05a61447fcee7c4197910aa900824f8a
     GuidInternal: 
-    m_lastTime: -8585859510336537072
+    m_lastTime: -8585859502053439912
     List:
     - name: Hub_World_Music
       guid: 06159971f1080142b627fa50b4c1a8ee
@@ -134,8 +134,8 @@ MonoBehaviour:
         ObjectType: 3
       Path: Default Work Unit\Movement\Test_Event
       maxAttenuation: 0
-      maxDuration: 278
-      minDuration: 278
+      maxDuration: -1
+      minDuration: -1
     - name: Walk_Cycle
       guid: 37d821d514227444b1e702111862fffb
       id: 1871152661

@@ -67,7 +67,7 @@ public class AudioManager : MonoBehaviour
 
     private void SyncBarCallback(object in_cookie, AkCallbackType in_type, object in_info)
     {
-        AkDurationCallbackInfo callbackinfo = (AkDurationCallbackInfo)in_info;
-        Debug.Log("Duration is " + callbackinfo.);
+        //AkDurationCallbackInfo callbackinfo = (AkDurationCallbackInfo)in_info;
+        //Debug.Log("Duration is " + callbackinfo.);
     }
 }
