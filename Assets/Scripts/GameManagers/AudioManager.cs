@@ -9,6 +9,8 @@ public class AudioManager : MonoBehaviour
 
     private Dictionary<string, string> levelStateSoundEffect = new Dictionary<string, string>();
 
+    private AK.Wwise.Event TestEvent;
+
     private void Awake()
     {
         if (current == null) current = this;
@@ -57,9 +59,15 @@ public class AudioManager : MonoBehaviour
             
             default:
                 AkSoundEngine.StopAll();
-                AkSoundEngine.PostEvent("Test_Event", gameObject);
+                AkSoundEngine.PostEvent("Test_Event", gameObject, (uint)AkCallbackType.AK_Duration, SyncBarCallback, null);
                 AkSoundEngine.SetState("Movement", "None");
                 break;
         }
+    }
+
+    private void SyncBarCallback(object in_cookie, AkCallbackType in_type, object in_info)
+    {
+        AkDurationCallbackInfo callbackinfo = (AkDurationCallbackInfo)in_info;
+        Debug.Log("Duration is " + callbackinfo.);
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="12" SoundbankVersion="135">
 	<RootPaths>
-		<ProjectRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/</ProjectRoot>
-		<SourceFilesRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/.cache/Windows/</SourceFilesRoot>
-		<SoundBanksRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/GeneratedSoundBanks/Windows/</SoundBanksRoot>
+		<ProjectRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>/Users/myleshopper/Library/Application Support/Wwise2019/Bottles/Wwise2019x64/dosdevices/y:/Desktop/The Doors Unity Clone/TheDoors-UnityGame/TheDoorsProject_WwiseProject/GeneratedSoundBanks/Windows</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\GeneratedSoundBanks\Windows</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -16,7 +16,7 @@
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 		</SoundBank>
-		<SoundBank Id="3161908922" Language="SFX" Hash="4260178626">
+		<SoundBank Id="3161908922" Language="SFX" Hash="2458677564">
 			<ObjectPath>\SoundBanks\Default Work Unit\Main</ObjectPath>
 			<ShortName>Main</ShortName>
 			<Path>Main.bnk</Path>
@@ -25,7 +25,7 @@
 					<IncludedMemoryFiles>
 						<File Id="829663964" Language="SFX">
 							<ShortName>The Doors Hub World.wav</ShortName>
-							<Path>SFX/The Doors Hub World_10C4C929.wem</Path>
+							<Path>SFX\The Doors Hub World_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
@@ -33,15 +33,15 @@
 					<IncludedMemoryFiles>
 						<File Id="1057420875" Language="SFX">
 							<ShortName>Footstep 4.wav</ShortName>
-							<Path>SFX/Footstep 4_10C4C929.wem</Path>
+							<Path>SFX\Footstep 4_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
-				<Event Id="4258653052" Name="Test_Event" ObjectPath="\Events\Default Work Unit\Movement\Test_Event" DurationType="OneShot" DurationMin="278.000000" DurationMax="278.000000">
+				<Event Id="4258653052" Name="Test_Event" ObjectPath="\Events\Default Work Unit\Movement\Test_Event" DurationType="Infinite">
 					<IncludedMemoryFiles>
 						<File Id="1069383294" Language="SFX">
 							<ShortName>1. Out of the Dark.wav</ShortName>
-							<Path>SFX/1. Out of the Dark_10C4C929.wem</Path>
+							<Path>SFX\1. Out of the Dark_C5579977.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
@@ -49,15 +49,15 @@
 					<IncludedMemoryFiles>
 						<File Id="98654734" Language="SFX">
 							<ShortName>Footstep 3.wav</ShortName>
-							<Path>SFX/Footstep 3_10C4C929.wem</Path>
+							<Path>SFX\Footstep 3_10C4C929.wem</Path>
 						</File>
 						<File Id="238116662" Language="SFX">
 							<ShortName>Footstep 1.wav</ShortName>
-							<Path>SFX/Footstep 1_10C4C929.wem</Path>
+							<Path>SFX\Footstep 1_10C4C929.wem</Path>
 						</File>
 						<File Id="837351131" Language="SFX">
 							<ShortName>Footstep 2.wav</ShortName>
-							<Path>SFX/Footstep 2_10C4C929.wem</Path>
+							<Path>SFX\Footstep 2_10C4C929.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>
