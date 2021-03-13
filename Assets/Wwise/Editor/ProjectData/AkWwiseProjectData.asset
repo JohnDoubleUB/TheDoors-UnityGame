@@ -68,7 +68,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: 05a61447fcee7c4197910aa900824f8a
     GuidInternal: 
-    m_lastTime: -8585859502053439912
+    m_lastTime: -8585859438081623473
     List:
     - name: Hub_World_Music
       guid: 06159971f1080142b627fa50b4c1a8ee
@@ -133,6 +133,20 @@ MonoBehaviour:
       - ElementName: Test_Event
         ObjectType: 3
       Path: Default Work Unit\Movement\Test_Event
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
+    - name: Test_Event2
+      guid: a706b8d45d7c1543ae968dafd98cf487
+      id: 330636294
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 4
+      - ElementName: Test_Event2
+        ObjectType: 3
+      Path: Default Work Unit\Movement\Test_Event2
       maxAttenuation: 0
       maxDuration: -1
       minDuration: -1

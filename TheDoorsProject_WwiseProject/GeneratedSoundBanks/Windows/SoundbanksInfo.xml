@@ -16,7 +16,7 @@
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
 		</SoundBank>
-		<SoundBank Id="3161908922" Language="SFX" Hash="2458677564">
+		<SoundBank Id="3161908922" Language="SFX" Hash="1995707779">
 			<ObjectPath>\SoundBanks\Default Work Unit\Main</ObjectPath>
 			<ShortName>Main</ShortName>
 			<Path>Main.bnk</Path>
@@ -41,7 +41,15 @@
 					<IncludedMemoryFiles>
 						<File Id="1069383294" Language="SFX">
 							<ShortName>1. Out of the Dark.wav</ShortName>
-							<Path>SFX\1. Out of the Dark_C5579977.wem</Path>
+							<Path>SFX\1. Out of the Dark_C9C2057D.wem</Path>
+						</File>
+					</IncludedMemoryFiles>
+				</Event>
+				<Event Id="330636294" Name="Test_Event2" ObjectPath="\Events\Default Work Unit\Movement\Test_Event2" DurationType="Infinite">
+					<IncludedMemoryFiles>
+						<File Id="389755232" Language="SFX">
+							<ShortName>1. Out of the Dark.wav</ShortName>
+							<Path>SFX\1. Out of the Dark_D79FB2B7.wem</Path>
 						</File>
 					</IncludedMemoryFiles>
 				</Event>

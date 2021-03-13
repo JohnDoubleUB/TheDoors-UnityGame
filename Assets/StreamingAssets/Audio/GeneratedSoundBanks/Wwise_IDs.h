@@ -16,6 +16,7 @@ namespace AK
         static const AkUniqueID HUB_WORLD_MUSIC = 894932307U;
         static const AkUniqueID JUMP = 3833651337U;
         static const AkUniqueID TEST_EVENT = 4258653052U;
+        static const AkUniqueID TEST_EVENT2 = 330636294U;
         static const AkUniqueID WALK_CYCLE = 1871152661U;
     } // namespace EVENTS
 

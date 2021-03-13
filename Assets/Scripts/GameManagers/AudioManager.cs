@@ -59,7 +59,7 @@ public class AudioManager : MonoBehaviour
             
             default:
                 AkSoundEngine.StopAll();
-                AkSoundEngine.PostEvent("Test_Event", gameObject, (uint)AkCallbackType.AK_Duration, SyncBarCallback, null);
+                AkSoundEngine.PostEvent("Test_Event2", gameObject, (uint)AkCallbackType.AK_MusicSyncBar, SyncBarCallback, null);
                 AkSoundEngine.SetState("Movement", "None");
                 break;
         }
@@ -67,7 +67,6 @@ public class AudioManager : MonoBehaviour
 
     private void SyncBarCallback(object in_cookie, AkCallbackType in_type, object in_info)
     {
-        //AkDurationCallbackInfo callbackinfo = (AkDurationCallbackInfo)in_info;
-        //Debug.Log("Duration is " + callbackinfo.);
+        Debug.Log("This is a callback from Wwise!");
     }
 }
