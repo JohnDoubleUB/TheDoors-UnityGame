@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Hubworld.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Hubworld_SaveDifferationTest.unity
+    path: Assets/Scenes/TestSecondLevel.unity
     guid: e253eda1a3b93c6409b95fa0e83a9456
+  - enabled: 1
+    path: Assets/Scenes/Loveworld.unity
+    guid: 5d7a7b022e9bede4b8b781bafda57e8d
   m_configObjects: {}

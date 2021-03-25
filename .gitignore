@@ -58,3 +58,9 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Wwise Generated files
+/TheDoorsProject_WwiseProject/Originals/SFX/*.akd
+/TheDoorsProject_WwiseProject/.cache/
+
+# Ignored Wwise generated soundbanks
+/TheDoorsProject_WwiseProject/GeneratedSoundBanks/**/Main.bnk

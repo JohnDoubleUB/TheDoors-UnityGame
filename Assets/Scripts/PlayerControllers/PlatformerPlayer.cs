@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -24,11 +25,16 @@ public class PlatformerPlayer : Player
     private SpriteRenderer sr;
     private Animator animator;
 
+    private Vector3 lastFramePosition;
+    private float perFrameFallingDistance = 0.15f; //Distance moved per frame in y to be considered falling
+
     //State variables
     private bool isClimbing;
     private bool isMoving;
     private bool isJumping;
     private bool isCrouching;
+
+    private bool isFalling;
 
     private bool IsClimbing
     {
@@ -56,11 +62,13 @@ public class PlatformerPlayer : Player
 
     public int currentJumpCount; //To keep track of the amount of jumps since last standing on the ground
 
-    void Awake()
+    protected new void Awake()
     {
+        base.Awake();
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        lastFramePosition = transform.position;
     }
     protected new void Update()
     {
@@ -68,6 +76,10 @@ public class PlatformerPlayer : Player
         JumpGravityScript();
         CheckForLadder();
         isCrouching = Crouch && !IsClimbing;
+
+        //Check if falling
+        if (transform.position.y < lastFramePosition.y && Math.Abs(transform.position.y - lastFramePosition.y) > perFrameFallingDistance) isFalling = true;
+        lastFramePosition = transform.position;
     }
 
     private void FixedUpdate()
@@ -78,7 +90,9 @@ public class PlatformerPlayer : Player
     private void OnCollisionEnter2D(Collision2D collision)
     {
         currentJumpCount = 0;
+        if (isFalling) AudioManager.current.PlaySoundEvent("Jump", gameObject);
         isJumping = false;
+        isFalling = false;
     }
 
     private void UpdateAnimator()
@@ -121,9 +135,6 @@ public class PlatformerPlayer : Player
             rb.velocity = new Vector2(0, jumpVelocity * jumpVelocityMultiplier);
             currentJumpCount++;
             isJumping = true;
-            
-            //Test!!! 
-            //AkSoundEngine.PostEvent("Test_Event", gameObject);
         }
     }
 
@@ -134,6 +145,7 @@ public class PlatformerPlayer : Player
 
     public override void Move(Vector2 movement) 
     {
+        //if(movement.x != 0f) Debug.Log("move");
         //Do the movement thing
         Vector2 targetVelocity = movement * (movementSpeed * movementSpeedMultiplier) * Time.deltaTime;
 
@@ -149,5 +161,10 @@ public class PlatformerPlayer : Player
         }
 
         rb.velocity = IsClimbing ? targetVelocity : new Vector2 (targetVelocity.x, rb.velocity.y);
+    }
+
+    public override void OnFootFall()
+    {
+        AudioManager.current.PlaySoundEvent("Walk_Cycle", gameObject);
     }
 }

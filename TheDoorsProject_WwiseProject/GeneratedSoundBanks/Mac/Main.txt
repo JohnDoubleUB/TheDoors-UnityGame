@@ -1,4 +1,5 @@
 Event	ID	Name			Wwise Object Path	Notes
+	330636294	Test_Event2			\Default Work Unit\Movement\Test_Event2	
 	894932307	Hub_World_Music			\Default Work Unit\Music\Hub_World_Music	
 	1871152661	Walk_Cycle			\Default Work Unit\Movement\Walk_Cycle	
 	3833651337	Jump			\Default Work Unit\Movement\Jump	
@@ -20,10 +21,11 @@ Effect plug-ins	ID	Name	Type				Notes
 	3546444380	Big_Garage1	Wwise Matrix Reverb			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	98654734	Footstep 3	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 3_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Walk_Cycle_1\Footstep 3		352944
-	238116662	Footstep 1	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 1_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Walk_Cycle_1\Footstep 1		352944
-	829663964	The Doors Hub World	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Mac\SFX\The Doors Hub World_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Music\The Doors Hub World		46569744
-	837351131	Footstep 2	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 2_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Walk_Cycle_1\Footstep 2		352944
-	1057420875	Jump	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 4_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Jump		352944
-	1069383294	1_ Out of the Dark	Y:\Desktop\The Doors Unity Clone\TheDoors-UnityGame\TheDoorsProject_WwiseProject\.cache\Mac\SFX\1. Out of the Dark_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\1_ Out of the Dark		49039344
+	98654734	Footstep 3	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 3_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Walk_Cycle_1\Footstep 3		352944
+	238116662	Footstep 1	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 1_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Walk_Cycle_1\Footstep 1		352944
+	389755232	1_ Out of the Dark	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\1. Out of the Dark_D79FB2B7.wem		\Interactive Music Hierarchy\Default Work Unit\test_playlist\test_segment\1_ Out of the Dark		49039344
+	829663964	The Doors Hub World	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\The Doors Hub World_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Music\The Doors Hub World		46569744
+	837351131	Footstep 2	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 2_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Walk_Cycle_1\Footstep 2		352944
+	1057420875	Jump	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\Footstep 4_10C4C929.wem		\Actor-Mixer Hierarchy\Default Work Unit\Movement\Jump		352944
+	1069383294	1_ Out of the Dark	D:\UnityProjects\TheDoorsProject\TheDoorsProject_WwiseProject\.cache\Mac\SFX\1. Out of the Dark_C9C2057D.wem		\Actor-Mixer Hierarchy\Default Work Unit\1_ Out of the Dark		49039344
 

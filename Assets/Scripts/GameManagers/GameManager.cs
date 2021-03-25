@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,20 +8,30 @@ using UnityEngine.SceneManagement;
 public class GameManager : FlagManager
 {
     public static GameManager current;
+    public bool AllowPausing = true;
+    public bool CameraFollowsPlayer = true;
 
     //Platformer related
-    private Player player;
+    public Player player;
+
+    [HideInInspector]
     public VerticalPlatform verticalPlatform;
 
     public List<Door> doors; //make private?
     public List<SaveOptionObject> saveOptionObjects;
+    public ActionTypeObject actionTypeDefinitions;
 
     //The action queue is used to store actions for when they can happen
     public List<string> actionQueue = new List<string>(); //TODO: Implement what happens to these actions!
-
-    private string saveName = "SaveSlot";
+    //private string saveName = "SaveSlot";
 
     private int selectedSavefile = 0;
+    private bool firstUpdate = true;
+
+
+    private SaveDataSerialized startOfLevelSessionData;
+    private bool gameIsOver;
+    private bool isMainMenu;
 
     private List<DoorName> CurrentlyDisabledDoors {
         get
@@ -29,17 +40,67 @@ public class GameManager : FlagManager
         }
     }
 
-    public Player Player {get { return player; }}
+    public SaveDataSerialized StartOfLevelSessionData
+    {
+        get { return startOfLevelSessionData; }
+    }
+
+    public bool GameIsOver
+    {
+        get { return gameIsOver; }
+    }
+
+    public Player Player { get { return player; } }
 
     private void Awake()
     {
         if (current != null) Debug.LogWarning("Oops! it looks like there might already be a GameManager in this scene!");
         current = this;
+
+        //Setup the new action queue!
+        //InitiateActionQueue();
+
+        isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
         FindKeyComponents();
-        LoadSessionData();
-        //We can add flags here now for testing
-        //Debug.Log("(SceneManager) Current Level build index!: " + SceneManager.GetActiveScene().buildIndex + ", and level name: " + SceneManager.GetActiveScene().name);
-        //Debug.Log("(SaveSystem.SessionSaveData) Session current Level build index!: " + SaveSystem.SessionSaveData.Level + ", and level name: " + SaveSystem.SessionSaveData.LevelName);
+
+        if (!isMainMenu) LoadSessionData();
+    }
+
+    private void Start()
+    {
+        if (isMainMenu)
+        {
+            SetSelectedSaveOption(0);
+            UIManager.current.ToggleContexts(UIContextType.PauseMenu);
+            UIManager.current.SetContextsActive(true, UIContextType.PauseMain);
+            UIManager.current.SetContextsActive(false, UIContextType.LoadMenu, UIContextType.SaveMenu, UIContextType.SaveSelection);
+        }
+    }
+
+    private void Update()
+    {
+        if (firstUpdate && !isMainMenu)
+        {
+            UpdateHealth(player.CurrentHealth);
+
+            firstUpdate = false;
+        }
+
+        //Handle any actions in the action queue
+        if (actionQueue.Any())
+        {
+            for (int i = 0; i < actionQueue.Count; i++)
+            {
+                string action = actionQueue[i];
+
+                if ((actionTypeDefinitions != null && actionTypeDefinitions.InstantActions.Contains(action)) || UIManager.current.UIState != UIState.Dialogue)
+                {
+                    TriggerAction(action);
+                    actionQueue.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
     }
 
     public void SetSelectedSaveOption(int optionNo)
@@ -66,9 +127,9 @@ public class GameManager : FlagManager
 
     public void InitiateLoad()
     {
-        if (player != null && selectedSavefile != 0)
+        if (/*player != null &&*/ selectedSavefile != 0)
         {
-            SaveData savedData = SaveSystem.LoadGame(saveName + selectedSavefile);
+            SaveData savedData = SaveSystem.LoadGame(selectedSavefile);
 
 
             if (savedData != null)
@@ -77,6 +138,11 @@ public class GameManager : FlagManager
                 SceneManager.LoadScene(savedData.Level);
             }
         }
+    }
+
+    private void TriggerAction(string action) 
+    {
+        ActionHandler.HandleAction(action);
     }
 
     private void LoadSessionData() 
@@ -90,8 +156,11 @@ public class GameManager : FlagManager
             UpdateSessionData(); //This way we always have a current savedata
         }
 
+        //So we have a point where we can retry a level from
+        startOfLevelSessionData = SaveSystem.SessionSaveData;
+
         //Debug text!
-        if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+        //if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
     }
 
     private void FindKeyComponents() //Find things like doors and the player etc,
@@ -109,8 +178,11 @@ public class GameManager : FlagManager
         GameObject[] scenePlayer = GameObject.FindGameObjectsWithTag("Player");
         if (scenePlayer != null && scenePlayer.Any()) 
         {
-            PlatformerPlayer pPlayer = scenePlayer[0].GetComponent<PlatformerPlayer>();
-            if (pPlayer != null) player = pPlayer;
+            Player currentPlayer = scenePlayer[0].GetComponent<Player>();
+            if (currentPlayer != null) 
+            { 
+                player = currentPlayer;
+            }
         }
 
         //Get the save slots!
@@ -161,13 +233,14 @@ public class GameManager : FlagManager
 
         //Generate our new save!
         return new SaveData(
-            saveName + selectedSavefile, 
+            selectedSavefile, 
             targetSceneName != null ? targetSceneName : activeScene.name, 
             targetSceneBuildIndex != -1 ? targetSceneBuildIndex : activeScene.buildIndex, 
             player.transform.position, 
             disabledDoors, 
             Flags, 
-            actionQueue, 
+            actionQueue,
+            DialogueTreeFlags,
             levelData
             );
     }
@@ -182,12 +255,20 @@ public class GameManager : FlagManager
         UpdateSessionData(GenerateSaveData(targetSceneName, targetSceneBuildIndex));
     }
 
-    protected override void UpdateSessionFlags(string[] updatedFlags)
+    protected override void UpdateSessionFlags(string[] updatedFlags, FlagType flagType = FlagType.Progress)
     {
         if (SaveSystem.SessionSaveData != null)
         {
-            SaveSystem.SessionSaveData.Flags = updatedFlags;
-            if (DebugUIText.current != null) DebugUIText.current.SetText("Flags: " + string.Join(", ", SaveSystem.SessionSaveData.Flags));
+            switch (flagType) 
+            {
+                case FlagType.Progress:
+                    SaveSystem.SessionSaveData.Flags = updatedFlags;
+                    break;
+
+                case FlagType.DialogueName:
+                    SaveSystem.SessionSaveData.DialogueTreeFlags = updatedFlags;
+                    break;
+            }
         }
     }
 
@@ -216,8 +297,9 @@ public class GameManager : FlagManager
             //Player position
             player.transform.position = currentLevelSaveData.PlayerPosition;
 
+            //TODO: I think camera position should probably be saved in the save file
             //Move camera
-            if (Camera.main) Camera.main.transform.position = new Vector3(currentLevelSaveData.PlayerPosition.x, currentLevelSaveData.PlayerPosition.y, Camera.main.transform.position.z);
+            if (CameraFollowsPlayer && Camera.main) Camera.main.transform.position = new Vector3(currentLevelSaveData.PlayerPosition.x, currentLevelSaveData.PlayerPosition.y, Camera.main.transform.position.z);
         }
 
         //Door states
@@ -225,6 +307,9 @@ public class GameManager : FlagManager
         
         //Flags
         LoadFlags(savedData.Flags);
+
+        //DialogueTreeFlags
+        LoadDialogueTreeFlags(savedData.DialogueTreeFlags);
 
         //Queued Actions
         actionQueue = savedData.ActionQueue;
@@ -236,15 +321,17 @@ public class GameManager : FlagManager
         {
             foreach (SaveOptionObject so in saveOptionObjects)
             {
-                so.SetContent(SaveSystem.GetSaveLastModifiedDate(saveName + so.saveNumber));
+                so.SetContent(SaveSystem.GetSaveLastModifiedDate(so.saveNumber));
             }
         }
     }
 
     protected override void QueueActions(params string[] actions)
     {
-        if(actions != null) actionQueue.AddRange(actions);
-        Debug.Log("actions added!" + string.Join(", ", actionQueue));
+        if (actions != null) 
+        { 
+            actionQueue.AddRange(actions); 
+        }
     }
 
     public void ChangeLevel(int buildIndex)
@@ -266,6 +353,21 @@ public class GameManager : FlagManager
         {
             UpdateSessionData_WithTargetScene(levelName, sceneToLoad.buildIndex);
             SceneManager.LoadScene(levelName);
+        }
+    }
+
+    public void UpdateHealth(int playerCurrentHealth) 
+    {
+        if (UIManager.current != null) UIManager.current.UpdatePlayerHealth(playerCurrentHealth);
+
+        //Check if the player is dead
+        if (playerCurrentHealth <= 0)
+        {
+            gameIsOver = true;
+
+            //Set all the UIContexts
+            UIManager.current.SetContextsActive(false, UIContextType.Dialogue, UIContextType.PauseMain, UIContextType.PauseMenu, UIContextType.SaveMenu, UIContextType.SaveSelection, UIContextType.LoadMenu);
+            UIManager.current.SetContextsActive(true, UIContextType.GameOverMenu);
         }
     }
 }

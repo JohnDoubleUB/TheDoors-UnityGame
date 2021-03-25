@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorSceneRootings:
   - doorName: 2
-    sceneName: Hubworld_SaveDifferationTest
+    sceneName: TestSecondLevel
+  - doorName: 4
+    sceneName: Loveworld

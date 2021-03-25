@@ -18,18 +18,14 @@ MonoBehaviour:
     RequiredFlags: []
     UnRequiredFlags: []
   - Name: after-first-door
-    RequiredFlags:
-    - intro
+    RequiredFlags: []
     UnRequiredFlags: []
   - Name: after-a-few-doors1
-    RequiredFlags:
-    - after-first-door
+    RequiredFlags: []
     UnRequiredFlags: []
   - Name: after-a-few-doors2
-    RequiredFlags:
-    - after-a-few-doors1
+    RequiredFlags: []
     UnRequiredFlags: []
   - Name: after-a-few-doors3
-    RequiredFlags:
-    - after-a-few-doors2
+    RequiredFlags: []
     UnRequiredFlags: []
