@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIContextObject : MonoBehaviour
+public class UIContextObject : UIContext
 {
-    public UIContextType type;
+    public UIContextType Type;
 
-    private void Start()
+    private void Awake()
     {
-        if (UIManager.current != null) UIManager.current.AssignObjectContext(this);
+        type = Type;
     }
 }

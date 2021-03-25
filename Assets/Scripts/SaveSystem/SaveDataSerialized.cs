@@ -8,19 +8,20 @@ using UnityEngine;
 [System.Serializable]
 public class SaveDataSerialized
 {
-    public string SaveName;
+    public int SaveNumber;
     public string LevelName;
     public int Level;
     public float[] PlayerPosition;
     public int[] CompletedDoors;
     public string[] Flags;
     public string[] ActionQueue;
+    public string[] DialogueTreeFlags;
     public LevelSaveDataSerialized[] LevelData;
 
-    public SaveDataSerialized(string levelName, int level, string saveName, Vector3 position, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<LevelSaveData> levelData) 
+    public SaveDataSerialized(string levelName, int level, int saveNumber, Vector3 position, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<string> dialogueTreeFlags, List<LevelSaveData> levelData) 
     {
         Level = level;
-        SaveName = saveName;
+        SaveNumber = saveNumber;
 
         //Store position in serializable type
         PlayerPosition = new float[3];
@@ -31,6 +32,7 @@ public class SaveDataSerialized
         CompletedDoors = completedDoors.Distinct().Select(dn => (int)dn).ToArray();
         Flags = flags.ToArray();
         ActionQueue = actionQueue.ToArray();
+        DialogueTreeFlags = dialogueTreeFlags.ToArray();
         LevelName = levelName;
         LevelData = levelData.Select(x => (LevelSaveDataSerialized)x).ToArray();
     }
@@ -42,11 +44,12 @@ public class SaveDataSerialized
         return new SaveDataSerialized(
             saveData.LevelName,
             saveData.Level, 
-            saveData.SaveName, 
+            saveData.SaveNumber, 
             saveData.PlayerPosition, 
             saveData.CompletedDoors,
             saveData.Flags,
             saveData.ActionQueue,
+            saveData.DialogueTreeFlags,
             saveData.LevelData
             );
     }
@@ -56,13 +59,14 @@ public class SaveDataSerialized
         Vector3 playerPositionVector = saveData.PlayerPosition.Length == 3 ? new Vector3(saveData.PlayerPosition[0], saveData.PlayerPosition[1], saveData.PlayerPosition[2]) : new Vector3();
 
         return new SaveData(
-            saveData.SaveName,
+            saveData.SaveNumber,
             saveData.LevelName,
             saveData.Level,
             playerPositionVector,
             saveData.CompletedDoors.Select(dn => (DoorName)dn).ToList(),
             saveData.Flags.ToList(),
             saveData.ActionQueue.ToList(),
+            saveData.DialogueTreeFlags.ToList(),
             saveData.LevelData.Select(x => (LevelSaveData)x).ToList()
             );
     }

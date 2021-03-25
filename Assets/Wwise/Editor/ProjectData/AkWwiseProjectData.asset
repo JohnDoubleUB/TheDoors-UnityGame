@@ -49,7 +49,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: e3557690e8a497439ddeb689e05e8d89
     GuidInternal: 
-    m_lastTime: -8585878542319919761
+    m_lastTime: -8585859333690762889
     List:
     - name: Main
       guid: 5f098b65b32d6d4081a1f89170017006
@@ -68,7 +68,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: 05a61447fcee7c4197910aa900824f8a
     GuidInternal: 
-    m_lastTime: -8585878542337273372
+    m_lastTime: -8585859333690802780
     List:
     - name: Hub_World_Music
       guid: 06159971f1080142b627fa50b4c1a8ee
@@ -134,8 +134,22 @@ MonoBehaviour:
         ObjectType: 3
       Path: Default Work Unit\Movement\Test_Event
       maxAttenuation: 0
-      maxDuration: 278
-      minDuration: 278
+      maxDuration: -1
+      minDuration: -1
+    - name: Test_Event2
+      guid: a706b8d45d7c1543ae968dafd98cf487
+      id: 330636294
+      PathAndIcons:
+      - ElementName: Default Work Unit
+        ObjectType: 12
+      - ElementName: Movement
+        ObjectType: 4
+      - ElementName: Test_Event2
+        ObjectType: 3
+      Path: Default Work Unit\Movement\Test_Event2
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
     - name: Walk_Cycle
       guid: 37d821d514227444b1e702111862fffb
       id: 1871152661
@@ -158,7 +172,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: fb20fd2fc614ca4da0d3dd5e2dd4fa39
     GuidInternal: 
-    m_lastTime: -8585878542337263116
+    m_lastTime: -8585878535448701000
     List:
     - name: Hub_World_Reverb
       guid: 7cb1299ddc7c794f99a811a6360563bd
@@ -177,7 +191,7 @@ MonoBehaviour:
     ParentPath: Default Work Unit
     guid: b3d0acf91bcd634ca77b6d831630d423
     GuidInternal: 
-    m_lastTime: -8585878542319919761
+    m_lastTime: -8585878535431569605
     List:
     - name: Movement
       guid: 75c6b3e07f5d7b4d93b7257b76d98bac
@@ -230,6 +244,13 @@ MonoBehaviour:
     GuidInternal: 
     m_lastTime: -8585886355803637652
     List: []
-  ExpandedItems: []
+  ExpandedItems:
+  - /TheDoorsProject_WwiseProject
+  - /TheDoorsProject_WwiseProject/Events
+  - /TheDoorsProject_WwiseProject/Events/Default Work Unit
+  - /TheDoorsProject_WwiseProject/Events/Default Work Unit/Movement
+  - /TheDoorsProject_WwiseProject/Events/Default Work Unit/Music
+  - /TheDoorsProject_WwiseProject/SoundBanks
+  - /TheDoorsProject_WwiseProject/SoundBanks/Default Work Unit
   autoPopulateEnabled: 1
   CurrentPluginConfig: 

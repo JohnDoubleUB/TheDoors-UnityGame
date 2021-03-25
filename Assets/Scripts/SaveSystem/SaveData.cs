@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class SaveData
 {
-    public string SaveName;
+    public int SaveNumber;
     public string LevelName;
     public int Level;
     public Vector3 PlayerPosition;
     public List<DoorName> CompletedDoors;
     public List<string> Flags;
     public List<string> ActionQueue;
+    public List<string> DialogueTreeFlags;
     public List<LevelSaveData> LevelData;
 
-    public SaveData(string saveName, string levelName, int level, Vector3 playerPosition, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<LevelSaveData> levelData) 
+    public SaveData(int saveNumber, string levelName, int level, Vector3 playerPosition, List<DoorName> completedDoors, List<string> flags, List<string> actionQueue, List<string> dialogueTreeFlags, List<LevelSaveData> levelData) 
     {
-        SaveName = saveName;
+        SaveNumber = saveNumber;
         LevelName = levelName;
         Level = level;
         PlayerPosition = playerPosition;
@@ -23,6 +24,7 @@ public class SaveData
         Flags = flags;
         ActionQueue = actionQueue;
         LevelData = levelData;
+        DialogueTreeFlags = dialogueTreeFlags;
     }
 }
 

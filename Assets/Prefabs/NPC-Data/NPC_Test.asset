@@ -12,8 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cff3cf5095f44b8409d8f202c3c398ba, type: 3}
   m_Name: NPC_Test
   m_EditorClassIdentifier: 
-  DialogueObjectName: SvenAndPlayer
+  DialogueObjectName: Love
   DialogueRootings:
-  - Name: testdialogue
+  - Name: love-intro
+    RequiredFlags: []
+    UnRequiredFlags: []
+  - Name: love-attack1
+    RequiredFlags: []
+    UnRequiredFlags: []
+  - Name: love-attack2
+    RequiredFlags: []
+    UnRequiredFlags: []
+  - Name: love-attack3
+    RequiredFlags: []
+    UnRequiredFlags: []
+  - Name: love-attack4
+    RequiredFlags: []
+    UnRequiredFlags: []
+  - Name: love-attack5
+    RequiredFlags: []
+    UnRequiredFlags: []
+  - Name: love-attack6
     RequiredFlags: []
     UnRequiredFlags: []

@@ -13,8 +13,33 @@ namespace AK
 {
     namespace EVENTS
     {
+        static const AkUniqueID HUB_WORLD_MUSIC = 894932307U;
+        static const AkUniqueID JUMP = 3833651337U;
         static const AkUniqueID TEST_EVENT = 4258653052U;
+        static const AkUniqueID TEST_EVENT2 = 330636294U;
+        static const AkUniqueID WALK_CYCLE = 1871152661U;
     } // namespace EVENTS
+
+    namespace STATES
+    {
+        namespace MOVEMENT
+        {
+            static const AkUniqueID GROUP = 2129636626U;
+
+            namespace STATE
+            {
+                static const AkUniqueID HUB_WORLD = 864555211U;
+                static const AkUniqueID LOVE = 271565449U;
+                static const AkUniqueID NONE = 748895195U;
+            } // namespace STATE
+        } // namespace MOVEMENT
+
+    } // namespace STATES
+
+    namespace GAME_PARAMETERS
+    {
+        static const AkUniqueID HUB_WORLD_REVERB = 2410832690U;
+    } // namespace GAME_PARAMETERS
 
     namespace BANKS
     {
