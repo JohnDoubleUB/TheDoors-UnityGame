@@ -105,7 +105,7 @@ public class LoveRobot : MonoBehaviour
     {
         Rigidbody2D obj = Instantiate(projectilePrefab, projectileSpawnPoint.position, Quaternion.identity);
         obj.gravityScale = Random.Range(2f, 4f);
-        Vector3 Vo = CalculateVelocity(target, projectileSpawnPoint.position, Random.Range(projectileAirTime, projectileAirTime * 1.2f), obj.gravityScale);
+        Vector3 Vo = CalculateVelocity(target, projectileSpawnPoint.position, Random.Range(projectileAirTime, projectileAirTime * 1.1f), obj.gravityScale);
         obj.velocity = Vo;
         obj.angularVelocity += Vo.x > 0 ? -500 : 500;
         //Add recoil when firing projectiles

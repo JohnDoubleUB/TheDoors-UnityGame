@@ -3118,7 +3118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightComponent: {fileID: 1027757023}
-  lightOn: 1
+  lightOn: 0
   lightTransitionSpeed: 10
   lightTransitionAccuracy: 0
   lightFlicker: 0
@@ -3372,7 +3372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightComponent: {fileID: 1174867792}
-  lightOn: 1
+  lightOn: 0
   lightTransitionSpeed: 0.5
   lightTransitionAccuracy: 0
   lightFlicker: 0
@@ -3526,12 +3526,12 @@ PrefabInstance:
     - target: {fileID: 2754558119594539891, guid: 810975b6eb5ea5443a1a565a5e016e0b,
         type: 3}
       propertyPath: lightOn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3197391251916951446, guid: 810975b6eb5ea5443a1a565a5e016e0b,
         type: 3}
       propertyPath: lightOn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 810975b6eb5ea5443a1a565a5e016e0b, type: 3}
@@ -3807,12 +3807,12 @@ PrefabInstance:
     - target: {fileID: 2754558119594539891, guid: 810975b6eb5ea5443a1a565a5e016e0b,
         type: 3}
       propertyPath: lightOn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3197391251916951446, guid: 810975b6eb5ea5443a1a565a5e016e0b,
         type: 3}
       propertyPath: lightOn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 810975b6eb5ea5443a1a565a5e016e0b, type: 3}
@@ -5284,7 +5284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lightComponent: {fileID: 2004473980}
-  lightOn: 1
+  lightOn: 0
   lightTransitionSpeed: 20
   lightTransitionAccuracy: 0.5
   lightFlicker: 1
@@ -5394,12 +5394,12 @@ PrefabInstance:
     - target: {fileID: 2754558119594539891, guid: 810975b6eb5ea5443a1a565a5e016e0b,
         type: 3}
       propertyPath: lightOn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3197391251916951446, guid: 810975b6eb5ea5443a1a565a5e016e0b,
         type: 3}
       propertyPath: lightOn
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 810975b6eb5ea5443a1a565a5e016e0b, type: 3}

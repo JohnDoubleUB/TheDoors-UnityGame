@@ -31,7 +31,7 @@ public class LoveLevelManager : MonoBehaviour
 
     private bool phaseCompleted = false;
     private bool phaseTransition = false;
-    private bool alternator = false;
+    //private bool alternator = false;
     private bool allCandlesOn = false;
 
     public int phase = 0;
@@ -44,6 +44,7 @@ public class LoveLevelManager : MonoBehaviour
 
     private float testIndexCounter = 0;
     private ProjectilePatternHandler testPatternManager;
+    private bool isFiringPhase;
 
     private void Awake()
     {
@@ -57,36 +58,120 @@ public class LoveLevelManager : MonoBehaviour
     {
 
         //New pattern manager thing
-        ProjectilePattern testPattern1 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 2f), 3, 2, 1).SetDefaultTiming(2);
-        ProjectilePattern testPattern2 = new ProjectilePattern(ProjectileTargetType.Player, ProjectileTargetType.Random, ProjectileTargetType.Random);
-        ProjectilePattern testPattern3 = new ProjectilePattern(
+        
+        //First patterns
+        ProjectilePattern playerPattern1 = new ProjectilePattern(ProjectileTargetType.Player).SetDefaultTiming(0.7f); // 10 seconds
+        ProjectilePattern playerPattern2 = new ProjectilePattern(ProjectileTargetType.Player); // 5 seconds
+        ProjectilePattern playerPattern3 = new ProjectilePattern(ProjectileTargetType.Player).SetDefaultTiming(2); // 5 seconds
+        // playerPattern1, playerPattern2, playerPattern3,
+
+
+        //Second patterns
+        ProjectilePattern playerAnd2RandomPattern1 = new ProjectilePattern(new ProjectilePatternTarget(ProjectileTargetType.Player, 0.5f), ProjectileTargetType.Random, ProjectileTargetType.Random).SetDefaultTiming(10); // 10 seconds
+        ProjectilePattern playerAnd2RandomPattern2 = new ProjectilePattern(new ProjectilePatternTarget(ProjectileTargetType.Player, 0.5f), ProjectileTargetType.Random, ProjectileTargetType.Random, new ProjectilePatternTarget(ProjectileTargetType.Player, 2f), ProjectileTargetType.Random).SetDefaultTiming(10); // 5 seconds
+        ProjectilePattern playerAnd2RandomPattern3 = new ProjectilePattern(new ProjectilePatternTarget(ProjectileTargetType.Player, 1f), ProjectileTargetType.Random, ProjectileTargetType.Random, new ProjectilePatternTarget(ProjectileTargetType.Player, 2f), ProjectileTargetType.Random).SetDefaultTiming(10); // 7 seconds
+
+
+        //Third patterns
+        ProjectilePattern wavePattern1 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 2f), 3, 2, 1).SetDefaultTiming(2); // 10
+        ProjectilePattern wavePattern2 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 1.7f), 3, 2, 1).SetDefaultTiming(3); // 7
+        ProjectilePattern wavePattern3 = new ProjectilePattern(0, 1, 2, 3, 4, 5, new ProjectilePatternTarget(4, 1.5f), 3, 2, 1, ProjectileTargetType.Player).SetDefaultTiming(3); // 7
+
+        //Fourth patterns
+        ProjectilePattern sprayPattern1 = new ProjectilePattern(
             0, new ProjectilePatternTarget(5, 100),
             1, new ProjectilePatternTarget(4, 100),
             2, new ProjectilePatternTarget(3, 100),
             1, new ProjectilePatternTarget(4, 100),
             0, new ProjectilePatternTarget(5, 100)
-            ).SetDefaultTiming(2.5f);
-
-        ProjectilePattern testPattern4 = new ProjectilePattern(
-            0, new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10),
+            ).SetDefaultTiming(1.7f); // 8 seconds
+        
+        ProjectilePattern sprayPattern2 = new ProjectilePattern(
+            new ProjectilePatternTarget(0, 1f), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10),
             1, new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10),
             2, new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10),
             3, new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10),
             4, new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10),
-            5, new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10)
-            ).SetDefaultTiming(1);
+            new ProjectilePatternTarget(5, 1f), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10),
+            4, new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10),
+            3, new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10),
+            2, new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10),
+            1, new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10)
+            ).SetDefaultTiming(5); // 8 seconds
 
-        ProjectilePattern testPattern5 = new ProjectilePattern(new ProjectilePatternTarget(ProjectileTargetType.Player, 0.5f), ProjectileTargetType.PlayerPlatform, ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2).SetDefaultTiming(15f);
+        ProjectilePattern sprayPattern3 = new ProjectilePattern(
+            new ProjectilePatternTarget(0, 1f), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10),
+            0, new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10),
+            0, new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10),
+            0, new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10),
+            1, new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10),
+            new ProjectilePatternTarget(5, 1f), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10),
+            5, new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10),
+            5, new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10),
+            5, new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10),
+            4, new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10)
+            ).SetDefaultTiming(8); // 8 seconds
 
-        ProjectilePattern testPattern6 = new ProjectilePattern(
-            new ProjectilePatternTarget(ProjectileTargetType.PlayerClosestAdjacentPlatform4, 1f), ProjectileTargetType.PlayerClosestAdjacentPlatform2,
-            new ProjectilePatternTarget(ProjectileTargetType.PlayerClosestAdjacentPlatform3, 7f), ProjectileTargetType.PlayerClosestAdjacentPlatform1,
-            new ProjectilePatternTarget(ProjectileTargetType.Player, 7f), ProjectileTargetType.PlayerPlatform
-            ).SetDefaultTiming(20f);
+        ProjectilePattern sprayPattern4 = new ProjectilePattern(
+            new ProjectilePatternTarget(0, 1f),
+            new ProjectilePatternTarget(5, 100), new ProjectilePatternTarget(4, 100), new ProjectilePatternTarget(3, 100),
+            new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            0, new ProjectilePatternTarget(5, 100), new ProjectilePatternTarget(4, 100),
+            new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            0, new ProjectilePatternTarget(5, 100),
+            new ProjectilePatternTarget(0, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            0, new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            1, new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10),
+            new ProjectilePatternTarget(5, 1f),
+            new ProjectilePatternTarget(0, 100), new ProjectilePatternTarget(1, 100), new ProjectilePatternTarget(2, 100),
+            new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            5, new ProjectilePatternTarget(0, 100), new ProjectilePatternTarget(1, 100),
+            new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            5, new ProjectilePatternTarget(0, 100),
+            new ProjectilePatternTarget(5, 10), new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            5, new ProjectilePatternTarget(4, 10), new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(ProjectileTargetType.Player, 100),
+            4, new ProjectilePatternTarget(3, 10), new ProjectilePatternTarget(2, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10), new ProjectilePatternTarget(1, 10)
+            ).SetDefaultTiming(15); // 8 seconds
 
-        ProjectilePattern testPattern7 = new ProjectilePattern(
-            ProjectileTargetType.Player, ProjectileTargetType.PlayerPlatform, ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2
-            ).SetDefaultTiming(3f);
+        //Fifth patterns
+        ProjectilePattern playerFocus1 = new ProjectilePattern(
+            new ProjectilePatternTarget(ProjectileTargetType.Player, 1f),
+            ProjectileTargetType.PlayerPlatform,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform2,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform3,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform4,
+            new ProjectilePatternTarget(ProjectileTargetType.Player, 1f),
+            ProjectileTargetType.PlayerClosestAdjacentPlatform1,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform2,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform3,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform4
+            ).SetDefaultTiming(5f); // 10
+
+        ProjectilePattern playerFocus2 = new ProjectilePattern(
+            new ProjectilePatternTarget(ProjectileTargetType.PlayerClosestAdjacentPlatform1, 0.5f), ProjectileTargetType.PlayerClosestAdjacentPlatform2, ProjectileTargetType.PlayerClosestAdjacentPlatform3, ProjectileTargetType.PlayerClosestAdjacentPlatform4, ProjectileTargetType.PlayerPlatform,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2, ProjectileTargetType.PlayerClosestAdjacentPlatform3, ProjectileTargetType.PlayerClosestAdjacentPlatform4, ProjectileTargetType.PlayerPlatform,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2, ProjectileTargetType.PlayerClosestAdjacentPlatform3, ProjectileTargetType.PlayerClosestAdjacentPlatform4, ProjectileTargetType.PlayerPlatform,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform2, ProjectileTargetType.PlayerClosestAdjacentPlatform3, ProjectileTargetType.PlayerClosestAdjacentPlatform4, ProjectileTargetType.PlayerPlatform,
+            new ProjectilePatternTarget(ProjectileTargetType.Player, 4f), ProjectileTargetType.Player, ProjectileTargetType.Player
+            ).SetDefaultTiming(1000); //7
+
+        ProjectilePattern playerFocus3 = new ProjectilePattern(
+            new ProjectilePatternTarget(ProjectileTargetType.Player, 1f), ProjectileTargetType.Player, ProjectileTargetType.Player, ProjectileTargetType.Player, ProjectileTargetType.Player,
+            new ProjectilePatternTarget(ProjectileTargetType.Player, 3f), ProjectileTargetType.Player, ProjectileTargetType.PlayerPlatform, ProjectileTargetType.PlayerPlatform, ProjectileTargetType.PlayerClosestAdjacentPlatform1, ProjectileTargetType.PlayerClosestAdjacentPlatform1
+            ).SetDefaultTiming(20f); //7
+
+
+        //Final Pattern
+        ProjectilePattern finalPattern = new ProjectilePattern(
+            ProjectileTargetType.PlayerClosestAdjacentPlatform1,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform3,
+            ProjectileTargetType.PlayerPlatform,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform2,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform4,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform3,
+            ProjectileTargetType.PlayerPlatform,
+            ProjectileTargetType.PlayerClosestAdjacentPlatform2
+            ).SetDefaultTiming(6f); //7
 
         //Get a middle platform point
         playerPointPositionIndex = platformPoints.Count / 2;
@@ -101,20 +186,19 @@ public class LoveLevelManager : MonoBehaviour
         testPatternManager = new ProjectilePatternHandler(
             platformPoints,
             currentPlayer.transform,
-            testPattern1,
-            testPattern2,
-            testPattern3,
-            testPattern4,
-            testPattern5,
-            testPattern6,
-            testPattern7
+            playerPattern1, playerPattern2, playerPattern3,
+            playerAnd2RandomPattern1, playerAnd2RandomPattern2, playerAnd2RandomPattern3,
+            wavePattern1, wavePattern2, wavePattern3,
+            sprayPattern1, sprayPattern2, sprayPattern3, sprayPattern4,
+            playerFocus1, playerFocus2, playerFocus3,
+            finalPattern
             );
 
-        testPatternManager.SetPatternIndex(6);
+        //testPatternManager.SetPatternIndex(1);
 
         Debug.Log("Start!");
-        //InitiateAtPhase(-5);
-        InitiateAtPhase(0);
+        InitiateAtPhase(-5);
+        //InitiateAtPhase(0);
     }
 
     public Transform MovePlayerToNewPositionPoint(int positionChange)
@@ -145,7 +229,7 @@ public class LoveLevelManager : MonoBehaviour
 
     }
 
-    private void FiringTest() 
+    private void FireProjectile() 
     {
         if (testIndexCounter >= 1.0f)
         {
@@ -168,23 +252,7 @@ public class LoveLevelManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        //if (testIndexCounter >= 1.0f)
-        //{
-        //    Transform target = testPatternManager.GetCurrentProjectileTargetTransform();
-
-        //    Debug.Log("firing at " + target.gameObject.name + " at location " + target.position.ToString() + ". Delay was " + testPatternManager.CurrentDelay);
-        //    Debug.Log("pattern index is " + testPatternManager.CurrentPatternIndex);
-        //    testPatternManager.NextProjectileTarget();
-            
-        //    testIndexCounter = 0f;
-        //}
-        //else 
-        //{
-        //    //Debug.Log(testPatternManager.CurrentDelay);
-        //    testIndexCounter += Time.deltaTime * testPatternManager.CurrentDelay;
-        //}
-        
+    {        
         if (GameManager.current.GameIsOver) 
         {
             if (activeFiringCoroutines.Any()) 
@@ -204,9 +272,9 @@ public class LoveLevelManager : MonoBehaviour
             }
 
 
-            if (phase > 1) 
+            if (isFiringPhase) 
             {
-                FiringTest();
+                FireProjectile();
             }
 
 
@@ -219,6 +287,7 @@ public class LoveLevelManager : MonoBehaviour
     {
         if (npcConvoCount < loveNpcData.DialogueRootings.Count) 
         {
+            isFiringPhase = false;
             DialogueManager.current.LoadDialogueTree(loveNpcData.DialogueObjectName, loveNpcData.DialogueRootings[npcConvoCount].Name);
             npcConvoCount++;
         }
@@ -271,82 +340,144 @@ public class LoveLevelManager : MonoBehaviour
                 CompletePhaseAfterSeconds(2);
                 break;
 
+            //AttackPhase1
             case 2:
-                //CompletePhaseAfterSeconds(5);
+                isFiringPhase = true;
+                CompletePhaseAfterSeconds(10);
                 break;
 
             case 3:
+                testPatternManager.SetNextPatternIndex();
                 CompletePhaseAfterSeconds(5);
                 break;
 
             case 4:
+                testPatternManager.SetNextPatternIndex();
                 CompletePhaseAfterSeconds(5);
                 break;
 
+            //LoveDialogue1
             case 5:
+                isFiringPhase = false;
                 if (loveNpcData != null) IntiateLoveConversation();
                 break;
 
+            //AttackPhase2
             case 6:
-                CompletePhaseAfterSeconds(15);
-                break;
-
-            case 7:
-                if (loveNpcData != null) IntiateLoveConversation();
-                break;
-
-            case 8:
+                isFiringPhase = true;
+                testPatternManager.SetNextPatternIndex();
                 CompletePhaseAfterSeconds(10);
                 break;
 
-            case 9:
-                CompletePhaseAfterSeconds(6);
+            case 7:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(5);
                 break;
-            
-            case 10:
+
+            case 8:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(7);
+                break;
+
+            //LoveDialogue2
+            case 9:
                 if (loveNpcData != null) IntiateLoveConversation();
                 break;
 
+            //AttackPhase3
+            case 10:
+                isFiringPhase = true;
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(10);
+                break;
+
+            case 11:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(7);
+                break;
+
+            case 12:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(7);
+                break;
+
+            //LoveDialogue3
+            case 13:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
+
+            //AttackPhase4
+            case 14:
+                isFiringPhase = true;
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(8);
+                break;
+
+            case 15:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(8);
+                break;
+
+            case 16:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(8);
+                break;
+            
+            case 17:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(8);
+                break;
+
+            //LoveDialogue4
+            case 18:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
+
+            //AttackPhase5
+            case 19:
+                isFiringPhase = true;
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(10);
+                break;
+
+            case 20:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(7);
+                break;
+
+            case 21:
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(7);
+                break;
+
+            //LoveDialogue5
+            case 22:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
+
+            //FinalAttackPhase
+
+            case 23:
+                isFiringPhase = true;
+                testPatternManager.SetNextPatternIndex();
+                CompletePhaseAfterSeconds(7);
+                break;
+
+            //LoveDialogue6
+            case 24:
+                if (loveNpcData != null) IntiateLoveConversation();
+                break;
         }
     }
 
     private void UpdatePhase(int phase)
     {
-        float phaseShotSpeedMultiplier = shotSpeed; //phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
+        //float phaseShotSpeedMultiplier = shotSpeed; //phase == 3 || phase == 5 ? shotSpeed * 1.5f : shotSpeed;
         switch (phase)
         {
             case -4:
                 LightPattern_CandlesOn();
                 break;
-
-            //case 2:
-            //    FiringPattern_PlayerPosition(phaseShotSpeedMultiplier);
-            //    break;
-
-            //case 3:
-            //    FiringPattern_PlayerPlatform(phaseShotSpeedMultiplier);
-            //    break;
-
-            //case 4:
-            //    FiringPattern_PlayerPlatformAndAdjacent(phaseShotSpeedMultiplier);
-            //    break;
-
-            //case 6:
-            //    FiringPattern_PointsBackAndForth(phaseShotSpeedMultiplier);
-            //    break;
-
-            //case 8:
-            //    FiringPattern_PointsInwardAndOutward(phaseShotSpeedMultiplier);
-            //    break;
-
-            //case 9:
-            //    FiringPattern_PlayerPositionAndTwoRandom(phaseShotSpeedMultiplier);
-            //    break;
-
-            //case 10:
-
-            //    break;
-
         }
     }
 
@@ -401,154 +532,6 @@ public class LoveLevelManager : MonoBehaviour
         }
     }
 
-
-
-    //Firing Patterns
-
-    private void FiringPattern_PlayerPosition(float phaseShotSpeedMultiplier) 
-    {
-        if (currentShotTime >= 1.0f)
-        {
-            FireAtTarget(platformPoints[playerPointPositionIndex].position);
-            currentShotTime = 0f;
-        }
-        else
-        {
-            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-        }
-    }
-
-    private void FiringPattern_PlayerPlatform(float phaseShotSpeedMultiplier) 
-    {
-        if (currentShotTime >= 1.0f)
-        {
-            FireAtTarget(platformPoints[playerPointPositionIndex].position);
-
-            //Hit the other point on that platform
-            int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
-            FireAtTarget(platformPoints[nextPosition].position, 0.1f);
-
-            currentShotTime = 0f;
-        }
-        else
-        {
-            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-        }
-    }
-
-    private void FiringPattern_PlayerPlatformAndAdjacent(float phaseShotSpeedMultiplier) 
-    {
-        if (currentShotTime >= 1.0f)
-        {
-            FireAtTarget(platformPoints[playerPointPositionIndex].position);
-
-            //Hit the other point on that platform
-            int nextPosition = playerPointPositionIndex % 2 == 0 ? playerPointPositionIndex + 1 : playerPointPositionIndex - 1;
-            FireAtTarget(platformPoints[nextPosition].position, 0.1f);
-
-            int position3;
-            int position4;
-
-            if (nextPosition == platformPoints.Count - 1 || playerPointPositionIndex == platformPoints.Count - 1 || nextPosition == 0 || playerPointPositionIndex == 0)
-            {
-                position3 = platformPoints.Count - 3;
-                position4 = position3 - 1;
-            }
-            else
-            {
-                if (Random.Range(0, 2) == 0)
-                {
-                    position3 = platformPoints.Count - 1;
-                    position4 = position3 - 1;
-                }
-                else
-                {
-                    position3 = 0;
-                    position4 = position3 + 1;
-                }
-            }
-
-            //TODO: Delays might need to have transform arguments rather than positional later
-            FireAtTarget(platformPoints[position3].position, 0.2f);
-            FireAtTarget(platformPoints[position4].position, 0.3f);
-
-            currentShotTime = 0f;
-        }
-        else
-        {
-            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-        }
-    }
-
-    private void FiringPattern_PointsBackAndForth(float phaseShotSpeedMultiplier) 
-    {
-        if (currentShotTime >= 1.0f)
-        {
-            float fireDelay = 0.3f;
-            Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-            foreach (Vector3 target in alternator ? platformPositions : platformPositions.Reverse())
-            {
-                FireAtTarget(target, fireDelay);
-                fireDelay += 0.3f;
-            }
-
-            alternator = !alternator;
-            currentShotTime = 0f;
-        }
-        else
-        {
-            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-        }
-    }
-
-    private void FiringPattern_PointsInwardAndOutward(float phaseShotSpeedMultiplier) 
-    {
-        if (currentShotTime >= 1.0f)
-        {
-            float fireDelay = 0.3f;
-            Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-
-            for (int i = 0; i < (platformPositions.Length / 2) + 1; i++)
-            {
-
-                FireAtTarget(platformPositions[i], fireDelay);
-                fireDelay += 0.3f;
-            }
-
-            fireDelay = 0.3f;
-
-            for (int i = platformPositions.Length - 1; i > (platformPositions.Length / 2); i--)
-            {
-                FireAtTarget(platformPositions[i], fireDelay);
-                fireDelay += 0.3f;
-            }
-
-            currentShotTime = 0f;
-        }
-        else
-        {
-            currentShotTime += Time.deltaTime * (phaseShotSpeedMultiplier / 2f);
-        }
-    }
-
-    private void FiringPattern_PlayerPositionAndTwoRandom(float phaseShotSpeedMultiplier) 
-    {
-        if (currentShotTime >= 1.0f)
-        {
-            Vector3[] platformPositions = platformPoints.Select(x => x.position).ToArray();
-
-            FireAtTarget(platformPositions[playerPointPositionIndex]);
-            FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.1f);
-            FireAtTarget(platformPositions[Random.Range(0, platformPositions.Length)], 0.2f);
-
-            currentShotTime = 0f;
-        }
-        else
-        {
-            currentShotTime += Time.deltaTime * phaseShotSpeedMultiplier;
-        }
-    }
-
     //
 
     private LoveRobot CreateLoveRobot(Vector3 spawnLocation)
@@ -568,8 +551,6 @@ public class LoveLevelManager : MonoBehaviour
 
         return null;
     }
-
-
 
     //Phase changers
 

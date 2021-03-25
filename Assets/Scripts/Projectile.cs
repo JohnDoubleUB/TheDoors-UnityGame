@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour
 {
     public SpriteRenderer sprite;
     public float timeDelay = 1f;
-    public float damageRadius = 1.5f;
+    public float damageRadius = 1f;
     private float currentTime = 0f;
     //TODO: This should probably be called LoveProjectile because it relies on the LoveLevelManager!
     private void OnCollisionEnter2D(Collision2D collision)
@@ -15,7 +15,7 @@ public class Projectile : MonoBehaviour
         if (LoveLevelManager.current != null) LoveLevelManager.current.SpawnParticleEffectAtPosition(transform.position);
         if (GameManager.current != null) 
         {
-            if (Vector3.Distance(GameManager.current.player.transform.position, transform.position) <= 3f) 
+            if (Vector3.Distance(GameManager.current.player.transform.position, transform.position) <= damageRadius) 
             {
                 GameManager.current.player.TakeDamage();
             }

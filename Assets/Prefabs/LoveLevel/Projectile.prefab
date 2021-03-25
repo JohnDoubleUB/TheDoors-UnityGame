@@ -136,6 +136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprite: {fileID: 168862806595554885}
   timeDelay: 1
+  damageRadius: 2
 --- !u!114 &6785250434158192797
 MonoBehaviour:
   m_ObjectHideFlags: 0
