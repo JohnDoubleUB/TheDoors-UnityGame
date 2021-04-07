@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LoveRobot : MonoBehaviour
@@ -18,6 +19,11 @@ public class LoveRobot : MonoBehaviour
     public Transform propeller;
     //public Animator animator;
     public Animator compartmentAnimator;
+
+    public bool randomBody = true;
+
+    public Sprite[] robotBodies;
+    public SpriteRenderer robotBody;
 
     private Vector3 currentLocation;
     private Vector3 targetLocation;
@@ -61,6 +67,9 @@ public class LoveRobot : MonoBehaviour
 
         randomFloatSeed = Random.Range(1f, 3f);
         randomIntSeed = Random.Range(0, 100);
+
+        //This randomly sets one of the bodies if the requirements are met
+        if (randomBody && robotBodies.Any() && robotBody != null) robotBody.sprite = robotBodies[Random.Range(0, robotBodies.Length)]; 
     }
 
     // Update is called once per frame
