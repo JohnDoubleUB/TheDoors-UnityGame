@@ -16,7 +16,8 @@ public class LoveRobot : MonoBehaviour
 
     //These are just the parts that we need to have access to
     public Transform propeller;
-    public Animator animator;
+    //public Animator animator;
+    public Animator compartmentAnimator;
 
     private Vector3 currentLocation;
     private Vector3 targetLocation;
@@ -30,17 +31,17 @@ public class LoveRobot : MonoBehaviour
 
     public bool BodyIsOpen
     {
-        get { return animator.GetCurrentAnimatorStateInfo(0).IsTag("open"); }
+        get { return compartmentAnimator.GetCurrentAnimatorStateInfo(0).IsTag("open"); }
     }
 
     public bool BodyIsClosed
     {
-        get { return animator.GetCurrentAnimatorStateInfo(0).IsTag("closed"); }
+        get { return compartmentAnimator.GetCurrentAnimatorStateInfo(0).IsTag("closed"); }
     }
 
     public bool BodyIsInTransition 
     {
-        get { return animator.GetCurrentAnimatorStateInfo(0).IsTag("transtition"); } 
+        get { return compartmentAnimator.GetCurrentAnimatorStateInfo(0).IsTag("transtition"); } 
     }
 
     public bool IsAtTarget 
@@ -120,7 +121,8 @@ public class LoveRobot : MonoBehaviour
 
     public void SetOpenBody(bool open) 
     {
-        animator.SetBool("bodyOpen", open);
+        //animator.SetBool("bodyOpen", open);
+        compartmentAnimator.SetBool("bodyOpen", open);
     }
 
     private Vector2 GenerateFloat(float time, float floatSpeed) 
