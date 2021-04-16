@@ -63,7 +63,20 @@ public class GameManager : FlagManager
         isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
         FindKeyComponents();
 
-        if(ProjectilePatternLoader.current.test) print("oh yeah");
+        //Testing yeah
+        ProjectilePatternStage[] patternStagesTest = ProjectilePatternLoader.current.PatternStages;
+
+        if (patternStagesTest != null)
+        {
+            Debug.Log("Now in game manager!");
+            //This is testing stuff;
+            Debug.Log("Order : " + string.Join(", ", patternStagesTest.Select(x => x.stageNumber)));
+
+            foreach (ProjectilePatternStage w in patternStagesTest)
+            {
+                Debug.Log("Stage " + w.stageNumber + ": " + string.Join(", ", w.patterns.Select(x => x.Name)));
+            }
+        }
 
         if (!isMainMenu) LoadSessionData();
     }

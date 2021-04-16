@@ -8,74 +8,36 @@ using System.Linq;
 
 public class ProjectilePatternLoader : XmlLoader
 {
-    public static ProjectilePatternLoader current = new ProjectilePatternLoader();
-    public bool test = true;
+    public static ProjectilePatternLoader current = new ProjectilePatternLoader(); //I'm not sure if this is the best idea but it does seem to work?
+    public ProjectilePatternStage[] PatternStages;
     private ProjectilePatternLoader()
     {
         FilePath = "ProjectilePatterns";
         TopLevelNode = "projectile-patterns";
-        ProjectilePatternStage[] why = LoadAllProjectilePatternStages();
-        Debug.Log("Order : " + string.Join(", ", why.Select(x => x.stageNumber)));
-
-        foreach (ProjectilePatternStage w in why) 
-        {
-            Debug.Log("Stage " + w.stageNumber + ": " + string.Join(", ", w.patterns.Select(x => x.Name)));
-        }
+        PatternStages = LoadAllProjectilePatternStages();
     }
 
+    //Reads all files in the streaming assets projectile pattern directory, extracts stages and returns them in order
     private ProjectilePatternStage[] LoadAllProjectilePatternStages()
     {
+        return LoadAllXmlFiles() //Load all the xml files in the projectile-pattern directory
+            .SelectMany(pFile => pFile.Node.SelectNodes("stage").Cast<XmlNode>()) //Flatten all file stages into one list of stage nodes
+            .Select(xmlStageNode =>
+            {
+                //For each stage node, get the stage number
+                XmlNode stageNumberNode = xmlStageNode.Attributes["no"];
 
-        LoadedXmlFile[] pFiles = LoadAllXmlFiles();
-
-        Debug.Log("Files: " + pFiles.Length);
-        var allStages = pFiles.SelectMany(pFile => 
-        {
-            XmlNodeList xmlStageNodes = pFile.Node.SelectNodes("stage");
-            return xmlStageNodes.Cast<XmlNode>();
-        });
-
-        foreach (XmlNode t in allStages) 
-        {
-            Debug.Log(t.Attributes["no"].InnerText);
-        }
-
-
-
-        List<ProjectilePatternStage> patternStages = new List<ProjectilePatternStage>();
-
-        foreach (LoadedXmlFile pFile in pFiles)
-        {
-            //Read in the stage nodes
-            XmlNodeList xmlStageNodes = pFile.Node.SelectNodes("stage");
-            Debug.Log("stage count: " + xmlStageNodes.Count);
-
-            //Do magic
-            ProjectilePatternStage[] orderedStagesNew = new List<XmlNode>(xmlStageNodes.Cast<XmlNode>())
-                .Select(xmlStageNode =>
-                {
-                    //For each stage node, get the stage number
-                    XmlNode stageNumberNode = xmlStageNode.Attributes["no"];
-
-                    //Then create a new ProjectilePatternStage
-                    return new ProjectilePatternStage(
-                        GetAllProjectilePatternsFromXmlNodeList(xmlStageNode.SelectNodes("projectile-pattern")), //Convert all the "projectile-pattern" nodes within the stage into a collection of projectile patterns
-                        stageNumberNode != null && int.TryParse(stageNumberNode.InnerText, out int stageNumberParsed) ? stageNumberParsed : 0 //Store the stage number
-                        );
-                })
-                //.OrderBy(x => x.stageNumber) //Order by stage number
-                .ToArray(); //Convert to array
-
-            patternStages.AddRange(orderedStagesNew); //Idc what files these are from
-        }
-
-        //Order by stage number after combining all the files
-        return patternStages
-            .OrderBy(x=> x.stageNumber)
-            .ToArray();
+                //Then create a new ProjectilePatternStage
+                return new ProjectilePatternStage(
+                    GetAllProjectilePatternsFromXmlNodeList(xmlStageNode.SelectNodes("projectile-pattern")), //Convert all the "projectile-pattern" nodes within the stage into a collection of projectile patterns
+                    stageNumberNode != null && int.TryParse(stageNumberNode.InnerText, out int stageNumberParsed) ? stageNumberParsed : 0 //Store the stage number, or 0 if there isn't one
+                    );
+            })
+            .OrderBy(x => x.stageNumber) //Order this by the stage numbers, if not needed we can just skip this step
+            .ToArray(); //Convert this into an array
     }
 
-    private IEnumerable<ProjectilePattern> GetAllProjectilePatternsFromXmlNodeList(XmlNodeList nodeList) 
+    private IEnumerable<ProjectilePattern> GetAllProjectilePatternsFromXmlNodeList(XmlNodeList nodeList)
     {
         //Return a collection of ProjectilePatterns (we can then assign these to a given stage)
         return new List<XmlNode>(nodeList.Cast<XmlNode>()).Select(xmlPatternNode =>
@@ -83,7 +45,7 @@ public class ProjectilePatternLoader : XmlLoader
             //Convert all the pattern targets into a list
             ProjectilePatternTarget[] projectilePatternTargets = new List<XmlNode>(xmlPatternNode.ChildNodes.Cast<XmlNode>())
                 .Where(x => x.NodeType == XmlNodeType.Element)
-                .Select(x => ConvertToPatternTarget(x))
+                .Select(x => ConvertXmlNodeToPatternTarget(x))
                 .ToArray();
 
             //Get the any projectile pattern data
@@ -102,7 +64,7 @@ public class ProjectilePatternLoader : XmlLoader
         });
     }
 
-    private ProjectilePatternTarget ConvertToPatternTarget(XmlNode xmlNode) 
+    private ProjectilePatternTarget ConvertXmlNodeToPatternTarget(XmlNode xmlNode)
     {
         string nodeName = xmlNode.Name;
         bool isStageItem = nodeName == "player-item" || nodeName == "random-item" || nodeName == "target-item";
@@ -134,7 +96,7 @@ public class ProjectilePatternLoader : XmlLoader
             string innerText = xmlNode.InnerText;
 
             return new ProjectilePatternTarget(
-                !string.IsNullOrEmpty(innerText) && int.TryParse(innerText, out int result) ? ConvertRelativePlatformToTargetType(result) : ProjectileTargetType.Player,
+                !string.IsNullOrEmpty(innerText) && int.TryParse(innerText, out int result) ? ConvertRelativePlatformNumberToTargetType(result) : ProjectileTargetType.Player,
                 timingFlagNode != null && float.TryParse(timingFlagNode.InnerText, out float timingModifier) ? timingModifier : 0f,
                 entityFireIndexNode != null && int.TryParse(entityFireIndexNode.InnerText, out int entityFireIndex) ? entityFireIndex : -1,
                 isStageItem
@@ -143,7 +105,7 @@ public class ProjectilePatternLoader : XmlLoader
     }
 
 
-    private ProjectileTargetType ConvertRelativePlatformToTargetType(int platformValue) 
+    private ProjectileTargetType ConvertRelativePlatformNumberToTargetType(int platformValue)
     {
         switch (platformValue)
         {
