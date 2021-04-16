@@ -4,49 +4,53 @@ using System.IO;
 using System.Xml;
 using UnityEngine;
 using System.Linq;
+using System;
 
-public static class DialogueLoader
+public class DialogueLoader : XmlLoader
 {
-    private static string[] reservedTags = { "w", "f", "s", "c", "r", "g", "b", "y" };
-    private static string DialoguePath = Application.streamingAssetsPath + "/Dialogues/";
-    private static string DialogueFileExtension = "xml";
-    private static List<string> allAddedFlags = new List<string>();
-    private static string dialogueStartId = "1"; //This is essentially the default entrypoint to a given dialogue tree
+    public static DialogueLoader current = new DialogueLoader();
 
-
-    private static readonly DialogueObject[] dialogueObjects = LoadAllDialogueObjects();  //Load all dialogue intially
+    private string[] reservedTags = { "w", "f", "s", "c", "r", "g", "b", "y" };
+    private List<string> allAddedFlags = new List<string>();
+    private string dialogueStartId = "1"; //This is essentially the default entrypoint to a given dialogue tree
+    private readonly DialogueObject[] dialogueObjects;  //Load all dialogue intially
 
     //Attributes: id, tree-name, dialogue-id
     //NOTE: DialogueObject Name are now considered to be DialogueTreeFlags! Separate from flags!
-    public static DialogueObject[] DialogueObjects //This is where we intially load in all the dialogue for the game
+
+    private DialogueLoader() 
+    {
+        FilePath = "Dialogues";
+        TopLevelNode = "dialogue-object";
+        dialogueObjects = LoadAllDialogueObjects();
+    }
+
+    public DialogueObject[] DialogueObjects //This is where we intially load in all the dialogue for the game
     {
         get { return dialogueObjects; }
     }
-    public static List<string> AllAddedFlags 
+    public List<string> AllAddedFlags 
     { 
         get { return allAddedFlags; } 
     }
 
-    public static string DialogueStartId 
+    public string DialogueStartId 
     {
         get { return dialogueStartId; }
     }
 
-    public static string[] ReservedTags 
+    public string[] ReservedTags 
     {
         get { return reservedTags; }
     }
 
-    private static DialogueObject[] LoadAllDialogueObjects()
+    private DialogueObject[] LoadAllDialogueObjects()
     {
-        //Find all filenames
-        string[] files = Directory.GetFiles(DialoguePath, "*." + DialogueFileExtension);
-        DialogueObject[] dialogueObjects = files.Select(fPath => LoadDialogueFile(fPath)).Where(x => x != null).ToArray();
-        
+        DialogueObject[] dialogueObjects = LoadAllXmlFiles().Select(xFile => LoadDialogueFile(xFile)).ToArray();        
         return dialogueObjects;
     }
 
-    private static void AddDistinctAddedFlagsToList(params string[][] flags) 
+    private void AddDistinctAddedFlagsToList(params string[][] flags) 
     {
         if (flags == null) return;
 
@@ -58,17 +62,11 @@ public static class DialogueLoader
         }
     }
 
-    private static DialogueObject LoadDialogueFile(string path)
+    private DialogueObject LoadDialogueFile(LoadedXmlFile file)
     {
-        if (File.Exists(path))
-        {
-            XmlDocument doc = new XmlDocument();
             try
             {
-                doc.Load(path); //I think this can throw an error if the xml is malformed?
-
-                //Find top level xml node!
-                XmlNode topLevelNode = doc.DocumentElement.SelectSingleNode("/dialogue-object");
+                XmlNode topLevelNode = file.Node;
 
                 XmlNodeList xmlNodes = topLevelNode.SelectNodes("dialogue-tree");
 
@@ -76,24 +74,17 @@ public static class DialogueLoader
 
                 string[] speakers = topLevelNode.Attributes["speakers"].InnerText.Split(' ');
 
-                return new DialogueObject(speakers, dialogueTrees, Path.GetFileNameWithoutExtension(path));
+                return new DialogueObject(speakers, dialogueTrees, file.Name);
             }
             catch (XmlException e)
             {
-                Debug.LogError("ERROR: Malformed XML in file: " + path + ", this file will be skipped, Full stack trace: " + e);
+                Debug.LogError("ERROR: Malformed Dialogue XML in file: " + file.Name + ", this file will be skipped, Full stack trace: " + e);
                 return null;
             }
-        }
-        else
-        {
-            Debug.LogError("FILE MISSING: file at path: " + path + " doesn't exist!");
-
-            return null;
-        }
 
     }
 
-    private static DialogueTree BuildDialogueTree(XmlNode dialogueTree)
+    private DialogueTree BuildDialogueTree(XmlNode dialogueTree)
     {
         List<Dialogue> dList = new List<Dialogue>();
         //First loop
@@ -210,7 +201,7 @@ public static class DialogueLoader
         return new DialogueTree(dialogueTree.Attributes["id"].InnerText, dialogueTree.Attributes["name"].InnerText, dList.ToArray());
     }
 
-    private static int GetSpeakerId(XmlNode xmlNode)
+    private int GetSpeakerId(XmlNode xmlNode)
     {
         XmlNode speakerIndexXml = xmlNode.Attributes["speaker-index"];
 
@@ -222,7 +213,7 @@ public static class DialogueLoader
     }
 
 
-    private static TagFilteredDialogue ExtractTags(string taggedString)
+    private TagFilteredDialogue ExtractTags(string taggedString)
     {
         bool isClosingTag;
 
@@ -333,7 +324,7 @@ public class DialogueTree
     {
         get 
         {
-            return Dialogues.ContainsKey(DialogueLoader.DialogueStartId) ? Dialogues[DialogueLoader.DialogueStartId] : null; 
+            return Dialogues.ContainsKey(DialogueLoader.current.DialogueStartId) ? Dialogues[DialogueLoader.current.DialogueStartId] : null; 
         }
     }
 

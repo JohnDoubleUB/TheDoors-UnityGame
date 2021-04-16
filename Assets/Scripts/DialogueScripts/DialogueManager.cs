@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour
 
     public void LoadDialogueTree(string dialogueObjectName, string treeName)
     {
-        DialogueObject newlyLoadedDialogueObject = DialogueLoader.DialogueObjects.First(x => x.Name == dialogueObjectName);
+        DialogueObject newlyLoadedDialogueObject = DialogueLoader.current.DialogueObjects.First(x => x.Name == dialogueObjectName);
         DialogueTree newlyLoadedDialogueTree = newlyLoadedDialogueObject != null ? newlyLoadedDialogueObject.DialogueTrees.First(x => x.Name == treeName) : null;
 
         if (newlyLoadedDialogueTree != null)

@@ -63,6 +63,8 @@ public class GameManager : FlagManager
         isMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
         FindKeyComponents();
 
+        if(ProjectilePatternLoader.current.test) print("oh yeah");
+
         if (!isMainMenu) LoadSessionData();
     }
 

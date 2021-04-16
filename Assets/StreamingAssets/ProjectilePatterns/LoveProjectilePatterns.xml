@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     ~~Pattern Guide~~
+     
+     <projectile-pattern duration="10" name="testpattern" default-timing="1">
+        
+        Player and player relative pattern tags
+        <player timing="0.6969"/> 
+        <player timing="0.4">0</player> Same as above except body says 0, 0 index is still the player!
+        <player>1</player>
+        <player>2</player>
+        <player>3</player>
+        <player>4</player>
+        <player timing="20.05" fire-index="2">5</player>
+
+        Player and player relative pattern tags for item!
+        <player-item timing="0.687"/>
+        <player-item>0</player-item>
+        <player-item>1</player-item>
+        <player-item>2</player-item>
+        <player-item>3</player-item>
+        <player-item>4</player-item>
+        <player-item timing="21.2" fire-index="0">5</player-item>
+
+        Random tags for random platforms
+        <random/>
+        <random timing="32.5"/>
+        <random timing="5.55" fire-index="69"></random>
+
+        Random tags for random platforms but for items!
+        <random-item/>
+        <random-item timing="45.7"/>
+        <random-item timing="78.6" fire-index="5">this shouldn't matter</random-item>
+
+        Target platform
+        <target/> Same as above, self closing tag is assumed to be platform point 0
+        <target timing="37.4">0</target>
+        <target>1</target>
+        <target>2</target>
+        <target>3</target>
+        <target>4</target>
+        <target timing="32.7" fire-index="88">5</target>
+
+        Target platform but for item
+        <target-item/>
+        <target-item timing="2.22" fire-index="9">0</target-item> Same as above, self closing tag is assumed to be platform point 0
+        <target-item>1</target-item>
+        <target-item>2</target-item>
+        <target-item>3</target-item>
+        <target-item>4</target-item>
+        <target-item>5</target-item>
+
+
+    </projectile-pattern>
+
+-->
+<projectile-patterns>
+
+    <!-- 1 player pattern -->
+    <projectile-pattern duration="10" name="playerPattern1" default-timing="0.7"><player/></projectile-pattern>
+    <projectile-pattern duration="5" name="playerPattern2"><player/></projectile-pattern>
+    <projectile-pattern duration="5" name="playerPattern3" default-timing="2"><player/></projectile-pattern>
+    
+    <!-- 2 player pattern random -->
+    <projectile-pattern name="playerAnd2RandomPattern1" default-timing="10" duration="10">
+        <player timing="0.5"/>
+        <random/>
+        <random/>
+    </projectile-pattern>
+    <projectile-pattern name="playerAnd2RandomPattern2" default-timing="10">
+        <player timing="0.5"/>
+        <random/>
+        <random/>
+        <player timing="2"/>
+        <random/>
+    </projectile-pattern>
+    <projectile-pattern name="playerAnd2RandomPattern3" default-timing="10" duration="7">
+        <player timing="1"/>
+        <random/>
+        <random/>
+        <player timing="2"/>
+        <random/>
+    </projectile-pattern>
+
+    <!-- 3 Wave Pattern -->
+    <projectile-pattern name="wavePattern1" default-timing="2" duration="10">
+        <target/>
+        <target>1</target>
+        <target>2</target>
+        <target>3</target>
+        <target>4</target>
+        <target>5</target>
+        <target timing="2">4</target>
+        <target>3</target>
+        <target>2</target>
+        <target>1</target>
+    </projectile-pattern>
+    <projectile-pattern name="wavePattern2" default-timing="3" duration="7">
+        <target/>
+        <target>1</target>
+        <target>2</target>
+        <target>3</target>
+        <target>4</target>
+        <target>5</target>
+        <target timing="1.7">4</target>
+        <target>3</target>
+        <target>2</target>
+        <target>1</target>
+    </projectile-pattern>
+    <projectile-pattern name="wavePattern3" default-timing="3" duration="7">
+        <target/>
+        <target>1</target>
+        <target>2</target>
+        <target>3</target>
+        <target>4</target>
+        <target>5</target>
+        <target timing="1.5">4</target>
+        <target>3</target>
+        <target>2</target>
+        <target>1</target>
+        <player/>
+    </projectile-pattern>
+
+    <!-- 4 Spray patterns -->
+    <projectile-pattern name="sprayPattern1" default-timing="1.7" duration="8">
+        <target/> <target timing="100">5</target>
+        <target>1</target> <target timing="100">4</target>
+        <target>2</target> <target timing="100">3</target>
+        <target>1</target> <target timing="100">4</target>
+        <target/> <target timing="100">5</target>
+    </projectile-pattern>
+    <projectile-pattern name="sprayPattern2" default-timing="5" duration="8">
+        <target timing="1"/> <target timing="10"/> <target timing="10"/> <target timing="10"/> <target timing="10"/> <target timing="10"/>
+        <target>1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target>
+        <target>2</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target>
+        <target>3</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target>
+        <target>4</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target>
+        <target timing="1">5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target>
+        <target>4</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target>
+        <target>3</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target>
+        <target>2</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target>
+        <target>1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target>
+    </projectile-pattern>
+    <projectile-pattern name="sprayPattern3" default-timing="8" duration="8">
+        <target timing="1"/> 
+        <target timing="10"/> <target timing="10"/> <target timing="10"/> <target timing="10"/> <target timing="10"/>
+        <target/> <target timing="10"/> <target timing="10"/> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target>
+        <target/> <target timing="10"/> <target timing="10">1</target>  <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target>
+        <target/> <target timing="10">1</target> <target timing="10">2</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target>
+        <target>1</target> <target timing="10">2</target> <target timing="10">3</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target>
+        <target timing="1">5</target> 
+        <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target>
+        <target>5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target>
+        <target>5</target> <target timing="10">5</target> <target timing="10">4</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target>
+        <target>5</target> <target timing="10">4</target> <target timing="10">3</target> <target timing="10">2</target> <target timing="10">2</target>  <target timing="10">2</target>
+        <target>4</target> <target timing="10">3</target> <target timing="10">2</target> <target timing="10">1</target>  <target timing="10">1</target> <target timing="10">1</target>
+    </projectile-pattern>
+    <projectile-pattern name="sprayPattern4" default-timing="15" duration="8">
+        <target timing="1"/>
+        <target timing="100">5</target> <target timing="100">4</target> <target timing="100">3</target>
+        <target timing="10"/> <target timing="10"/> <target timing="10"/> <target timing="10"/> <target timing="10"/> <player timing="100"/>
+        <target/> <target timing="100">5</target> <target timing="100">4</target>
+        <target timing="10"/> <target timing="10"/> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target> <player timing="100"/>
+        <target/> <target timing="100">5</target>
+        <target timing="10"/> <target timing="10">1</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target> <player timing="100"/>
+        <target/> <target timing="10">1</target> <target timing="10">2</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target> <player timing="100"/>
+        <target>1</target> <target timing="10">2</target> <target timing="10">3</target> <target timing="10">4</target> <target timing="10">4</target>  <target timing="10">4</target>
+        <target timing="1">5</target>
+        <target timing="100"/> <target timing="100">1</target> <target timing="100">2</target>
+        <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target> <target timing="10">5</target>  <target timing="10">5</target> <player timing="100"/>
+        <target>5</target> <target timing="100" /> <target timing="100">1</target>
+        <target timing="10">5</target> <target timing="10">5</target> <target timing="10">4</target> <target timing="10">4</target> <target timing="10">4</target> <player timing="100"/>
+        <target>5</target> <target timing="100"/>
+        <target timing="10">5</target> <target timing="10">4</target> <target timing="10">3</target> <target timing="10">3</target> <target timing="10">3</target> <player timing="100"/>
+        <target>5</target> <target timing="10">4</target> <target timing="10">3</target> <target timing="10">2</target> <target timing="10">2</target> <target timing="10">2</target> <player timing="100"/>
+        <target>4</target> <target timing="10">3</target> <target timing="10">2</target> <target timing="10">1</target> <target timing="10">1</target> <target timing="10">1</target>
+    </projectile-pattern>
+
+    <!-- 5 player focus patterns -->
+    <projectile-pattern name="playerFocus1" default-timing="5" duration="10">
+        <player timing="1"/>
+        <player>3</player>
+        <player>4</player>
+        <player>5</player>
+        <player timing="1"/>
+        <player>2</player>
+        <player>3</player>
+        <player>4</player>
+        <player>5</player>
+    </projectile-pattern>
+    <projectile-pattern name="playerFocus2" default-timing="1000" duration="7">
+        <player timing="0.5">2</player> <player>3</player> <player>4</player> <player>5</player> <player>1</player>
+        <player>2</player> <player>3</player> <player>4</player> <player>5</player> <player>1</player>
+        <player>2</player> <player>3</player> <player>4</player> <player>5</player> <player>1</player>
+        <player>2</player> <player>3</player> <player>4</player> <player>5</player> <player>1</player>
+        <player timing="4"/> <player/> <player/>
+    </projectile-pattern>
+    <projectile-pattern name="playerFocus3" default-timing="20" duration="7">
+        <player timing="1"/> <player/> <player/> <player/> <player/>
+        <player timing="3"/> <player/> <player>1</player> <player>1</player> <player>2</player> <player>2</player>
+    </projectile-pattern>
+
+    <!-- 6 final pattern -->
+    <projectile-pattern name="finalPattern" default-timing="6" duration="7">
+        <player>2</player>
+        <player>4</player>
+        <player>1</player>
+        <player>3</player>
+        <player>5</player>
+        <player>4</player>
+        <player>1</player>
+        <player>3</player>
+    </projectile-pattern>
+
+</projectile-patterns>
