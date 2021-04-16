@@ -14,7 +14,13 @@ public class ProjectilePatternLoader : XmlLoader
     {
         FilePath = "ProjectilePatterns";
         TopLevelNode = "projectile-patterns";
-        LoadAllProjectilePatternStages();
+        ProjectilePatternStage[] why = LoadAllProjectilePatternStages();
+        Debug.Log("Order : " + string.Join(", ", why.Select(x => x.stageNumber)));
+
+        foreach (ProjectilePatternStage w in why) 
+        {
+            Debug.Log("Stage " + w.stageNumber + ": " + string.Join(", ", w.patterns.Select(x => x.Name)));
+        }
     }
 
     private ProjectilePatternStage[] LoadAllProjectilePatternStages()
@@ -22,12 +28,27 @@ public class ProjectilePatternLoader : XmlLoader
 
         LoadedXmlFile[] pFiles = LoadAllXmlFiles();
 
+        Debug.Log("Files: " + pFiles.Length);
+        var allStages = pFiles.SelectMany(pFile => 
+        {
+            XmlNodeList xmlStageNodes = pFile.Node.SelectNodes("stage");
+            return xmlStageNodes.Cast<XmlNode>();
+        });
+
+        foreach (XmlNode t in allStages) 
+        {
+            Debug.Log(t.Attributes["no"].InnerText);
+        }
+
+
+
         List<ProjectilePatternStage> patternStages = new List<ProjectilePatternStage>();
 
         foreach (LoadedXmlFile pFile in pFiles)
         {
             //Read in the stage nodes
             XmlNodeList xmlStageNodes = pFile.Node.SelectNodes("stage");
+            Debug.Log("stage count: " + xmlStageNodes.Count);
 
             //Do magic
             ProjectilePatternStage[] orderedStagesNew = new List<XmlNode>(xmlStageNodes.Cast<XmlNode>())
