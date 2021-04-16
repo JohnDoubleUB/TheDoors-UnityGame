@@ -38,10 +38,11 @@ public class ProjectilePattern
 public class ProjectilePatternStage 
 {
     public ProjectilePattern[] patterns;
-
-    public ProjectilePatternStage(IEnumerable<ProjectilePattern> patterns, IEnumerable<float> patternTimings) 
+    public int stageNumber;
+    public ProjectilePatternStage(IEnumerable<ProjectilePattern> patterns, int stageNumber = 0) 
     {
         this.patterns = patterns.ToArray();
+        this.stageNumber = stageNumber;
     }
 }
 

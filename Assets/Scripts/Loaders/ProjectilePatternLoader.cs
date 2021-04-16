@@ -14,58 +14,71 @@ public class ProjectilePatternLoader : XmlLoader
     {
         FilePath = "ProjectilePatterns";
         TopLevelNode = "projectile-patterns";
-        LoadAllProjectilePatterns();
+        LoadAllProjectilePatternStages();
     }
 
-    private ProjectilePattern[] LoadAllProjectilePatterns()
+    private ProjectilePatternStage[] LoadAllProjectilePatternStages()
     {
 
         LoadedXmlFile[] pFiles = LoadAllXmlFiles();
-        List<ProjectilePattern> projectilePatterns = new List<ProjectilePattern>();
-        ProjectilePatternTarget[] projectilePatternTargets;
+
+        List<ProjectilePatternStage> patternStages = new List<ProjectilePatternStage>();
 
         foreach (LoadedXmlFile pFile in pFiles)
         {
             //Read in the stage nodes
             XmlNodeList xmlStageNodes = pFile.Node.SelectNodes("stage");
 
-
-            IEnumerable<XmlNode> orderedStages = new List<XmlNode>(xmlStageNodes.Cast<XmlNode>())
-                .OrderBy(xmlStageNode => 
+            //Do magic
+            ProjectilePatternStage[] orderedStagesNew = new List<XmlNode>(xmlStageNodes.Cast<XmlNode>())
+                .Select(xmlStageNode =>
                 {
+                    //For each stage node, get the stage number
                     XmlNode stageNumberNode = xmlStageNode.Attributes["no"];
-                    return stageNumberNode != null && int.TryParse(stageNumberNode.InnerText, out int stageNumberParsed) ? stageNumberParsed : 0;
-                });
 
+                    //Then create a new ProjectilePatternStage
+                    return new ProjectilePatternStage(
+                        GetAllProjectilePatternsFromXmlNodeList(xmlStageNode.SelectNodes("projectile-pattern")), //Convert all the "projectile-pattern" nodes within the stage into a collection of projectile patterns
+                        stageNumberNode != null && int.TryParse(stageNumberNode.InnerText, out int stageNumberParsed) ? stageNumberParsed : 0 //Store the stage number
+                        );
+                })
+                //.OrderBy(x => x.stageNumber) //Order by stage number
+                .ToArray(); //Convert to array
 
-
-
-            //Grab the projectile nodes
-            XmlNodeList xmlPatternNodes = pFile.Node.SelectNodes("projectile-pattern");
-
-            foreach (XmlNode xmlPatternNode in xmlPatternNodes)
-            {
-                projectilePatternTargets = new List<XmlNode>(xmlPatternNode.ChildNodes.Cast<XmlNode>())
-                    .Where(x => x.NodeType == XmlNodeType.Element)
-                    .Select(x => ConvertToPatternTarget(x))
-                    .ToArray();
-
-                //Get duration, name and default timing
-                XmlNode durationFlagNode = xmlPatternNode.Attributes["duration"];
-                XmlNode nameFlagNode = xmlPatternNode.Attributes["name"];
-                XmlNode defaultTimingFlagNode = xmlPatternNode.Attributes["default-timing"];
-
-                projectilePatterns.Add(
-                    new ProjectilePattern(
-                        projectilePatternTargets,
-                        defaultTimingFlagNode != null && float.TryParse(defaultTimingFlagNode.InnerText, out float defaultTiming) ? defaultTiming : 1f,
-                        durationFlagNode != null && float.TryParse(durationFlagNode.InnerText, out float duration) ? duration : 5f,
-                        nameFlagNode != null ? nameFlagNode.InnerText : ""
-                    ));
-            }
+            patternStages.AddRange(orderedStagesNew); //Idc what files these are from
         }
 
-        return projectilePatterns.ToArray();
+        //Order by stage number after combining all the files
+        return patternStages
+            .OrderBy(x=> x.stageNumber)
+            .ToArray();
+    }
+
+    private IEnumerable<ProjectilePattern> GetAllProjectilePatternsFromXmlNodeList(XmlNodeList nodeList) 
+    {
+        //Return a collection of ProjectilePatterns (we can then assign these to a given stage)
+        return new List<XmlNode>(nodeList.Cast<XmlNode>()).Select(xmlPatternNode =>
+        {
+            //Convert all the pattern targets into a list
+            ProjectilePatternTarget[] projectilePatternTargets = new List<XmlNode>(xmlPatternNode.ChildNodes.Cast<XmlNode>())
+                .Where(x => x.NodeType == XmlNodeType.Element)
+                .Select(x => ConvertToPatternTarget(x))
+                .ToArray();
+
+            //Get the any projectile pattern data
+            XmlNode durationFlagNode = xmlPatternNode.Attributes["duration"];
+            XmlNode nameFlagNode = xmlPatternNode.Attributes["name"];
+            XmlNode defaultTimingFlagNode = xmlPatternNode.Attributes["default-timing"];
+
+            //Create the pattern with these pattern targets
+            return new ProjectilePattern(
+                    projectilePatternTargets,
+                    defaultTimingFlagNode != null && float.TryParse(defaultTimingFlagNode.InnerText, out float defaultTiming) ? defaultTiming : 1f,
+                    durationFlagNode != null && float.TryParse(durationFlagNode.InnerText, out float duration) ? duration : 5f,
+                    nameFlagNode != null ? nameFlagNode.InnerText : ""
+                    );
+
+        });
     }
 
     private ProjectilePatternTarget ConvertToPatternTarget(XmlNode xmlNode) 
