@@ -41,6 +41,7 @@ public class LoveLevelManager : MonoBehaviour
 
     private float testIndexCounter = 0;
     private ProjectilePatternHandler testPatternManager;
+    private ProjectilePatternHandlerV2 testPatternManagerV2;
     private bool isFiringPhase;
 
     public bool fastIntro = true;
@@ -228,6 +229,8 @@ public class LoveLevelManager : MonoBehaviour
             playerFocus1, playerFocus2, playerFocus3,
             finalPattern
             );
+
+        testPatternManagerV2 = new ProjectilePatternHandlerV2(platformPoints, currentPlayer.transform, ProjectilePatternLoader.current.PatternStages);
     }
 
     public Transform MovePlayerToNewPositionPoint(int positionChange)
@@ -265,7 +268,6 @@ public class LoveLevelManager : MonoBehaviour
             Transform target = testPatternManager.GetCurrentProjectileTargetTransform();
             FireAtTarget(target.position);
             testPatternManager.NextProjectileTarget();
-
             testIndexCounter = 0f;
         }
         else
@@ -406,6 +408,10 @@ public class LoveLevelManager : MonoBehaviour
             case 0:
                 IntroStageUpdate();
                 break;
+            case 2:
+                FireProjectilePatterns();
+                break;
+
         }
     }
 
