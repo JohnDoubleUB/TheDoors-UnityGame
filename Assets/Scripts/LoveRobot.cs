@@ -12,6 +12,7 @@ public class LoveRobot : MonoBehaviour
     public float projectileRecoilAmount = -0.5f;
 
     public Rigidbody2D projectilePrefab;
+    public Rigidbody2D projectileItemPrefab;
     //public Transform testTarget; //TODO: Remove this
     public Transform projectileSpawnPoint;
 
@@ -114,6 +115,17 @@ public class LoveRobot : MonoBehaviour
     public void LaunchProjectileAtTarget(Vector3 target)
     {
         Rigidbody2D obj = Instantiate(projectilePrefab, projectileSpawnPoint.position, Quaternion.identity);
+        obj.gravityScale = Random.Range(2f, 4f);
+        Vector3 Vo = CalculateVelocity(target, projectileSpawnPoint.position, Random.Range(projectileAirTime, projectileAirTime * 1.1f), obj.gravityScale);
+        obj.velocity = Vo;
+        obj.angularVelocity += Vo.x > 0 ? -500 : 500;
+        //Add recoil when firing projectiles
+        recoil = projectileRecoilAmount;
+    }
+
+    public void LaunchItemProjectileAtTarget(Vector3 target)
+    {
+        Rigidbody2D obj = Instantiate(projectileItemPrefab, projectileSpawnPoint.position, Quaternion.identity);
         obj.gravityScale = Random.Range(2f, 4f);
         Vector3 Vo = CalculateVelocity(target, projectileSpawnPoint.position, Random.Range(projectileAirTime, projectileAirTime * 1.1f), obj.gravityScale);
         obj.velocity = Vo;

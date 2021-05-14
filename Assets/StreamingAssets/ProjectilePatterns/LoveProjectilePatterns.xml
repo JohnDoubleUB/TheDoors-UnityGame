@@ -58,7 +58,10 @@
 
     <!-- 1 player pattern -->
     <stage no="0">
-        <projectile-pattern duration="10" name="playerPattern1" default-timing="0.7"><player/></projectile-pattern>
+        <projectile-pattern duration="10" name="playerPattern1" default-timing="0.7">
+            <player/>
+            <random-item/> <!-- Don't make items the first projectile in a pattern because I'm too lazy to fix a bug -->
+        </projectile-pattern>
         <projectile-pattern duration="5" name="playerPattern2"><player/></projectile-pattern>
         <projectile-pattern duration="5" name="playerPattern3" default-timing="2"><player/></projectile-pattern>
     </stage>

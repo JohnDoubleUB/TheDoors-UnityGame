@@ -186,6 +186,8 @@ MonoBehaviour:
   projectileRecoilAmount: -0.5
   projectilePrefab: {fileID: 168862806595554883, guid: 649c280a74712034d89c951bb2f52e5f,
     type: 3}
+  projectileItemPrefab: {fileID: 168862806595554883, guid: c8050148386f16748abb0f58157facd3,
+    type: 3}
   projectileSpawnPoint: {fileID: 2144420052292496813}
   propeller: {fileID: 2144420052577819147}
   compartmentAnimator: {fileID: 1226233294358482305}

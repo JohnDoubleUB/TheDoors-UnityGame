@@ -65,17 +65,23 @@ public class ProjectilePatternHandlerV2
         }
     }
 
-    public Transform GetCurrentProjectileTargetTransform()
+    public Transform GetCurrentProjectileTargetTransform(bool includeItems = false)
     {
+        if (!includeItems && currentProjectile.IsStageItem) NextProjectileTarget(includeItems);
+        
         return GetProjectilePatternTargetTransform(currentProjectile);
     }
 
-    public void NextProjectileTarget() 
+    public void NextProjectileTarget(bool includeItems = false) 
     {
-        currentPattern = projectilePatternStages[stageIndex].patterns[patternIndex];
-        projectileIndex = projectileIndex + 1 < currentPattern.PatternTargets.Length ? projectileIndex + 1 : 0;
-        currentProjectile = currentPattern.PatternTargets[projectileIndex];
-        currentDelay = currentProjectile.TimingModifier <= 0 ? currentPattern.DefaultTiming : currentProjectile.TimingModifier;
+        do
+        {
+            currentPattern = projectilePatternStages[stageIndex].patterns[patternIndex];
+            projectileIndex = projectileIndex + 1 < currentPattern.PatternTargets.Length ? projectileIndex + 1 : 0;
+            currentProjectile = currentPattern.PatternTargets[projectileIndex];
+            currentDelay = currentProjectile.TimingModifier <= 0 ? currentPattern.DefaultTiming : currentProjectile.TimingModifier;
+        } 
+        while (!includeItems && currentProjectile.IsStageItem);
     }
 
     public Transform GetNextProjectileTargetTransform()
@@ -165,24 +171,26 @@ public class ProjectilePatternHandlerV2
         return ClosestPlatformPointToPlayer;
     }
 
-    public void SetPatternIndex(int patternIndex) 
+    public bool SetPatternIndex(int patternIndex) //Returns true if value is set to the provided pattern index and false if the index has looped either from last index to first or first to last
     {
-        this.patternIndex = patternIndex >= 0 && patternIndex < projectilePatternStages[stageIndex].patterns.Length ? patternIndex : 0;
-        
-        //The projectile list has changed so we reset the index to 0 again!
+        bool patternIndexIsValid = patternIndex >= 0 && patternIndex < projectilePatternStages[stageIndex].patterns.Length;
+
+        this.patternIndex = patternIndexIsValid ? patternIndex : 0;
         projectileIndex = 0;
 
+
         UpdateCurrent();
+        return patternIndexIsValid;
     }
 
-    public void SetToNextPattern()
+    public bool SetToNextPattern() // return boolean true if pattern is infact next pattern (i.e. we haven't looped back to the first pattern)
     {
-        SetPatternIndex(patternIndex + 1);
+        return SetPatternIndex(patternIndex + 1);
     }
 
-    public void SetPreviousToPattern()
+    public bool SetPreviousToPattern()
     {
-        SetPatternIndex(patternIndex - 1);
+        return SetPatternIndex(patternIndex - 1);
     }
 
     public void SetStage(int stageIndex) 
