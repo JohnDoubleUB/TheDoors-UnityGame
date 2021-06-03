@@ -123,7 +123,7 @@ public class LoveRobot : MonoBehaviour
         recoil = projectileRecoilAmount;
     }
 
-    public void LaunchItemProjectileAtTarget(Vector3 target)
+    public LoveProjectileItem LaunchItemProjectileAtTarget(Vector3 target)
     {
         Rigidbody2D obj = Instantiate(projectileItemPrefab, projectileSpawnPoint.position, Quaternion.identity);
         obj.gravityScale = Random.Range(2f, 4f);
@@ -132,6 +132,8 @@ public class LoveRobot : MonoBehaviour
         obj.angularVelocity += Vo.x > 0 ? -500 : 500;
         //Add recoil when firing projectiles
         recoil = projectileRecoilAmount;
+
+        return obj.gameObject.GetComponent<LoveProjectileItem>();
     }
 
     public void SetNewDestination(Vector3 destination, bool fastMovement = false) 

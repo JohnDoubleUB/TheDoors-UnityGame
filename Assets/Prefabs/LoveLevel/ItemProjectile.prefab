@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 168862806595554883}
   - component: {fileID: 6785250434158192797}
   - component: {fileID: 6352417589897379527}
-  m_Layer: 9
+  - component: {fileID: 72311115260898912}
+  m_Layer: 10
   m_Name: ItemProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +133,7 @@ MonoBehaviour:
   - {x: -0.95984983, y: 1.492177, z: 0}
   m_ShapePathHash: -1744853379
   m_Mesh: {fileID: 0}
-  m_InstanceId: 38164
+  m_InstanceId: 22768
 --- !u!61 &6352417589897379527
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -159,3 +160,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.78, y: 3.23}
   m_EdgeRadius: 0
+--- !u!114 &72311115260898912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 168862806595554882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d6fbf5f587b5b4686f8b1a7c152b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

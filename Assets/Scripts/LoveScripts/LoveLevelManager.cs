@@ -43,10 +43,11 @@ public class LoveLevelManager : MonoBehaviour
     public int playerPointPositionIndex;
 
     private float testIndexCounter = 0; //This shouldn't have "test on the start of it"
-    private ProjectilePatternHandler testPatternManager;
-    private ProjectilePatternHandlerV2 testPatternManagerV2;
+    private ProjectilePatternHandler testPatternManagerV2;
     private bool isFiringPhase;
 
+    public LoveProjectileItem PickupItem;
+ 
     public bool fastIntro = true;
 
     private void Awake()
@@ -66,7 +67,7 @@ public class LoveLevelManager : MonoBehaviour
         currentPlayer.gameObject.transform.position = platformPoints[playerPointPositionIndex].position;
         currentPlayer.gameObject.transform.parent = platformPoints[playerPointPositionIndex];
 
-        testPatternManagerV2 = new ProjectilePatternHandlerV2(platformPoints, currentPlayer.transform, ProjectilePatternLoader.current.PatternStages);
+        testPatternManagerV2 = new ProjectilePatternHandler(platformPoints, currentPlayer.transform, ProjectilePatternLoader.current.PatternStages);
     }
 
     public Transform MovePlayerToNewPositionPoint(int positionChange)
@@ -97,7 +98,7 @@ public class LoveLevelManager : MonoBehaviour
 
     }
 
-    private void FireProjectilePatterns2() 
+    private void FireProjectilePatterns() 
     {
         if (!patternTimerUpdated) 
         {
@@ -110,10 +111,10 @@ public class LoveLevelManager : MonoBehaviour
         if (testIndexCounter >= 1.0f)
         {
             Transform target = testPatternManagerV2.GetCurrentProjectileTargetTransform(patternStageLooped);
-            FireAtTarget(target.position, patternStageLooped && testPatternManagerV2.CurrentProjectile.IsStageItem);
+            FireAtTarget(target.position, patternStageLooped && testPatternManagerV2.CurrentProjectile.IsStageItem && PickupItem == null);
             //if (testPatternManagerV2.CurrentProjectile.IsStageItem) Debug.Log("is stage item!");
 
-            testPatternManagerV2.NextProjectileTarget(patternStageLooped);
+            testPatternManagerV2.NextProjectileTarget(patternStageLooped && PickupItem == null); //if there is already a pickup item then don't shoot another!
             testIndexCounter = 0f;
         }
         else
@@ -254,7 +255,7 @@ public class LoveLevelManager : MonoBehaviour
                 IntroStageUpdate();
                 break;
             case 2:
-                FireProjectilePatterns2();
+                FireProjectilePatterns();
                 //FireProjectilePhase(); //This will handle all the firing of projectiles
                 break;
 
@@ -458,7 +459,7 @@ public class LoveLevelManager : MonoBehaviour
     {
         if (item)
         {
-            loveRobots[Random.Range(0, loveRobots.Count)].LaunchItemProjectileAtTarget(target);
+            PickupItem = loveRobots[Random.Range(0, loveRobots.Count)].LaunchItemProjectileAtTarget(target);
         }
         else 
         {

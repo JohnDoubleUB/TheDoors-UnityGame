@@ -9,6 +9,7 @@ public class LovePlayer : Player
     public float dashAmount = 2;
 
     public SpriteRenderer playerSprite;
+    public Transform ItemPoint;
 
     private float count = 0.0f;
     private bool moving;
@@ -19,6 +20,15 @@ public class LovePlayer : Player
     private Vector3 archPosition;
     private Transform newPositionTransform;
     private float lightUpTimer = 1f;
+
+    private int itemLayer;
+
+    private new void Awake()
+    {
+        base.Awake();
+        itemLayer = LayerMask.NameToLayer("Item");
+    }
+
     public override void MoveOnceInDirection(InputMapping input)
     {
         if (currentDashCount < dashAmount)
@@ -35,6 +45,15 @@ public class LovePlayer : Player
                     if (playerSprite != null) playerSprite.flipX = false;
                     break;
             }
+        }
+    }
+
+    public override void Jump()
+    {
+        if (LoveLevelManager.current.PickupItem != null && LoveLevelManager.current.PickupItem.IsAttatchedToPlayer) 
+        {
+            LoveLevelManager.current.PickupItem.transform.parent = null;
+            LoveLevelManager.current.PickupItem.FireAtTarget(LoveLevelManager.current.platformPoints[0]) ;
         }
     }
 
@@ -97,6 +116,17 @@ public class LovePlayer : Player
             }
 
             if (currentDashCount != 0 && count > 0.65f) currentDashCount = 0;
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        LoveProjectileItem loveProjectileItem = LoveLevelManager.current.PickupItem;
+
+        if (loveProjectileItem != null && collision.gameObject == loveProjectileItem.gameObject) 
+        {
+
+            loveProjectileItem.Pickup();
+            loveProjectileItem.transform.SetParent(ItemPoint, false);
         }
     }
 }

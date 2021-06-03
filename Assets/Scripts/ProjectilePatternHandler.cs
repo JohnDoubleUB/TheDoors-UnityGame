@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ProjectilePatternHandlerV2
+public class ProjectilePatternHandler
 {
     private List<Transform> platformTargets;
     private Transform playerTarget; 
@@ -53,7 +53,7 @@ public class ProjectilePatternHandlerV2
     public int CurrentPatternIndex { get { return patternIndex; } }
     public int CurrentProjectileIndex { get { return projectileIndex; } }
 
-    public ProjectilePatternHandlerV2(IEnumerable<Transform> platformTargets, Transform playerTarget, params ProjectilePatternStage[] projectilePatternStages)
+    public ProjectilePatternHandler(IEnumerable<Transform> platformTargets, Transform playerTarget, params ProjectilePatternStage[] projectilePatternStages)
     {
         this.platformTargets = platformTargets.ToList();
         this.playerTarget = playerTarget;
