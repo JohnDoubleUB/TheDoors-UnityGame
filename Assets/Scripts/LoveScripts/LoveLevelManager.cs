@@ -80,7 +80,7 @@ public class LoveLevelManager : MonoBehaviour
         return platformPoints[playerPointPositionIndex];
     }
 
-    public void SpawnParticleEffectAtPosition(Vector3 position)
+    public void SpawnParticleEffectAtPosition(Vector3 position, bool hitClosestPlatform = true)
     {
         if (heartSmashParticleEffect != null)
         {
@@ -88,14 +88,22 @@ public class LoveLevelManager : MonoBehaviour
             heartSmashParticleEffect.Play();
         }
 
-        //Hit platform
-        LovePlatform closestPlatform = platforms.OrderBy(x => Vector3.Distance(x.transform.position, position)).First();
-
-        if (closestPlatform != null)
+        if (hitClosestPlatform) 
         {
-            closestPlatform.TakeHit(position);
-        }
+            //Hit platform
+            LovePlatform closestPlatform = platforms.OrderBy(x => Vector3.Distance(x.transform.position, position)).First();
 
+            if (closestPlatform != null)
+            {
+                closestPlatform.TakeHit(position);
+            }
+        }
+    }
+
+    public void HitLoveRobot()
+    {
+        if (patternChangerTask != null && patternChangerTask.Running) patternChangerTask.Stop();
+        SpawnParticleEffectAtPosition(loveRobots[0].transform.position, false);
     }
 
     private void FireProjectilePatterns() 
