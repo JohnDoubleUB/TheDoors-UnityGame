@@ -53,7 +53,7 @@ public class LovePlayer : Player
         if (LoveLevelManager.current.PickupItem != null && LoveLevelManager.current.PickupItem.IsAttatchedToPlayer) 
         {
             LoveLevelManager.current.PickupItem.transform.parent = null;
-            LoveLevelManager.current.PickupItem.FireAtTarget(LoveLevelManager.current.loveRobots[0].transform);
+            LoveLevelManager.current.PickupItem.FireAtTarget(LoveLevelManager.current.loveRobot.transform);
         }
     }
 

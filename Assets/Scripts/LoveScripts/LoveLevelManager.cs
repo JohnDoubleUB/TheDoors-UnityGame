@@ -23,11 +23,11 @@ public class LoveLevelManager : MonoBehaviour
     public float shotSpeed = 0.5f;
     private float currentShotTime = 0f;
     private float lightDelayMultiplier = 1f;
-    //public Transform[] playerMovementPoints
 
     public LoveRobot loveRobotPrefab;
 
-    public List<LoveRobot> loveRobots = new List<LoveRobot>();
+    //public List<LoveRobot> loveRobots = new List<LoveRobot>();
+    public LoveRobot loveRobot;
 
     private bool phaseCompleted = true;
     private bool stageCompleted = true;
@@ -42,7 +42,7 @@ public class LoveLevelManager : MonoBehaviour
     public int phase = 0;
     public int playerPointPositionIndex;
 
-    private float testIndexCounter = 0; //This shouldn't have "test on the start of it"
+    private float projectileIntervalCounter = 0; //This shouldn't have "test on the start of it"
     private ProjectilePatternHandler testPatternManagerV2;
     private bool isFiringPhase;
 
@@ -102,8 +102,16 @@ public class LoveLevelManager : MonoBehaviour
 
     public void HitLoveRobot()
     {
-        if (patternChangerTask != null && patternChangerTask.Running) patternChangerTask.Stop();
-        SpawnParticleEffectAtPosition(loveRobots[0].transform.position, false);
+        //if (patternChangerTask != null && patternChangerTask.Running) patternChangerTask.Stop();
+        SpawnParticleEffectAtPosition(loveRobot.transform.position, false);
+        
+        if (loveRobot.Hit()) 
+        {
+            if (patternChangerTask != null && patternChangerTask.Running) patternChangerTask.Stop();
+            isFiringPhase = false;
+            projectileIntervalCounter = 0;
+        }
+
     }
 
     private void FireProjectilePatterns() 
@@ -116,18 +124,18 @@ public class LoveLevelManager : MonoBehaviour
             Debug.Log("Pattern " + testPatternManagerV2.CurrentPattern.Name);
         }
 
-        if (testIndexCounter >= 1.0f)
+        if (projectileIntervalCounter >= 1.0f)
         {
             Transform target = testPatternManagerV2.GetCurrentProjectileTargetTransform(patternStageLooped);
             FireAtTarget(target.position, patternStageLooped && testPatternManagerV2.CurrentProjectile.IsStageItem && PickupItem == null);
             //if (testPatternManagerV2.CurrentProjectile.IsStageItem) Debug.Log("is stage item!");
 
             testPatternManagerV2.NextProjectileTarget(patternStageLooped && PickupItem == null); //if there is already a pickup item then don't shoot another!
-            testIndexCounter = 0f;
+            projectileIntervalCounter = 0f;
         }
         else
         {
-            testIndexCounter += Time.deltaTime * testPatternManagerV2.CurrentDelay;
+            projectileIntervalCounter += Time.deltaTime * testPatternManagerV2.CurrentDelay;
         }
     }
 
@@ -222,13 +230,16 @@ public class LoveLevelManager : MonoBehaviour
             
             case 1:
                 //Start patrol and Open head
-                foreach (LoveRobot lR in loveRobots)
-                {
-                    lR.SetOpenBody(true);
-                }
+                loveRobot.SetOpenBody(true);
+                
+                //foreach (LoveRobot lR in loveRobots)
+                //{
+                //    lR.SetOpenBody(true);
+                //}
                 CompletePhaseAfterSeconds(2);
                 break;
             case 2:
+                isFiringPhase = true;
                 CompleteStage();
                 break;
         }
@@ -263,7 +274,7 @@ public class LoveLevelManager : MonoBehaviour
                 IntroStageUpdate();
                 break;
             case 2:
-                FireProjectilePatterns();
+                if(isFiringPhase) FireProjectilePatterns();
                 //FireProjectilePhase(); //This will handle all the firing of projectiles
                 break;
 
@@ -291,7 +302,7 @@ public class LoveLevelManager : MonoBehaviour
     {
         if (npcConvoCount < loveNpcData.DialogueRootings.Count) 
         {
-            isFiringPhase = false;
+            //isFiringPhase = false; ?
             DialogueManager.current.LoadDialogueTree(loveNpcData.DialogueObjectName, loveNpcData.DialogueRootings[npcConvoCount].Name);
             npcConvoCount++;
         }
@@ -357,9 +368,11 @@ public class LoveLevelManager : MonoBehaviour
             //Spawn this robot at a random spawn location
             LoveRobot loveRobot = Instantiate(loveRobotPrefab, spawnLocation, Quaternion.identity);
 
+
+            this.loveRobot = loveRobot;
             //Add this robot to the list of robots
-            if (!loveRobots.Contains(loveRobot))
-                loveRobots.Add(loveRobot);
+            //if (!loveRobots.Contains(loveRobot))
+            //    loveRobots.Add(loveRobot);
 
 
             return loveRobot;
@@ -467,11 +480,11 @@ public class LoveLevelManager : MonoBehaviour
     {
         if (item)
         {
-            PickupItem = loveRobots[Random.Range(0, loveRobots.Count)].LaunchItemProjectileAtTarget(target);
+            PickupItem = loveRobot.LaunchItemProjectileAtTarget(target); //loveRobots[Random.Range(0, loveRobots.Count)].LaunchItemProjectileAtTarget(target);
         }
         else 
         {
-            loveRobots[Random.Range(0, loveRobots.Count)].LaunchProjectileAtTarget(target);
+            loveRobot.LaunchProjectileAtTarget(target); //loveRobots[Random.Range(0, loveRobots.Count)].LaunchProjectileAtTarget(target);
         }
     }
 

@@ -36,6 +36,10 @@ public class LoveRobot : MonoBehaviour
     private float randomFloatSeed = 0f;
     private int randomIntSeed = 0;
 
+    private bool robotIsDead;
+    private float rotationOffset = 0;
+    private float heightOffset = 0;
+
     public bool BodyIsOpen
     {
         get { return compartmentAnimator.GetCurrentAnimatorStateInfo(0).IsTag("open"); }
@@ -76,6 +80,15 @@ public class LoveRobot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (robotIsDead) 
+        { 
+            rotationOffset += (10 * Time.deltaTime) * rotationOffset + 0.1f;
+            heightOffset += (1f * Time.deltaTime) * heightOffset + 0.1f;
+
+            if (heightOffset > 100) Destroy(gameObject); //???? ye
+        }
+
         //Generate our floaty effect!
         Vector2 floatValue = GenerateFloat((Time.time + randomIntSeed) * distance, floatSpeed);
 
@@ -95,11 +108,11 @@ public class LoveRobot : MonoBehaviour
         }
 
         //Set location and rotation of the body
-        transform.position = new Vector3(currentLocation.x + floatValue.x, currentLocation.y + floatValue.y + recoil, 0);//Vector3.up * Mathf.Sin(Time.time * 0.01f + 100 * Time.time);
-        transform.rotation = Quaternion.Euler(0, 0, 4 * floatValue.x);
+        transform.position = new Vector3(currentLocation.x + floatValue.x, currentLocation.y + floatValue.y + recoil - heightOffset, 0);//Vector3.up * Mathf.Sin(Time.time * 0.01f + 100 * Time.time);
+        transform.rotation = Quaternion.Euler(0, 0, (4 * floatValue.x) + rotationOffset);
 
         //Set rotation of the propeller
-        if (propeller != null) propeller.rotation = Quaternion.Euler(0, 0, 10 * floatValue.x);
+        if (propeller != null) propeller.rotation = Quaternion.Euler(0, 0, (10 * floatValue.x) + rotationOffset);
 
         //Set recoil up
         if (recoil < 0f)
@@ -197,6 +210,14 @@ public class LoveRobot : MonoBehaviour
         result.y = Vy;
         return result;
 
+    }
+
+    public bool Hit() 
+    {
+        robotIsDead = true;
+
+
+        return true;
     }
 
 }
