@@ -11,9 +11,10 @@ public class LoveRobot : MonoBehaviour
     public float projectileAirTime = 1.2f;
     public float projectileRecoilAmount = -0.5f;
 
+    public int HitPoints = 2;
+
     public Rigidbody2D projectilePrefab;
     public Rigidbody2D projectileItemPrefab;
-    //public Transform testTarget; //TODO: Remove this
     public Transform projectileSpawnPoint;
 
     //These are just the parts that we need to have access to
@@ -36,9 +37,11 @@ public class LoveRobot : MonoBehaviour
     private float randomFloatSeed = 0f;
     private int randomIntSeed = 0;
 
-    private bool robotIsDead;
     private float rotationOffset = 0;
     private float heightOffset = 0;
+    private float lightUpTimer = 1f;
+
+    private Task RobotDeathTask;
 
     public bool BodyIsOpen
     {
@@ -80,13 +83,13 @@ public class LoveRobot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (robotIsDead) 
-        { 
-            rotationOffset += (10 * Time.deltaTime) * rotationOffset + 0.1f;
-            heightOffset += (1f * Time.deltaTime) * heightOffset + 0.1f;
-
-            if (heightOffset > 100) Destroy(gameObject); //???? ye
+        if (lightUpTimer < 1f)
+        {
+            lightUpTimer += Time.deltaTime * 10f;
+        }
+        else if (robotBody.color != Color.white)
+        {
+            robotBody.color = Color.white;
         }
 
         //Generate our floaty effect!
@@ -214,10 +217,36 @@ public class LoveRobot : MonoBehaviour
 
     public bool Hit() 
     {
-        robotIsDead = true;
+        recoil = projectileRecoilAmount * 2;
 
+        lightUpTimer = 0f;
+        robotBody.color = Color.red;
 
-        return true;
+        if (RobotDeathTask != null) return true;
+        
+        HitPoints--;
+
+        if (HitPoints <= 0) 
+        { 
+            InitiateRobotDeath();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void InitiateRobotDeath() 
+    {
+        if (RobotDeathTask == null) //If death has already occured
+        {
+            IEnumerator initiateRobotDeathCoroutine()
+            {
+                yield return new WaitForSeconds(10);
+                Destroy(gameObject);
+            }
+
+            RobotDeathTask = new Task(initiateRobotDeathCoroutine());
+       }
     }
 
 }

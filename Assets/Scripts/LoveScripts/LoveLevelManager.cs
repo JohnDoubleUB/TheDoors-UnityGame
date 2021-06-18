@@ -231,11 +231,7 @@ public class LoveLevelManager : MonoBehaviour
             case 1:
                 //Start patrol and Open head
                 loveRobot.SetOpenBody(true);
-                
-                //foreach (LoveRobot lR in loveRobots)
-                //{
-                //    lR.SetOpenBody(true);
-                //}
+
                 CompletePhaseAfterSeconds(2);
                 break;
             case 2:

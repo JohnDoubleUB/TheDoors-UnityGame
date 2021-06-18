@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Xml;
-using System;
 using System.Linq;
 
 public class ProjectilePatternLoader : XmlLoader
